@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Premium Brand Palette */
+:root {
+  --tg-theme-bg-color: #FAFAFA;
+  /* Lightest Gray/White */
+  --tg-theme-secondary-bg-color: #F3F4F6;
+  --tg-theme-text-color: #111827;
+  /* Near Black */
+  --tg-theme-hint-color: #4B5563;
+  --tg-theme-link-color: #054D3B;
+  /* Deep Emerald */
+  --tg-theme-button-color: #D4AF37;
+  /* Metallic Gold */
+  --tg-theme-button-text-color: #111827;
+  --tg-theme-header-bg: #054D3B;
+  /* Deep Emerald */
+}
+
+body {
+  background-color: var(--tg-theme-bg-color);
+  /* #FAFAFA */
+  color: var(--tg-theme-text-color);
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+#root {
+  width: 100%;
+}

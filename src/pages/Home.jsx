@@ -1,0 +1,93 @@
+import { useState, useMemo } from 'react';
+import ProductList from '../components/ProductList';
+
+const Home = ({ products, onAdd }) => {
+
+
+
+
+    // Extract departments and categories
+    const departments = useMemo(() => {
+        const depts = products.map(p => p.department).filter(Boolean);
+        return ["All", ...new Set(depts)];
+    }, [products]);
+    const [selectedDepartment, setSelectedDepartment] = useState("All");
+    const [selectedSubCategory, setSelectedSubCategory] = useState("All");
+
+    // Get unique categories based on selected department
+    const availableSubCategories = useMemo(() => {
+        if (selectedDepartment === "All") return [];
+        const cats = products
+            .filter(p => p.department === selectedDepartment)
+            .map(p => p.category);
+        return ["All", ...new Set(cats)];
+    }, [products, selectedDepartment]);
+
+    const filteredProducts = useMemo(() => {
+        return products.filter(p => {
+            const matchesDepartment = selectedDepartment === "All" || p.department === selectedDepartment;
+            const matchesCategory = selectedSubCategory === "All" || p.category === selectedSubCategory;
+
+            return matchesDepartment && matchesCategory;
+        });
+    }, [products, selectedDepartment, selectedSubCategory]);
+
+    // Reset subcategory when department changes
+    const handleDepartmentChange = (dept) => {
+        setSelectedDepartment(dept);
+        setSelectedSubCategory("All");
+    };
+
+    return (
+        <div className="pb-4">
+            {/* Addis Store Header */}
+            <div className="sticky top-0 z-20 bg-[#054D3B] pt-4 pb-2 px-4 shadow-md transition-all">
+                <div className="flex flex-col gap-3 mb-2">
+
+
+                    {/* Department Nav */}
+                    <div className="flex gap-5 overflow-x-auto no-scrollbar items-center pb-2 pt-1 border-b border-white/10">
+                        {departments.map(dept => (
+                            <button
+                                key={dept}
+                                onClick={() => handleDepartmentChange(dept)}
+                                className={`whitespace-nowrap text-sm font-medium transition-colors ${selectedDepartment === dept
+                                    ? 'text-white border-b-2 border-[#D4AF37] pb-1'
+                                    : 'text-gray-300 hover:text-white'
+                                    }`}
+                            >
+                                {dept}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Sub-Category Nav (only if specific department selected) */}
+                    {selectedDepartment !== "All" && availableSubCategories.length > 0 && (
+                        <div className="flex gap-3 overflow-x-auto no-scrollbar items-center py-2 animate-fadeIn">
+                            {availableSubCategories.map(cat => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setSelectedSubCategory(cat)}
+                                    className={`whitespace-nowrap text-xs px-3 py-1 rounded-full transition-colors ${selectedSubCategory === cat
+                                        ? 'bg-white text-[#054D3B] font-bold'
+                                        : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                                        }`}
+                                >
+                                    {cat}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+
+
+            <div className="mt-2">
+                <ProductList products={filteredProducts} onAdd={onAdd} />
+            </div>
+        </div>
+    );
+};
+
+export default Home;

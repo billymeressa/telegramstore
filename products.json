@@ -1,0 +1,311 @@
+[
+  {
+    "id": 1,
+    "title": "Classic Cotton T-Shirt",
+    "price": 250,
+    "category": "Tops",
+    "department": "Men",
+    "description": "A comfortable, everyday t-shirt made from 100% cotton.",
+    "images": [],
+    "variations": [
+      {
+        "name": "Size",
+        "options": [
+          "S",
+          "M",
+          "L",
+          "XL"
+        ]
+      },
+      {
+        "name": "Color",
+        "options": [
+          "White",
+          "Black",
+          "Navy"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Slim Fit Jeans",
+    "price": 800,
+    "category": "Bottoms",
+    "department": "Men",
+    "description": "Modern slim fit jeans with a bit of stretch for comfort.",
+    "images": [],
+    "variations": [
+      {
+        "name": "Size",
+        "options": [
+          "30",
+          "32",
+          "34",
+          "36"
+        ]
+      },
+      {
+        "name": "Color",
+        "options": [
+          "Dark Blue",
+          "Light Blue"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Floral Summer Dress",
+    "price": 650,
+    "category": "Dresses",
+    "department": "Women",
+    "description": "Lightweight and airy dress perfect for warm weather.",
+    "images": [],
+    "variations": [
+      {
+        "name": "Size",
+        "options": [
+          "XS",
+          "S",
+          "M",
+          "L"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Running Sneakers",
+    "price": 1200,
+    "category": "Shoes",
+    "department": "Women",
+    "description": "High-performance running shoes with cushioned soles.",
+    "images": [],
+    "variations": [
+      {
+        "name": "Size",
+        "options": [
+          "36",
+          "37",
+          "38",
+          "39",
+          "40"
+        ]
+      },
+      {
+        "name": "Color",
+        "options": [
+          "Pink",
+          "Grey",
+          "Black"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Kids Graphic Tee",
+    "price": 200,
+    "category": "Tops",
+    "department": "Kids",
+    "description": "Fun graphic t-shirt for daily wear.",
+    "images": [
+      "/uploads/1768533116843-997742897-71F6HU1bsvL._AC_UY1000_.jpg"
+    ],
+    "variations": [
+      {
+        "name": "Size",
+        "options": [
+          "4-5Y",
+          "6-7Y",
+          "8-9Y"
+        ]
+      },
+      {
+        "name": "Color",
+        "options": [
+          "Red",
+          "Blue",
+          "Green"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "title": "Smartphone X Pro",
+    "price": 45000,
+    "category": "Phones",
+    "department": "Electronics",
+    "description": "Latest flagship smartphone with amazing camera and battery life.",
+    "images": [],
+    "variations": [
+      {
+        "name": "Storage",
+        "options": [
+          "128GB",
+          "256GB",
+          "512GB"
+        ]
+      },
+      {
+        "name": "Color",
+        "options": [
+          "Midnight Black",
+          "Silver",
+          "Blue"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "title": "Wireless Noise Cancelling Headphones",
+    "price": 3500,
+    "category": "Audio",
+    "department": "Electronics",
+    "description": "Premium sound quality with active noise cancellation.",
+    "images": [],
+    "variations": [
+      {
+        "name": "Color",
+        "options": [
+          "Black",
+          "Silver"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "title": "4K Smart TV 55\"",
+    "price": 28000,
+    "category": "Television",
+    "department": "Electronics",
+    "description": "Ultra HD Smart TV with HDR and built-in streaming apps.",
+    "images": [],
+    "variations": []
+  },
+  {
+    "id": 9,
+    "title": "Stainless Steel Cookware Set",
+    "price": 4500,
+    "category": "Kitchen",
+    "department": "Home",
+    "description": "10-piece set includes pots, pans, and lids. Durable and dishwasher safe.",
+    "images": [],
+    "variations": []
+  },
+  {
+    "id": 10,
+    "title": "Modern Floor Lamp",
+    "price": 1800,
+    "category": "Decor",
+    "department": "Home",
+    "description": "Sleek design floor lamp, perfect for living rooms or bedrooms.",
+    "images": [],
+    "variations": [
+      {
+        "name": "Finish",
+        "options": [
+          "Matte Black",
+          "Gold",
+          "Silver"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "title": "Rejuvenating Face Cream",
+    "price": 850,
+    "category": "Skincare",
+    "department": "Beauty",
+    "description": "Hydrating anti-aging cream for all skin types.",
+    "images": [],
+    "variations": [
+      {
+        "name": "Size",
+        "options": [
+          "50ml",
+          "100ml"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "title": "Matte Lipstick Set",
+    "price": 450,
+    "category": "Makeup",
+    "department": "Beauty",
+    "description": "Long-lasting matte lipstick in 3 vibrant shades.",
+    "images": [],
+    "variations": [
+      {
+        "name": "Shade",
+        "options": [
+          "Ruby Red",
+          "Nude",
+          "Plum"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "title": "Bestselling Thriller Novel",
+    "price": 300,
+    "category": "Fiction",
+    "department": "Books",
+    "description": "A gripping page-turner that you won't be able to put down.",
+    "images": [],
+    "variations": [
+      {
+        "name": "Format",
+        "options": [
+          "Paperback",
+          "Hardcover"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "title": "Yoga Mat",
+    "price": 600,
+    "category": "Fitness",
+    "department": "Sports",
+    "description": "Non-slip yoga mat with carrying strap.",
+    "images": [],
+    "variations": [
+      {
+        "name": "Color",
+        "options": [
+          "Purple",
+          "Blue",
+          "Pink"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "title": "Laptop Backpack",
+    "price": 1500,
+    "category": "Accessories",
+    "department": "Electronics",
+    "description": "Water-resistant backpack with laptop compartment and USB charging port.",
+    "images": [],
+    "variations": [
+      {
+        "name": "Color",
+        "options": [
+          "Black",
+          "Grey"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,572 @@
+[
+  {
+    "id": 1768440818925,
+    "items": [
+      {
+        "id": 1,
+        "title": "Classic T-Shirt",
+        "price": 19.99,
+        "quantity": 1
+      },
+      {
+        "id": 2,
+        "title": "Denim Jeans",
+        "price": 49.99,
+        "quantity": 1
+      }
+    ],
+    "total_price": 69.98,
+    "status": "sold",
+    "createdAt": "2026-01-15T01:33:38.925Z"
+  },
+  {
+    "id": 1768441406336,
+    "items": [
+      {
+        "id": 2,
+        "title": "Denim Jeans",
+        "price": 49.99,
+        "quantity": 1
+      }
+    ],
+    "total_price": 49.99,
+    "status": "pending",
+    "createdAt": "2026-01-15T01:43:26.336Z"
+  },
+  {
+    "id": 1768453343952,
+    "userId": 6353640545,
+    "userInfo": {
+      "id": 6353640545,
+      "first_name": "billy",
+      "last_name": "moss",
+      "username": "billymosissa",
+      "language_code": "en",
+      "allows_write_to_pm": true,
+      "photo_url": "https://t.me/i/userpic/320/7DyEVBe1m8NO9_s-IDdhhZZGyE9h2-XL1r4sJlJbZFtctQVfQ7CJrwU22rd4JS-b.svg"
+    },
+    "items": [
+      {
+        "id": 1768452344137,
+        "title": "Pipe Elder",
+        "price": 4800,
+        "category": "General",
+        "department": "Men",
+        "description": "Pipe Elder\nPrice - 4800 Birr\nSize  - 39,40,41,42,43,44\n\n📍አድራሻ ሜክሲኮ ዲአፍሪክ ሆቴል አጠገብ ሞኤንኮ ህንፃ 1ኛ ፎቅ\n\n         📞  0968979776\n                0913033741",
+        "image": "/uploads/product_1768452343820_2.jpg",
+        "quantity": 1
+      }
+    ],
+    "total_price": 4800,
+    "status": "pending",
+    "createdAt": "2026-01-15T05:02:23.952Z"
+  },
+  {
+    "id": 1768493989924,
+    "userId": 748823605,
+    "userInfo": {
+      "id": 748823605,
+      "first_name": "Test",
+      "last_name": "Admin",
+      "username": "testadmin",
+      "language_code": "en"
+    },
+    "items": [
+      {
+        "id": 1,
+        "title": "Classic Cotton T-Shirt",
+        "price": 250,
+        "category": "Tops",
+        "department": "Men",
+        "description": "A comfortable, everyday t-shirt made from 100% cotton.",
+        "images": [],
+        "variations": [
+          {
+            "name": "Size",
+            "options": [
+              "S",
+              "M",
+              "L",
+              "XL"
+            ]
+          },
+          {
+            "name": "Color",
+            "options": [
+              "White",
+              "Black",
+              "Navy"
+            ]
+          }
+        ],
+        "quantity": 1
+      }
+    ],
+    "total_price": 250,
+    "status": "pending",
+    "createdAt": "2026-01-15T16:19:49.924Z"
+  },
+  {
+    "id": 1768494543284,
+    "userId": 748823605,
+    "userInfo": {
+      "id": 748823605,
+      "first_name": "Test",
+      "last_name": "Admin",
+      "username": "testadmin",
+      "language_code": "en"
+    },
+    "items": [
+      {
+        "id": 1,
+        "title": "Classic Cotton T-Shirt",
+        "price": 250,
+        "category": "Tops",
+        "department": "Men",
+        "description": "A comfortable, everyday t-shirt made from 100% cotton.",
+        "images": [],
+        "variations": [
+          {
+            "name": "Size",
+            "options": [
+              "S",
+              "M",
+              "L",
+              "XL"
+            ]
+          },
+          {
+            "name": "Color",
+            "options": [
+              "White",
+              "Black",
+              "Navy"
+            ]
+          }
+        ],
+        "quantity": 1
+      }
+    ],
+    "total_price": 250,
+    "status": "pending",
+    "createdAt": "2026-01-15T16:29:03.284Z"
+  },
+  {
+    "id": 1768495283229,
+    "userId": 748823605,
+    "userInfo": {
+      "id": 748823605,
+      "first_name": "Test",
+      "last_name": "Admin",
+      "username": "testadmin",
+      "language_code": "en"
+    },
+    "items": [
+      {
+        "id": 11,
+        "title": "Rejuvenating Face Cream",
+        "price": 850,
+        "category": "Skincare",
+        "department": "Beauty",
+        "description": "Hydrating anti-aging cream for all skin types.",
+        "images": [],
+        "variations": [
+          {
+            "name": "Size",
+            "options": [
+              "50ml",
+              "100ml"
+            ]
+          }
+        ],
+        "quantity": 1
+      }
+    ],
+    "total_price": 850,
+    "status": "pending",
+    "createdAt": "2026-01-15T16:41:23.229Z"
+  },
+  {
+    "id": 1768495387632,
+    "userId": 748823605,
+    "userInfo": {
+      "id": 748823605,
+      "first_name": "Test",
+      "last_name": "Admin",
+      "username": "testadmin",
+      "language_code": "en"
+    },
+    "items": [
+      {
+        "id": 1,
+        "title": "Classic Cotton T-Shirt",
+        "price": 250,
+        "category": "Tops",
+        "department": "Men",
+        "description": "A comfortable, everyday t-shirt made from 100% cotton.",
+        "images": [],
+        "variations": [
+          {
+            "name": "Size",
+            "options": [
+              "S",
+              "M",
+              "L",
+              "XL"
+            ]
+          },
+          {
+            "name": "Color",
+            "options": [
+              "White",
+              "Black",
+              "Navy"
+            ]
+          }
+        ],
+        "quantity": 1
+      },
+      {
+        "id": 2,
+        "title": "Slim Fit Jeans",
+        "price": 800,
+        "category": "Bottoms",
+        "department": "Men",
+        "description": "Modern slim fit jeans with a bit of stretch for comfort.",
+        "images": [],
+        "variations": [
+          {
+            "name": "Size",
+            "options": [
+              "30",
+              "32",
+              "34",
+              "36"
+            ]
+          },
+          {
+            "name": "Color",
+            "options": [
+              "Dark Blue",
+              "Light Blue"
+            ]
+          }
+        ],
+        "quantity": 1
+      }
+    ],
+    "total_price": 1050,
+    "status": "pending",
+    "createdAt": "2026-01-15T16:43:07.632Z"
+  },
+  {
+    "id": 1768495600805,
+    "userId": 748823605,
+    "userInfo": {
+      "id": 748823605,
+      "first_name": "Test",
+      "last_name": "Admin",
+      "username": "testadmin",
+      "language_code": "en"
+    },
+    "items": [
+      {
+        "id": 1,
+        "title": "Classic Cotton T-Shirt",
+        "price": 250,
+        "category": "Tops",
+        "department": "Men",
+        "description": "A comfortable, everyday t-shirt made from 100% cotton.",
+        "images": [],
+        "variations": [
+          {
+            "name": "Size",
+            "options": [
+              "S",
+              "M",
+              "L",
+              "XL"
+            ]
+          },
+          {
+            "name": "Color",
+            "options": [
+              "White",
+              "Black",
+              "Navy"
+            ]
+          }
+        ],
+        "quantity": 1
+      }
+    ],
+    "total_price": 250,
+    "status": "pending",
+    "createdAt": "2026-01-15T16:46:40.805Z"
+  },
+  {
+    "id": 1768495705777,
+    "userId": 748823605,
+    "userInfo": {
+      "id": 748823605,
+      "first_name": "Test",
+      "last_name": "Admin",
+      "username": "testadmin",
+      "language_code": "en"
+    },
+    "items": [
+      {
+        "id": 1,
+        "title": "Classic Cotton T-Shirt",
+        "price": 250,
+        "category": "Tops",
+        "department": "Men",
+        "description": "A comfortable, everyday t-shirt made from 100% cotton.",
+        "images": [],
+        "variations": [
+          {
+            "name": "Size",
+            "options": [
+              "S",
+              "M",
+              "L",
+              "XL"
+            ]
+          },
+          {
+            "name": "Color",
+            "options": [
+              "White",
+              "Black",
+              "Navy"
+            ]
+          }
+        ],
+        "quantity": 1
+      }
+    ],
+    "total_price": 250,
+    "status": "pending",
+    "createdAt": "2026-01-15T16:48:25.777Z"
+  },
+  {
+    "id": 1768495745382,
+    "userId": 748823605,
+    "userInfo": {
+      "id": 748823605,
+      "first_name": "Test",
+      "last_name": "Admin",
+      "username": "testadmin",
+      "language_code": "en"
+    },
+    "items": [
+      {
+        "id": 1,
+        "title": "Classic Cotton T-Shirt",
+        "price": 250,
+        "category": "Tops",
+        "department": "Men",
+        "description": "A comfortable, everyday t-shirt made from 100% cotton.",
+        "images": [],
+        "variations": [
+          {
+            "name": "Size",
+            "options": [
+              "S",
+              "M",
+              "L",
+              "XL"
+            ]
+          },
+          {
+            "name": "Color",
+            "options": [
+              "White",
+              "Black",
+              "Navy"
+            ]
+          }
+        ],
+        "quantity": 1
+      }
+    ],
+    "total_price": 250,
+    "status": "pending",
+    "createdAt": "2026-01-15T16:49:05.382Z"
+  },
+  {
+    "id": 1768495862843,
+    "userId": 6353640545,
+    "userInfo": {
+      "id": 6353640545,
+      "first_name": "billy",
+      "last_name": "moss",
+      "username": "billymosissa",
+      "language_code": "en",
+      "allows_write_to_pm": true,
+      "photo_url": "https://t.me/i/userpic/320/7DyEVBe1m8NO9_s-IDdhhZZGyE9h2-XL1r4sJlJbZFtctQVfQ7CJrwU22rd4JS-b.svg"
+    },
+    "items": [
+      {
+        "id": 3,
+        "title": "Floral Summer Dress",
+        "price": 650,
+        "category": "Dresses",
+        "department": "Women",
+        "description": "Lightweight and airy dress perfect for warm weather.",
+        "images": [],
+        "variations": [
+          {
+            "name": "Size",
+            "options": [
+              "XS",
+              "S",
+              "M",
+              "L"
+            ]
+          }
+        ],
+        "quantity": 1
+      }
+    ],
+    "total_price": 650,
+    "status": "cancelled",
+    "createdAt": "2026-01-15T16:51:02.843Z"
+  },
+  {
+    "id": 1768496841708,
+    "userId": 748823605,
+    "userInfo": {
+      "id": 748823605,
+      "first_name": "Test",
+      "last_name": "Admin",
+      "username": "testadmin",
+      "language_code": "en"
+    },
+    "items": [
+      {
+        "id": 1,
+        "title": "Classic Cotton T-Shirt",
+        "price": 250,
+        "category": "Tops",
+        "department": "Men",
+        "description": "A comfortable, everyday t-shirt made from 100% cotton.",
+        "images": [],
+        "variations": [
+          {
+            "name": "Size",
+            "options": [
+              "S",
+              "M",
+              "L",
+              "XL"
+            ]
+          },
+          {
+            "name": "Color",
+            "options": [
+              "White",
+              "Black",
+              "Navy"
+            ]
+          }
+        ],
+        "quantity": 1
+      }
+    ],
+    "total_price": 250,
+    "status": "pending",
+    "createdAt": "2026-01-15T17:07:21.708Z"
+  },
+  {
+    "id": 1768496919368,
+    "userId": 6353640545,
+    "userInfo": {
+      "id": 6353640545,
+      "first_name": "billy",
+      "last_name": "moss",
+      "username": "billymosissa",
+      "language_code": "en",
+      "allows_write_to_pm": true,
+      "photo_url": "https://t.me/i/userpic/320/7DyEVBe1m8NO9_s-IDdhhZZGyE9h2-XL1r4sJlJbZFtctQVfQ7CJrwU22rd4JS-b.svg"
+    },
+    "items": [
+      {
+        "id": 2,
+        "title": "Slim Fit Jeans",
+        "price": 800,
+        "category": "Bottoms",
+        "department": "Men",
+        "description": "Modern slim fit jeans with a bit of stretch for comfort.",
+        "images": [],
+        "variations": [
+          {
+            "name": "Size",
+            "options": [
+              "30",
+              "32",
+              "34",
+              "36"
+            ]
+          },
+          {
+            "name": "Color",
+            "options": [
+              "Dark Blue",
+              "Light Blue"
+            ]
+          }
+        ],
+        "quantity": 1
+      }
+    ],
+    "total_price": 800,
+    "status": "pending",
+    "createdAt": "2026-01-15T17:08:39.368Z"
+  },
+  {
+    "id": 1768528164621,
+    "userId": 748823605,
+    "userInfo": {
+      "id": 748823605,
+      "first_name": "Test",
+      "last_name": "Admin",
+      "username": "testadmin",
+      "language_code": "en"
+    },
+    "items": [
+      {
+        "id": 1,
+        "title": "Classic Cotton T-Shirt",
+        "price": 250,
+        "category": "Tops",
+        "department": "Men",
+        "description": "A comfortable, everyday t-shirt made from 100% cotton.",
+        "images": [],
+        "variations": [
+          {
+            "name": "Size",
+            "options": [
+              "S",
+              "M",
+              "L",
+              "XL"
+            ]
+          },
+          {
+            "name": "Color",
+            "options": [
+              "White",
+              "Black",
+              "Navy"
+            ]
+          }
+        ],
+        "quantity": 1
+      }
+    ],
+    "total_price": 250,
+    "status": "pending",
+    "createdAt": "2026-01-16T01:49:24.621Z"
+  }
+]
