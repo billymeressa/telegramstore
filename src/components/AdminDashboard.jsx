@@ -53,9 +53,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
         formData.append('department', newProduct.department || 'Men');
         formData.append('description', newProduct.description || '');
 
-
-        // Append existing images (as separate fields or array strings)
-        // We'll append each one as 'existingImages' field
+        // Append existing images
         if (newProduct.images && newProduct.images.length > 0) {
             newProduct.images.forEach(img => formData.append('existingImages', img));
         }
@@ -73,8 +71,6 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
 
         try {
             const url = `${API_URL}/api/products`;
-            const msg = `Debug: Fetching to ${url}`;
-            tele ? tele.showAlert(msg) : alert(msg);
 
             const res = await fetch(url, {
                 method: 'POST',
@@ -98,13 +94,13 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             } else {
                 const errorMsg = 'Failed to add product: ' + (data.error || 'Unknown error');
                 tele ? tele.showAlert(errorMsg) : alert(errorMsg);
-            } finally {
-                setIsSubmitting(false);
             }
         } catch (err) {
             console.error(err);
-            const sysError = `Error saving product: ${err.message}`;
+            const sysError = `Error saving product: ${err.message || 'Network Error'}`;
             tele ? tele.showAlert(sysError) : alert(sysError);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
