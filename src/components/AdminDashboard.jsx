@@ -86,8 +86,6 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             }
         } catch (err) {
             console.error(err);
-        } catch (err) {
-            console.error(err);
             alert(`Error saving product: ${err.message}`);
         }
     };
