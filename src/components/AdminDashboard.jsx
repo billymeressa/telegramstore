@@ -75,6 +75,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                 setImageFiles([]);
                 setEditId(null);
                 if (fileInputRef.current) fileInputRef.current.value = '';
+            } else {
+                alert('Failed to add product: ' + (data.error || 'Unknown error'));
             }
         } catch (err) {
             console.error(err);
@@ -109,6 +111,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             const data = await res.json();
             if (data.success) {
                 onProductUpdate(data.products);
+            } else {
+                alert('Failed to delete: ' + (data.error || 'Unknown error'));
             }
         } catch (err) {
             console.error(err);
