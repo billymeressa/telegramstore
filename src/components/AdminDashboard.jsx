@@ -21,9 +21,14 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
     }, [activeTab]);
 
     const fetchOrders = () => {
+        if (!API_URL) {
+            console.error('API_URL is undefined! Check your config.js');
+            return;
+        }
         fetch(`${API_URL}/api/orders`)
             .then(res => res.json())
-            .then(data => setOrders(data.reverse())); // Newest first
+            .then(data => setOrders(data.reverse()))
+            .catch(err => console.error('Error fetching orders:', err));
     };
 
 
@@ -96,8 +101,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                 tele ? tele.showAlert(errorMsg) : alert(errorMsg);
             }
         } catch (err) {
-            console.error(err);
-            const sysError = `Error saving product: ${err.message || 'Network Error'}`;
+            console.error("FULL ERROR OBJECT:", err);
+            const sysError = `Error saving product: ${err.message || 'Unknown network error'}. Check console for details.`;
             tele ? tele.showAlert(sysError) : alert(sysError);
         } finally {
             setIsSubmitting(false);
