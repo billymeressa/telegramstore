@@ -67,7 +67,13 @@ console.log('Bot is running...');
 
 // --- API SERVER SETUP ---
 const app = express();
-app.use(cors());
+// CORS Setup - Allow everything for now to fix access issues
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type']
+}));
+app.options('*', cors()); // Enable pre-flight across-the-board
 app.use(express.json());
 
 // Health Check / Root Route
