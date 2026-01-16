@@ -6,6 +6,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
     const tele = window.Telegram?.WebApp;
     const [activeTab, setActiveTab] = useState('products'); // 'products' | 'orders'
     const [newProduct, setNewProduct] = useState({ title: '', price: '', category: '', department: 'Men', description: '', images: [] });
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [imageFiles, setImageFiles] = useState([]); // Array of File objects
     const [editId, setEditId] = useState(null); // Track if editing
     const fileInputRef = useRef(null);
@@ -37,7 +38,13 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
 
     const handleAdd = async (e) => {
         e.preventDefault();
-        if (!newProduct.title || !newProduct.price) return;
+        if (!newProduct.title || !newProduct.price) {
+            const msg = 'Please fill in Title and Price';
+            tele ? tele.showAlert(msg) : alert(msg);
+            return;
+        }
+
+        setIsSubmitting(true);
 
         const formData = new FormData();
         formData.append('title', newProduct.title);
@@ -86,9 +93,13 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                 setImageFiles([]);
                 setEditId(null);
                 if (fileInputRef.current) fileInputRef.current.value = '';
+                const successMsg = 'Product Saved Successfully!';
+                tele ? tele.showAlert(successMsg) : alert(successMsg);
             } else {
                 const errorMsg = 'Failed to add product: ' + (data.error || 'Unknown error');
                 tele ? tele.showAlert(errorMsg) : alert(errorMsg);
+            } finally {
+                setIsSubmitting(false);
             }
         } catch (err) {
             console.error(err);
@@ -272,8 +283,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                         Cancel
                                     </button>
                                 )}
-                                <button type="submit" className="flex-1 bg-[#D4AF37] border border-[#C5A028] text-[#111827] font-medium py-2 rounded-md shadow-sm hover:bg-[#B59015]">
-                                    {editId ? 'Save Changes' : 'Add Product'}
+                                <button type="submit" disabled={isSubmitting} className="flex-1 bg-[#D4AF37] border border-[#C5A028] text-[#111827] font-medium py-2 rounded-md shadow-sm hover:bg-[#B59015] disabled:opacity-50">
+                                    {isSubmitting ? 'Saving...' : (editId ? 'Save Changes' : 'Add Product')}
                                 </button>
                             </div>
                         </form>
