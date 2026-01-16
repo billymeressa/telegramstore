@@ -63,10 +63,23 @@ function App() {
   }, []);
 
   const fetchProductData = () => {
+    if (!API_URL) {
+      const msg = 'CONFIGURATION ERROR: VITE_API_URL is missing. The app cannot connect to the server.';
+      tele ? tele.showAlert(msg) : alert(msg);
+      return;
+    }
+
     fetch(`${API_URL}/api/products`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
       .then(data => setProducts(data))
-      .catch(err => console.error("Failed to fetch products", err));
+      .catch(err => {
+        console.error("Failed to fetch products", err);
+        const msg = `Connection Failed: Could not load products. (${err.message}). Is the backend running?`;
+        tele ? tele.showAlert(msg) : alert(msg);
+      });
   };
 
 
