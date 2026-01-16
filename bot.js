@@ -70,6 +70,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Health Check / Root Route
+app.get('/', (req, res) => {
+    res.send('Backend is actively running! Status: OK');
+});
+
 // Multer Memory Storage (for Cloudinary)
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
