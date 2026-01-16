@@ -144,7 +144,7 @@ app.post('/api/products', upload.array('images', 5), async (req, res) => {
             newImagePaths = results.map(r => r.secure_url);
         } catch (uploadErr) {
             console.error("Cloudinary Upload Error:", uploadErr);
-            return res.status(500).json({ error: 'Image upload failed' });
+            return res.status(500).json({ error: `Image Upload Failed: ${uploadErr.message}` });
         }
     }
 
