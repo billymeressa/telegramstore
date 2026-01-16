@@ -68,6 +68,12 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                 method: 'POST',
                 body: formData,
             });
+
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(`Server responded with ${res.status}: ${text.substring(0, 100)}`);
+            }
+
             const data = await res.json();
             if (data.success) {
                 onProductUpdate(data.products);
@@ -80,7 +86,9 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             }
         } catch (err) {
             console.error(err);
-            alert('Error saving product');
+        } catch (err) {
+            console.error(err);
+            alert(`Error saving product: ${err.message}`);
         }
     };
 
