@@ -3,6 +3,7 @@ import API_URL from '../config';
 import { LayoutDashboard, Package, Truck, CheckCircle, XCircle } from 'lucide-react';
 
 const AdminDashboard = ({ products, onProductUpdate }) => {
+    const tele = window.Telegram?.WebApp;
     const [activeTab, setActiveTab] = useState('products'); // 'products' | 'orders'
     const [newProduct, setNewProduct] = useState({ title: '', price: '', category: '', department: 'Men', description: '', images: [] });
     const [imageFiles, setImageFiles] = useState([]); // Array of File objects
@@ -64,7 +65,11 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
         }
 
         try {
-            const res = await fetch(`${API_URL}/api/products`, {
+            const url = `${API_URL}/api/products`;
+            const msg = `Debug: Fetching to ${url}`;
+            tele ? tele.showAlert(msg) : alert(msg);
+
+            const res = await fetch(url, {
                 method: 'POST',
                 body: formData,
             });
@@ -82,11 +87,13 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                 setEditId(null);
                 if (fileInputRef.current) fileInputRef.current.value = '';
             } else {
-                alert('Failed to add product: ' + (data.error || 'Unknown error'));
+                const errorMsg = 'Failed to add product: ' + (data.error || 'Unknown error');
+                tele ? tele.showAlert(errorMsg) : alert(errorMsg);
             }
         } catch (err) {
             console.error(err);
-            alert(`Error saving product: ${err.message}`);
+            const sysError = `Error saving product: ${err.message}`;
+            tele ? tele.showAlert(sysError) : alert(sysError);
         }
     };
 
