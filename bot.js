@@ -12,6 +12,12 @@ const token = process.env.BOT_TOKEN;
 if (!token) throw new Error('BOT_TOKEN must be provided!');
 const bot = new Telegraf(token);
 
+// DEBUG: Log available environment variables (Keys only for security)
+console.log('--- ENVIRONMENT VARIABLES DEBUG ---');
+console.log('Available Config Keys:', Object.keys(process.env).sort().join(', '));
+console.log('MONGODB_URI Type:', typeof process.env.MONGODB_URI);
+console.log('-----------------------------------');
+
 connectDB(); // Connect to MongoDB
 
 // Cloudinary Config
