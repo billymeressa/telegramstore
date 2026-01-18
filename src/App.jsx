@@ -6,7 +6,8 @@ import Home from './pages/Home';
 import CartPage from './pages/CartPage';
 import Profile from './pages/Profile';
 import ProductDetails from './pages/ProductDetails';
-import AdminDashboard from './components/AdminDashboard'; // We can use the component directly as a page for now
+import AdminDashboard from './components/AdminDashboard';
+import Toast from './components/Toast'; // New Import
 
 const tele = window.Telegram?.WebApp;
 const ADMIN_ID = 748823605; // Make sure this matches your .env ADMIN_ID
@@ -16,6 +17,7 @@ function App() {
   const [cart, setCart] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [user, setUser] = useState(null);
+  const [toast, setToast] = useState(null); // Toast State
 
   useEffect(() => {
     let currentUser = tele?.initDataUnsafe?.user;
@@ -101,6 +103,8 @@ function App() {
     if (tele?.HapticFeedback) {
       tele.HapticFeedback.impactOccurred('light');
     }
+
+    setToast(`Added ${product.title} to cart`); // Trigger Toast
   };
 
   const onIncrease = (product) => {
@@ -189,6 +193,7 @@ function App() {
           <Route path="/admin" element={isAdmin ? <AdminDashboard products={products} onProductUpdate={setProducts} /> : <Navigate to="/" />} />
         </Route>
       </Routes>
+      {toast && <Toast message={toast} onClose={() => setToast(null)} />}
     </BrowserRouter>
   );
 }
