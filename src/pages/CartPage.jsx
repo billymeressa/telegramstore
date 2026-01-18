@@ -49,7 +49,7 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
             {cart.length === 0 && (
                 <div className="bg-white p-8 text-center m-4 rounded-md shadow-sm">
                     <h2 className="text-xl font-bold mb-2">Your Addis Store Cart is empty.</h2>
-                    <p className="text-sm text-[#054D3B]">Check your Saved for later items below or continue shopping.</p>
+
                 </div>
             )}
 

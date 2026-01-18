@@ -20,15 +20,15 @@ function ProductList({ products }) {
                     </div>
 
                     <div className="p-3 flex flex-col gap-1">
-                        <h3 className="text-[#0F1111] text-sm leading-snug line-clamp-2 h-10 overflow-hidden font-normal">
+                        <h3 className="text-[#0F1111] text-base leading-snug line-clamp-2 h-12 overflow-hidden font-normal">
                             {product.title}
                         </h3>
 
                         <div className="flex items-baseline gap-1 mt-1">
 
-                            <span className="text-[#0F1111] text-xl font-medium leading-none">{Math.floor(product.price)}</span>
+                            <span className="text-[#0F1111] text-2xl font-medium leading-none">{Math.floor(product.price)}</span>
 
-                            <span className="text-[#0F1111] text-xs font-bold ml-1">Birr</span>
+                            <span className="text-[#0F1111] text-sm font-bold ml-1">Birr</span>
                         </div>
 
 

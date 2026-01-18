@@ -53,7 +53,7 @@ const ProductDetails = ({ onAdd }) => {
             {/* Product Title & Brand */}
             <div className="p-4 bg-white border-b border-gray-100">
                 <div className="flex justify-between items-start">
-                    <h1 className="text-base font-normal text-[#0F1111] leading-snug line-clamp-3 mb-1">
+                    <h1 className="text-xl font-normal text-[#0F1111] leading-snug line-clamp-3 mb-1">
                         {product.title}
                     </h1>
                 </div>
@@ -98,8 +98,8 @@ const ProductDetails = ({ onAdd }) => {
             {/* Price & Prime */}
             <div className="p-4 space-y-2 border-t border-gray-100 bg-white">
                 <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-medium text-[#0F1111]">{Math.floor(product.price)}</span>
-                    <span className="text-sm align-top font-bold text-[#0F1111] mt-1">Birr</span>
+                    <span className="text-4xl font-medium text-[#0F1111]">{Math.floor(product.price)}</span>
+                    <span className="text-base align-top font-bold text-[#0F1111] mt-1">Birr</span>
                 </div>
             </div>
 
@@ -107,8 +107,8 @@ const ProductDetails = ({ onAdd }) => {
             {/* Info */}
             <div className="p-4 space-y-4 bg-white border-t border-gray-200">
                 <div>
-                    <h3 className="text-base font-bold text-[#0F1111] mb-1">About this item</h3>
-                    <p className="text-[#0F1111] leading-relaxed text-sm">
+                    <h3 className="text-lg font-bold text-[#0F1111] mb-1">About this item</h3>
+                    <p className="text-[#0F1111] leading-relaxed text-base">
                         {product.description || "No description available."}
                     </p>
                 </div>
@@ -123,7 +123,7 @@ const ProductDetails = ({ onAdd }) => {
                     onClick={() => {
                         onAdd({ ...product });
                     }}
-                    className="w-full bg-[#D4AF37] text-[#111827] py-3 rounded-full font-bold text-base shadow-sm border border-[#C5A028] active:bg-[#B59015]"
+                    className="w-full bg-[#D4AF37] text-[#111827] py-4 rounded-full font-bold text-lg shadow-sm border border-[#C5A028] active:bg-[#B59015]"
                 >
                     Add to Cart
                 </button>

@@ -27,11 +27,11 @@ function Cart({ cartItems, onIncrease, onDecrease, onRemove }) {
 
                     <div className="flex-1 flex flex-col justify-between">
                         <div>
-                            <h4 className="font-medium text-[#111827] text-base leading-snug line-clamp-2">
+                            <h4 className="font-medium text-[#111827] text-lg leading-snug line-clamp-2">
                                 {item.title}
                             </h4>
 
-                            <div className="text-lg font-bold text-[#111827] mt-1">
+                            <div className="text-xl font-bold text-[#111827] mt-1">
                                 {Math.floor(item.price)} <span className="text-[#0F1111] font-bold">Birr</span>
                             </div>
                             <div className="text-xs text-[#054D3B] mt-1">
@@ -43,16 +43,16 @@ function Cart({ cartItems, onIncrease, onDecrease, onRemove }) {
                             <div className="flex items-center border border-gray-300 rounded-md bg-[#f0f2f2] shadow-sm">
                                 <button
                                     onClick={() => onDecrease(item)}
-                                    className="w-8 h-8 flex items-center justify-center text-[#111827] font-medium hover:bg-[#E5E7EB] rounded-l-md"
+                                    className="w-10 h-10 flex items-center justify-center text-[#111827] font-medium hover:bg-[#E5E7EB] rounded-l-md"
                                 >
                                     {item.quantity === 1 ? '🗑' : '−'}
                                 </button>
-                                <div className="w-8 h-8 flex items-center justify-center bg-white border-x border-gray-300 text-sm text-[#111827]">
+                                <div className="w-10 h-10 flex items-center justify-center bg-white border-x border-gray-300 text-base text-[#111827]">
                                     {item.quantity}
                                 </div>
                                 <button
                                     onClick={() => onIncrease(item)}
-                                    className="w-8 h-8 flex items-center justify-center text-[#111827] font-medium hover:bg-[#E5E7EB] rounded-r-md"
+                                    className="w-10 h-10 flex items-center justify-center text-[#111827] font-medium hover:bg-[#E5E7EB] rounded-r-md"
                                 >
                                     +
                                 </button>
