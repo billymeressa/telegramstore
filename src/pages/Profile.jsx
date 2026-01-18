@@ -42,8 +42,12 @@ const Profile = () => {
             {/* Header / User Info */}
             <div className="bg-white p-4 border-b border-gray-200 mb-4">
                 <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-2xl font-bold text-gray-400 uppercase border border-gray-300">
-                        {user?.first_name?.charAt(0) || 'U'}
+                    <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-2xl font-bold text-gray-400 uppercase border border-gray-300 overflow-hidden">
+                        {user?.photo_url ? (
+                            <img src={user.photo_url} alt="Profile" className="w-full h-full object-cover" />
+                        ) : (
+                            user?.first_name?.charAt(0) || 'U'
+                        )}
                     </div>
                     <div>
                         <h2 className="font-bold text-xl text-[#111827]">Hello, {user?.first_name || 'Guest'}</h2>
