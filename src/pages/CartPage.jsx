@@ -45,12 +45,7 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
                 </div>
             )}
 
-            {/* Empty State */}
-            {cart.length === 0 && (
-                <div className="bg-white p-8 text-center m-4 rounded-md shadow-sm">
-                    <h2 className="text-xl font-bold mb-2">Your Addis Store Cart is empty.</h2>
-                </div>
-            )}
+
 
             {showContactModal && (
                 <div className="fixed inset-0 bg-black/50 z-[100] flex items-end sm:items-center justify-center p-4 animate-in fade-in duration-200">
