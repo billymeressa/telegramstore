@@ -12,15 +12,23 @@ const ProductDetails = ({ onAdd }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        console.log("Fetching details for Product ID:", id);
         fetch(`${API_URL}/api/products/${id}`)
             .then(res => {
-                if (!res.ok) throw new Error('Not found');
+                if (!res.ok) {
+                    return res.text().then(text => { throw new Error(`HTTP ${res.status}: ${text}`) });
+                }
                 return res.json();
             })
             .then(data => {
+                console.log("Product Data Loaded:", data);
                 setProduct(data);
             })
-            .catch(() => navigate('/'))
+            .catch(err => {
+                console.error("Fetch Error:", err);
+                alert(`Error loading product: ${err.message}`);
+                // navigate('/'); // Don't redirect, lets see the error
+            })
             .finally(() => setLoading(false));
     }, [id, navigate]);
 
