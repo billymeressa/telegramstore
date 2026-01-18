@@ -23,18 +23,32 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
                 </div>
             )}
 
-            {cart.length === 0 ? (
+            <div className="md:max-w-4xl mx-auto md:p-4">
+                <Cart
+                    cartItems={cart}
+                    onIncrease={onIncrease}
+                    onDecrease={onDecrease}
+                    onRemove={onRemove}
+                />
+            </div>
+
+            {/* Bottom Checkout Bar */}
+            {cart.length > 0 && (
+                <div className="fixed bottom-[60px] left-0 right-0 bg-white border-t border-gray-200 p-3 z-30 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+                    <button
+                        onClick={handleCheckout}
+                        className="w-full bg-[#D4AF37] text-[#111827] py-3 rounded-lg font-bold text-base shadow-sm border border-[#C5A028] active:bg-[#B59015]"
+                    >
+                        Proceed to checkout ({totalItems} items)
+                    </button>
+
+                </div>
+            )}
+
+            {/* Empty State */}
+            {cart.length === 0 && (
                 <div className="bg-white p-8 text-center m-4 rounded-md shadow-sm">
                     <h2 className="text-xl font-bold mb-2">Your Addis Store Cart is empty.</h2>
-                </div>
-            ) : (
-                <div className="md:max-w-4xl mx-auto md:p-4">
-                    <Cart
-                        cartItems={cart}
-                        onIncrease={onIncrease}
-                        onDecrease={onDecrease}
-                        onRemove={onRemove}
-                    />
                 </div>
             )}
 
