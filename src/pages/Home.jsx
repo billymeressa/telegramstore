@@ -46,14 +46,14 @@ const Home = ({ products, onAdd }) => {
 
 
                     {/* Department Nav */}
-                    <div className="flex gap-6 overflow-x-auto no-scrollbar items-center pb-2 pt-1 border-b border-white/10">
+                    <div className="flex gap-5 overflow-x-auto no-scrollbar items-center pb-2 pt-1 border-b border-white/10">
                         {departments.map(dept => (
                             <button
                                 key={dept}
                                 onClick={() => handleDepartmentChange(dept)}
-                                className={`whitespace-nowrap text-lg font-bold transition-colors ${selectedDepartment === dept
-                                    ? 'text-white border-b-4 border-[#D4AF37] pb-1'
-                                    : 'text-gray-200 hover:text-white'
+                                className={`whitespace-nowrap text-sm font-medium transition-colors ${selectedDepartment === dept
+                                    ? 'text-white border-b-2 border-[#D4AF37] pb-1'
+                                    : 'text-gray-300 hover:text-white'
                                     }`}
                             >
                                 {dept}
@@ -63,14 +63,14 @@ const Home = ({ products, onAdd }) => {
 
                     {/* Sub-Category Nav (only if specific department selected) */}
                     {selectedDepartment !== "All" && availableSubCategories.length > 0 && (
-                        <div className="flex gap-3 overflow-x-auto no-scrollbar items-center py-3 animate-fadeIn">
+                        <div className="flex gap-3 overflow-x-auto no-scrollbar items-center py-2 animate-fadeIn">
                             {availableSubCategories.map(cat => (
                                 <button
                                     key={cat}
                                     onClick={() => setSelectedSubCategory(cat)}
-                                    className={`whitespace-nowrap text-sm px-4 py-2 rounded-full transition-colors ${selectedSubCategory === cat
-                                        ? 'bg-white text-[#054D3B] font-bold shadow-md'
-                                        : 'bg-white/10 text-white hover:bg-white/20'
+                                    className={`whitespace-nowrap text-xs px-3 py-1 rounded-full transition-colors ${selectedSubCategory === cat
+                                        ? 'bg-white text-[#054D3B] font-bold'
+                                        : 'bg-white/10 text-gray-300 hover:bg-white/20'
                                         }`}
                                 >
                                     {cat}
