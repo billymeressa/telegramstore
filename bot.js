@@ -79,7 +79,7 @@ app.use(cors({
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type']
 }));
-app.options('*', cors()); // Enable pre-flight across-the-board
+// app.options('*', cors()); // REMOVED: Incompatible with Express 5 syntax
 app.use(express.json());
 
 // Health Check / Root Route
