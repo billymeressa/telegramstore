@@ -4,12 +4,7 @@ function Cart({ cartItems, onIncrease, onDecrease, onRemove }) {
     const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     if (cartItems.length === 0) {
-        return (
-            <div className="flex flex-col items-center justify-center h-64 text-tg-hint">
-                <span className="text-4xl mb-2">🛒</span>
-                <p>Your cart is empty</p>
-            </div>
-        );
+        return null;
     }
 
     return (
