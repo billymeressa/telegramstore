@@ -141,6 +141,13 @@ function App() {
     }
   };
 
+  const onRemove = (product) => {
+    setCart(cart.filter((x) => x.id !== product.id));
+    if (tele?.HapticFeedback) {
+      tele.HapticFeedback.impactOccurred('medium');
+    }
+  };
+
   const onCheckout = useCallback(async () => {
     if (!user && !tele) return;
 
@@ -185,6 +192,7 @@ function App() {
               cart={cart}
               onIncrease={onIncrease}
               onDecrease={onDecrease}
+              onRemove={onRemove}
               onCheckout={onCheckout}
             />
           } />

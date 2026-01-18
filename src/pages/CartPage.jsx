@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Cart from '../components/Cart';
 import { Phone, MessageSquare, X, CheckCircle, Send } from 'lucide-react';
 
-const CartPage = ({ cart, onIncrease, onDecrease, onCheckout }) => {
+const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
     const [showContactModal, setShowContactModal] = useState(false);
     const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -28,6 +28,7 @@ const CartPage = ({ cart, onIncrease, onDecrease, onCheckout }) => {
                     cartItems={cart}
                     onIncrease={onIncrease}
                     onDecrease={onDecrease}
+                    onRemove={onRemove}
                 />
             </div>
 

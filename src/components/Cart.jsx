@@ -57,7 +57,10 @@ function Cart({ cartItems, onIncrease, onDecrease, onRemove }) {
                                     +
                                 </button>
                             </div>
-                            <button className="text-xs px-2 py-1 border border-gray-300 rounded shadow-sm bg-white hover:bg-gray-50 text-[#111827]">
+                            <button
+                                onClick={() => onRemove(item)}
+                                className="text-xs px-2 py-1 border border-gray-300 rounded shadow-sm bg-white hover:bg-gray-50 text-[#111827]"
+                            >
                                 Delete
                             </button>
                         </div>
