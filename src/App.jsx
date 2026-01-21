@@ -51,11 +51,20 @@ function App() {
     if (currentUser) {
       const userId = currentUser.id;
       console.log('--- DEBUG INFO ---');
-      console.log('My User ID:', userId);
-      console.log('Required Admin ID:', ADMIN_ID);
-      console.log('Is Admin Match:', userId === ADMIN_ID);
+      const adminIds = [
+        ADMIN_ID,
+        ...(import.meta.env.VITE_ADMIN_IDS || '').split(',')
+      ]
+        .map(id => (id || '').toString().trim())
+        .filter(id => id && !isNaN(parseInt(id)))
+        .map(id => parseInt(id));
 
-      if (userId === ADMIN_ID) {
+      console.log('Required Admin IDs:', adminIds);
+      const isUserAdmin = adminIds.includes(userId);
+
+      console.log('Is Admin Match:', isUserAdmin);
+
+      if (isUserAdmin) {
         console.log("Granting Admin Privileges");
         setIsAdmin(true);
       }

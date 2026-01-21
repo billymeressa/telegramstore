@@ -60,10 +60,19 @@ bot.on('web_app_data', (ctx) => {
         ctx.replyWithMarkdown(message);
 
         // Notify Admin
-        const adminId = process.env.ADMIN_ID;
-        if (adminId) {
-            bot.telegram.sendMessage(adminId, `🔔 *New Order!*\nUser: ${ctx.from.first_name} (@${ctx.from.username})\n\n` + message, { parse_mode: 'Markdown' });
-        }
+        // Notify All Admins
+        const adminIds = [
+            process.env.ADMIN_ID,
+            ...(process.env.ADMIN_IDS || '').split(',')
+        ]
+            .map(id => (id || '').toString().trim())
+            .filter(id => id && !isNaN(parseInt(id)));
+
+        const uniqueAdminIds = [...new Set(adminIds)];
+
+        uniqueAdminIds.forEach(adminId => {
+            bot.telegram.sendMessage(adminId, `🔔 *New Order!*\nUser: ${ctx.from.first_name} (@${ctx.from.username})\n\n` + message, { parse_mode: 'Markdown' }).catch(err => console.error(`Failed to notify admin ${adminId}:`, err));
+        });
     } catch (e) {
         console.error(e);
         ctx.reply('Received data, but it was invalid JSON.');
@@ -73,13 +82,15 @@ bot.on('web_app_data', (ctx) => {
 bot.launch();
 console.log('Bot is running...');
 
+import verifyTelegramWebAppData from './src/middleware/auth.js';
+
 // --- API SERVER SETUP ---
 const app = express();
 // CORS Setup - Allow everything for now to fix access issues
 app.use(cors({
     origin: '*',
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type']
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 // app.options('*', cors()); // REMOVED: Incompatible with Express 5 syntax
 app.use(express.json());
@@ -132,8 +143,8 @@ app.get('/api/products/:id', async (req, res) => {
     }
 });
 
-// POST /api/products (Add/Edit)
-app.post('/api/products', upload.array('images', 5), async (req, res) => {
+// POST /api/products (Add/Edit) - PROTECTED
+app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), async (req, res) => {
     const { title, price, description, category, department, id } = req.body;
 
     // Determine image paths
@@ -198,8 +209,8 @@ app.post('/api/products', upload.array('images', 5), async (req, res) => {
     }
 });
 
-// DELETE /api/products/:id
-app.delete('/api/products/:id', async (req, res) => {
+// DELETE /api/products/:id - PROTECTED
+app.delete('/api/products/:id', verifyTelegramWebAppData, async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         await Product.findOneAndDelete({ id: id });
@@ -242,16 +253,25 @@ app.post('/api/orders', async (req, res) => {
         });
 
         // Notify Admin via Telegram
-        const adminId = process.env.ADMIN_ID;
-        if (adminId) {
+        // Notify All Admins via Telegram
+        const adminIds = [
+            process.env.ADMIN_ID,
+            ...(process.env.ADMIN_IDS || '').split(',')
+        ]
+            .map(id => (id || '').toString().trim())
+            .filter(id => id && !isNaN(parseInt(id)));
+
+        const uniqueAdminIds = [...new Set(adminIds)];
+
+        uniqueAdminIds.forEach(adminId => {
             let message = `🔔 *New Order!* (ID: ${newOrder.id})\nStatus: Pending\nUser: ${userInfo?.first_name} (@${userInfo?.username})\n\n`;
             items.forEach(item => {
                 message += `- ${item.title} (x${item.quantity})\n`;
             });
             message += `\nTotal: ${total_price.toFixed(2)} ETB`;
 
-            bot.telegram.sendMessage(adminId, message, { parse_mode: 'Markdown' }).catch(console.error);
-        }
+            bot.telegram.sendMessage(adminId, message, { parse_mode: 'Markdown' }).catch(err => console.error(`Failed to notify admin ${adminId}:`, err));
+        });
 
         res.json({ success: true, order: newOrder });
     } catch (err) {
@@ -259,8 +279,8 @@ app.post('/api/orders', async (req, res) => {
     }
 });
 
-// PATCH /api/orders/:id (Update Status)
-app.patch('/api/orders/:id', async (req, res) => {
+// PATCH /api/orders/:id (Update Status) - PROTECTED
+app.patch('/api/orders/:id', verifyTelegramWebAppData, async (req, res) => {
     const id = parseInt(req.params.id);
     const { status } = req.body;
 

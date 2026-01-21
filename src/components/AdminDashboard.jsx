@@ -79,7 +79,10 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
 
             const res = await fetch(url, {
                 method: 'POST',
-                body: formData,
+                headers: {
+                    'Authorization': tele?.initData || ''
+                },
+                body: formData, // FormData handles Content-Type automatically
             });
 
             if (!res.ok) {
@@ -132,7 +135,12 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
     const handleDelete = async (id) => {
         if (!confirm('Are you sure?')) return;
         try {
-            const res = await fetch(`${API_URL}/api/products/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${API_URL}/api/products/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': tele?.initData || ''
+                }
+            });
             const data = await res.json();
             if (data.success) {
                 onProductUpdate(data.products);
@@ -149,7 +157,10 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
         try {
             const res = await fetch(`${API_URL}/api/orders/${orderId}`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': tele?.initData || ''
+                },
                 body: JSON.stringify({ status: newStatus })
             });
             const data = await res.json();
