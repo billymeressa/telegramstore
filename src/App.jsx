@@ -9,10 +9,11 @@ import ProductDetails from './pages/ProductDetails';
 import AdminDashboard from './components/AdminDashboard';
 import Toast from './components/Toast'; // New Import
 
-const tele = window.Telegram?.WebApp;
+// Removed top-level tele
 const ADMIN_ID = 748823605; // Make sure this matches your .env ADMIN_ID
 
 function App() {
+  const tele = window.Telegram?.WebApp; // Moved inside component
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -20,6 +21,7 @@ function App() {
   const [toast, setToast] = useState(null); // Toast State
 
   useEffect(() => {
+    const tele = window.Telegram?.WebApp;
     let currentUser = tele?.initDataUnsafe?.user;
 
     if (tele) {
@@ -42,7 +44,8 @@ function App() {
         first_name: "Test",
         last_name: "Admin",
         username: "testadmin",
-        language_code: "en"
+        language_code: "en",
+        photo_url: "https://via.placeholder.com/150"
       };
     }
 
