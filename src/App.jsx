@@ -22,46 +22,22 @@ function App() {
 
   useEffect(() => {
     const tele = window.Telegram?.WebApp;
-    let currentUser = tele?.initDataUnsafe?.user;
-
-    // DEBUGGING BLOCKS
-    if (!tele) {
-      alert("CRITICAL: window.Telegram.WebApp is UNDEFINED");
-    } else {
-      if (!currentUser) {
-        alert("WebApp exists but No User! initData: " + JSON.stringify(tele.initDataUnsafe));
-      }
-    }
-
     if (tele) {
       tele.ready();
       tele.expand();
       try {
-        tele.headerColor = '#054D3B'; // Deep Emerald
-        tele.backgroundColor = '#FAFAFA'; // Light Gray/White
+        tele.headerColor = '#054D3B';
+        tele.backgroundColor = '#FAFAFA';
       } catch (e) {
         console.error(e);
       }
     }
 
-    // Mock User for Dev Environment (if no Telegram user found AND not in Telegram context)
-    // We check !tele.initData to ensure we are actually not in Telegram (browser dev)
-    if (!currentUser && import.meta.env.DEV && !tele?.initData) {
-      console.log("Dev Mode: Mocking Telegram User (Browser Only)");
-      currentUser = {
-        id: ADMIN_ID,
-        first_name: "Test",
-        last_name: "Admin",
-        username: "testadmin",
-        language_code: "en",
-        photo_url: "https://via.placeholder.com/150"
-      };
-    }
+    const validateUser = (webAppUser) => {
+      if (!webAppUser) return false;
 
-    setUser(currentUser);
-
-    if (currentUser) {
-      const userId = currentUser.id;
+      setUser(webAppUser);
+      const userId = webAppUser.id;
       console.log('--- DEBUG INFO ---');
       const adminIds = [
         ADMIN_ID,
@@ -74,12 +50,54 @@ function App() {
       console.log('Required Admin IDs:', adminIds);
       const isUserAdmin = adminIds.includes(userId);
 
-      console.log('Is Admin Match:', isUserAdmin);
-
       if (isUserAdmin) {
         console.log("Granting Admin Privileges");
         setIsAdmin(true);
       }
+      return true;
+    };
+
+    // 1. Try getting user immediately
+    let currentUser = tele?.initDataUnsafe?.user;
+    let intervalId; // Declare intervalId here
+
+    if (validateUser(currentUser)) {
+      // Found immediately
+    } else {
+      // 2. Retry polling for up to 2 seconds (fix for race conditions)
+      let attempts = 0;
+      intervalId = setInterval(() => {
+        attempts++;
+        const t = window.Telegram?.WebApp;
+        const u = t?.initDataUnsafe?.user;
+        if (validateUser(u) || attempts > 20) {
+          clearInterval(intervalId);
+        }
+      }, 100);
+
+      // Cleanup interval on unmount
+      // This return statement will be the cleanup for the useEffect
+      // and will clear the interval if it was set.
+      return () => {
+        if (intervalId) {
+          clearInterval(intervalId);
+        }
+      };
+    }
+
+    // Mock User for Dev Environment (Browser Only)
+    // This runs if tele is undefined (i.e., not in Telegram context)
+    if (!tele && import.meta.env.DEV) {
+      console.log("Dev Mode: Mocking Telegram User (Browser Only)");
+      setUser({
+        id: ADMIN_ID,
+        first_name: "Test",
+        last_name: "Admin",
+        username: "testadmin",
+        language_code: "en",
+        photo_url: "https://via.placeholder.com/150"
+      });
+      setIsAdmin(true);
     }
 
     fetchProductData();
