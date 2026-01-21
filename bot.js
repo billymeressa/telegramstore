@@ -107,6 +107,11 @@ app.get('/', (req, res) => {
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+// GET /api/check-admin - Check if user is admin
+app.get('/api/check-admin', verifyTelegramWebAppData, (req, res) => {
+    res.json({ isAdmin: true, user: req.telegramUser });
+});
+
 // Helper to upload buffer to Cloudinary
 const uploadToCloudinary = (buffer) => {
     return new Promise((resolve, reject) => {

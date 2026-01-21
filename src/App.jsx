@@ -33,27 +33,38 @@ function App() {
       }
     }
 
+    const checkAdminStatus = async () => {
+      const tele = window.Telegram?.WebApp;
+      if (!tele?.initData) return;
+
+      try {
+        const res = await fetch(`${API_URL}/api/check-admin`, {
+          headers: {
+            'Authorization': tele.initData
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.isAdmin) {
+            setIsAdmin(true);
+          }
+        } else {
+          setIsAdmin(false);
+        }
+      } catch (e) {
+        console.error("Admin check failed", e);
+        setIsAdmin(false);
+      }
+    };
+
     const validateUser = (webAppUser) => {
       if (!webAppUser) return false;
 
       setUser(webAppUser);
-      const userId = webAppUser.id;
-      console.log('--- DEBUG INFO ---');
-      const adminIds = [
-        ADMIN_ID,
-        ...(import.meta.env.VITE_ADMIN_IDS || '').split(',')
-      ]
-        .map(id => (id || '').toString().trim())
-        .filter(id => id && !isNaN(parseInt(id)))
-        .map(id => parseInt(id));
 
-      console.log('Required Admin IDs:', adminIds);
-      const isUserAdmin = adminIds.includes(userId);
+      // Check with backend if this user is an admin
+      checkAdminStatus();
 
-      if (isUserAdmin) {
-        console.log("Granting Admin Privileges");
-        setIsAdmin(true);
-      }
       return true;
     };
 
