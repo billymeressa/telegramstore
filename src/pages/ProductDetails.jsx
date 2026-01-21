@@ -114,8 +114,8 @@ const ProductDetails = ({ onAdd }) => {
                 </div>
             </div>
 
-            {/* Sticky Action Button */}
-            <div className="fixed bottom-0 left-0 right-0 p-3 bg-white border-t border-gray-200 z-[60] shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+            {/* Static Action Button */}
+            <div className="p-4 bg-white border-t border-gray-200 mt-4">
                 <div className="text-[#054D3B] font-bold text-lg mb-2 pl-1">
                     In Stock.
                 </div>
@@ -127,7 +127,6 @@ const ProductDetails = ({ onAdd }) => {
                 >
                     Add to Cart
                 </button>
-
             </div>
         </div>
     );

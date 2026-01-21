@@ -6,6 +6,8 @@ import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
 import { connectDB, Product, Order } from './src/db.js';
+import path from 'path';
+
 
 // --- BOT & DB SETUP ---
 const token = process.env.BOT_TOKEN;
@@ -81,6 +83,9 @@ app.use(cors({
 }));
 // app.options('*', cors()); // REMOVED: Incompatible with Express 5 syntax
 app.use(express.json());
+const __dirname = path.resolve();
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 // Health Check / Root Route
 app.get('/', (req, res) => {
