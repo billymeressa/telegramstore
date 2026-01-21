@@ -62,23 +62,23 @@ const ProductDetails = ({ onAdd }) => {
             </div>
 
             {/* Image Area */}
-            <div className="w-full bg-white p-4">
+            <div className="w-full bg-white">
                 {/* Main Image */}
-                <div className="w-full aspect-square flex items-center justify-center mb-4">
+                <div className="w-full flex items-center justify-center bg-white">
                     {product.images && product.images.length > 0 ? (
                         <img
                             src={selectedImage || product.images[0]}
                             alt={product.title}
-                            className="max-h-full max-w-full object-contain transition-opacity duration-300"
+                            className="w-full h-auto object-contain transition-opacity duration-300"
                         />
                     ) : (
-                        <span className="text-9xl select-none opacity-20 grayscale">📦</span>
+                        <span className="text-9xl select-none opacity-20 grayscale py-10">📦</span>
                     )}
                 </div>
 
                 {/* Thumbnails */}
                 {product.images && product.images.length > 1 && (
-                    <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar justify-center">
+                    <div className="flex gap-3 overflow-x-auto p-4 no-scrollbar justify-center">
                         {product.images.map((img, idx) => (
                             <div
                                 key={idx}

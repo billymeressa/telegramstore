@@ -11,9 +11,9 @@ function ProductList({ products }) {
                     onClick={() => navigate(`/product/${product.id}`)}
                     className="bg-white rounded-sm border border-gray-200 overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
                 >
-                    <div className="w-full aspect-[4/5] bg-gray-100 flex items-center justify-center overflow-hidden p-4">
+                    <div className="w-full aspect-[4/5] bg-gray-100 flex items-center justify-center overflow-hidden">
                         {product.images && product.images.length > 0 ? (
-                            <img src={product.images[0]} alt={product.title} className="w-full h-full object-contain" />
+                            <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
                         ) : (
                             <span className="text-4xl opacity-20 grayscale">📦</span>
                         )}

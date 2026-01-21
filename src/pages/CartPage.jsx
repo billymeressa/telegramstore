@@ -17,8 +17,8 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
             {/* Header / Subtotal */}
             {cart.length > 0 && (
                 <div className="bg-white p-4 border-b border-gray-200 mb-3">
-                    <div className="text-lg">
-                        Subtotal ({totalItems} items): <span className="font-bold text-[#0F1111]">{Math.floor(totalPrice)} Birr</span>
+                    <div className="text-lg text-[#0F1111]">
+                        Subtotal ({totalItems} items): <span className="font-bold">{Math.floor(totalPrice)} Birr</span>
                     </div>
                 </div>
             )}
