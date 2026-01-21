@@ -24,6 +24,15 @@ function App() {
     const tele = window.Telegram?.WebApp;
     let currentUser = tele?.initDataUnsafe?.user;
 
+    // DEBUGGING BLOCKS
+    if (!tele) {
+      alert("CRITICAL: window.Telegram.WebApp is UNDEFINED");
+    } else {
+      if (!currentUser) {
+        alert("WebApp exists but No User! initData: " + JSON.stringify(tele.initDataUnsafe));
+      }
+    }
+
     if (tele) {
       tele.ready();
       tele.expand();
