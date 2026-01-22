@@ -1,6 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-
-import { useNavigate } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 
 function ProductList({ products, wishlist = [], onToggleWishlist }) {
@@ -14,7 +12,7 @@ function ProductList({ products, wishlist = [], onToggleWishlist }) {
                     onClick={() => navigate(`/product/${product.id}`)}
                     className="bg-white rounded-sm border border-gray-200 overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
                 >
-                    <div className="w-full aspect-[4/5] bg-gray-100 flex items-center justify-center overflow-hidden">
+                    <div className="relative w-full aspect-[4/5] bg-gray-100 flex items-center justify-center overflow-hidden">
                         {product.images && product.images.length > 0 ? (
                             <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
                         ) : (
