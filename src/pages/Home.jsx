@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import ProductList from '../components/ProductList';
-import HeroSlider from '../components/HeroSlider';
+import HorizontalProductRow from '../components/HorizontalProductRow';
 import { Search } from 'lucide-react';
 
 const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, isFetching }) => {
@@ -16,6 +16,10 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
     const [selectedDepartment, setSelectedDepartment] = useState("All");
     const [selectedSubCategory, setSelectedSubCategory] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
+
+    // Helper to get random products for demo rows
+    const trendingProducts = useMemo(() => products.slice(0, 5), [products]);
+    const newArrivals = useMemo(() => products.slice(5, 12), [products]);
 
     // Get unique categories based on selected department
     const availableSubCategories = useMemo(() => {
@@ -75,8 +79,13 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
             {/* Main Scrollable Content */}
             <div className="flex flex-col gap-4">
-                {/* Hero Section */}
-                <HeroSlider onNavigate={handleDepartmentChange} />
+                {/* Horizontal Scroll Rows (Only show on Home / No Search) */}
+                {!searchQuery && selectedDepartment === "All" && (
+                    <div className="flex flex-col gap-2 mb-2">
+                        <HorizontalProductRow title="🔥 Trending Now" products={trendingProducts} />
+                        <HorizontalProductRow title="✨ New Arrivals" products={newArrivals} />
+                    </div>
+                )}
 
                 {/* Sticky Navigation */}
                 <div className="sticky top-[56px] z-40 bg-[var(--tg-theme-bg-color)]/95 backdrop-blur-md py-2 border-b border-[var(--tg-theme-section-separator-color)] shadow-sm">
