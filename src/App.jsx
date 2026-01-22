@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import LoadingScreen from './components/LoadingScreen';
 import API_URL from './config';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
@@ -19,6 +20,7 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [user, setUser] = useState(null);
   const [toast, setToast] = useState(null); // Toast State
+  const [loading, setLoading] = useState(true); // Loading State
 
   useEffect(() => {
     const tele = window.Telegram?.WebApp;
@@ -131,7 +133,8 @@ function App() {
         console.error("Failed to fetch products", err);
         const msg = `Connection Failed: Could not load products. (${err.message}). Is the backend running?`;
         tele ? tele.showAlert(msg) : alert(msg);
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
 
@@ -234,6 +237,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      {loading && <LoadingScreen />}
       <Routes>
         <Route element={<Layout cartCount={cart.reduce((a, c) => a + c.quantity, 0)} isAdmin={isAdmin} user={user} />}>
           <Route path="/" element={<Home products={products} onAdd={onAdd} />} />
