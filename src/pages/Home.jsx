@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import ProductList from '../components/ProductList';
+import CategoryGrid from '../components/CategoryGrid';
 import { Search } from 'lucide-react';
 
 const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, isFetching }) => {
@@ -75,20 +76,11 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
 
                     {/* Department Nav */}
-                    <div className="flex gap-2 overflow-x-auto no-scrollbar items-center pb-0.5">
-                        {departments.map(dept => (
-                            <button
-                                key={dept}
-                                onClick={() => handleDepartmentChange(dept)}
-                                className={`whitespace-nowrap text-sm px-3 py-1 rounded-full transition-colors ${selectedDepartment === dept
-                                    ? 'bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)]'
-                                    : 'text-[var(--tg-theme-hint-color)] hover:bg-[var(--tg-theme-secondary-bg-color)]'
-                                    }`}
-                            >
-                                {dept}
-                            </button>
-                        ))}
-                    </div>
+                    <CategoryGrid
+                        categories={departments}
+                        selectedCategory={selectedDepartment}
+                        onSelect={handleDepartmentChange}
+                    />
 
                     {/* Sub-Category Nav */}
                     {selectedDepartment !== "All" && availableSubCategories.length > 0 && (
