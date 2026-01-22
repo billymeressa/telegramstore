@@ -31,6 +31,9 @@ cloudinary.config({
 
 bot.command('start', async (ctx) => {
     try {
+        // Remove old persistent keyboard if present
+        await ctx.reply('Loading store...', { reply_markup: { remove_keyboard: true } });
+
         await ctx.reply('Welcome to the Store! Click below to shop.', {
             reply_markup: {
                 inline_keyboard: [[{ text: "🛍️ Open Store", web_app: { url: process.env.WEB_APP_URL } }]]
