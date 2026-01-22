@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import ProductList from '../components/ProductList';
 import HorizontalProductRow from '../components/HorizontalProductRow';
+import CategoryColumnRow from '../components/CategoryColumnRow';
 import { Search } from 'lucide-react';
 
 const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, isFetching }) => {
@@ -82,7 +83,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                 {/* Horizontal Scroll Rows (Only show on Home / No Search) */}
                 {!searchQuery && selectedDepartment === "All" && (
                     <div className="flex flex-col gap-2 mb-2">
-                        <HorizontalProductRow title="🔥 Trending Now" products={trendingProducts} />
+                        <CategoryColumnRow categories={departments} onSelect={handleDepartmentChange} />
                         <HorizontalProductRow title="✨ New Arrivals" products={newArrivals} />
                     </div>
                 )}
