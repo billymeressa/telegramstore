@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import ProductList from '../components/ProductList';
+import { Search } from 'lucide-react';
 
 const Home = ({ products, onAdd }) => {
 
@@ -13,6 +14,7 @@ const Home = ({ products, onAdd }) => {
     }, [products]);
     const [selectedDepartment, setSelectedDepartment] = useState("All");
     const [selectedSubCategory, setSelectedSubCategory] = useState("All");
+    const [searchQuery, setSearchQuery] = useState("");
 
     // Get unique categories based on selected department
     const availableSubCategories = useMemo(() => {
@@ -27,10 +29,12 @@ const Home = ({ products, onAdd }) => {
         return products.filter(p => {
             const matchesDepartment = selectedDepartment === "All" || p.department === selectedDepartment;
             const matchesCategory = selectedSubCategory === "All" || p.category === selectedSubCategory;
+            const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase()));
 
-            return matchesDepartment && matchesCategory;
+            return matchesDepartment && matchesCategory && matchesSearch;
         });
-    }, [products, selectedDepartment, selectedSubCategory]);
+    }, [products, selectedDepartment, selectedSubCategory, searchQuery]);
 
     // Reset subcategory when department changes
     const handleDepartmentChange = (dept) => {
@@ -43,6 +47,17 @@ const Home = ({ products, onAdd }) => {
             {/* Addis Store Header */}
             <div className="sticky top-0 z-20 bg-[#054D3B] pt-4 pb-2 px-4 shadow-md transition-all">
                 <div className="flex flex-col gap-3 mb-2">
+                    {/* Search Bar */}
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Search for products..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full bg-white text-[#0F1111] pl-10 pr-4 py-2.5 rounded-lg border-0 shadow-sm ring-1 ring-gray-200 focus:ring-2 focus:ring-[#D4AF37] outline-none placeholder:text-gray-400"
+                        />
+                        <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
+                    </div>
 
 
                     {/* Department Nav */}
