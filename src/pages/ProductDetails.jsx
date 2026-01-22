@@ -161,14 +161,24 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] })
 
             {/* Static Action Button */}
             <div className="fixed bottom-0 left-0 right-0 p-3 bg-[var(--tg-theme-bg-color)] border-t border-[var(--tg-theme-section-separator-color)] z-30 pb-safe">
-                <button
-                    onClick={() => {
-                        onAdd({ ...product });
-                    }}
-                    className="w-full bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity"
-                >
-                    Add to Cart
-                </button>
+                <div className="flex gap-3">
+                    {product.seller_phone && (
+                        <a
+                            href={`tel:${product.seller_phone}`}
+                            className="flex-1 bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] py-3 rounded-xl font-semibold text-base shadow border border-[var(--tg-theme-button-color)] flex items-center justify-center active:opacity-80 transition-opacity"
+                        >
+                            Call Merchant
+                        </a>
+                    )}
+                    <button
+                        onClick={() => {
+                            onAdd({ ...product });
+                        }}
+                        className="flex-[2] bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity"
+                    >
+                        Add to Cart
+                    </button>
+                </div>
             </div>
         </div>
     );
