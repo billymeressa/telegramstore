@@ -1,12 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Cart from '../components/Cart';
-import { SELLER_USERNAME } from '../config';
+import API_URL from '../config';
 import { Phone, MessageSquare, X, CheckCircle, Send } from 'lucide-react';
 
 const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
     const [showContactModal, setShowContactModal] = useState(false);
+    const [sellerUsername, setSellerUsername] = useState('AddisStoreSupport'); // Fallback
     const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+    useEffect(() => {
+        if (showContactModal) {
+            fetch(`${API_URL}/api/seller-info`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.username) setSellerUsername(data.username);
+                })
+                .catch(console.error);
+        }
+    }, [showContactModal]);
 
     const handleCheckout = async () => {
         await onCheckout();
@@ -76,7 +88,7 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
                             </a>
 
                             <a
-                                href={`https://t.me/${SELLER_USERNAME}`}
+                                href={`https://t.me/${sellerUsername}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center justify-center gap-3 w-full bg-[#0088cc] border-2 border-[#0088cc] text-white font-bold py-3 rounded-xl hover:bg-[#0077b5] transition-colors"

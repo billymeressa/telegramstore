@@ -147,6 +147,21 @@ const uploadToCloudinary = (buffer) => {
     });
 };
 
+// GET /api/seller-info - Public
+app.get('/api/seller-info', async (req, res) => {
+    try {
+        const sellerId = process.env.SELLER_ID;
+        if (!sellerId) {
+            return res.status(500).json({ error: 'SELLER_ID not configured' });
+        }
+        const chat = await bot.telegram.getChat(sellerId);
+        res.json({ username: chat.username, first_name: chat.first_name });
+    } catch (err) {
+        console.error("Error fetching seller info:", err);
+        res.status(500).json({ error: 'Failed to fetch seller info' });
+    }
+});
+
 // GET /api/products
 app.get('/api/products', async (req, res) => {
     try {
