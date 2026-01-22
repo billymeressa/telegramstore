@@ -33,9 +33,7 @@ bot.command('start', async (ctx) => {
     try {
         await ctx.reply('Welcome to the Store! Click below to shop.', {
             reply_markup: {
-                keyboard: [[{ text: "Store", web_app: { url: process.env.WEB_APP_URL } }]],
-                resize_keyboard: true,
-                is_persistent: true
+                inline_keyboard: [[{ text: "🛍️ Open Store", web_app: { url: process.env.WEB_APP_URL } }]]
             }
         });
     } catch (e) {
