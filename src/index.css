@@ -4,19 +4,16 @@
 
 /* Premium Brand Palette */
 :root {
-  --tg-theme-bg-color: #FAFAFA;
-  /* Lightest Gray/White */
-  --tg-theme-secondary-bg-color: #F3F4F6;
-  --tg-theme-text-color: #111827;
-  /* Near Black */
-  --tg-theme-hint-color: #4B5563;
-  --tg-theme-link-color: #054D3B;
-  /* Deep Emerald */
-  --tg-theme-button-color: #D4AF37;
-  /* Metallic Gold */
-  --tg-theme-button-text-color: #111827;
-  --tg-theme-header-bg: #054D3B;
-  /* Deep Emerald */
+  --tg-theme-bg-color: #ffffff;
+  --tg-theme-secondary-bg-color: #f4f4f5;
+  --tg-theme-text-color: #000000;
+  --tg-theme-hint-color: #999999;
+  --tg-theme-link-color: #2481cc;
+  --tg-theme-button-color: #3390ec;
+  --tg-theme-button-text-color: #ffffff;
+  --tg-theme-header-bg-color: #ffffff;
+  --tg-theme-section-bg-color: #ffffff;
+  --tg-theme-section-separator-color: #e3e3e4;
 }
 
 body {

@@ -24,7 +24,7 @@ function ProductList({ products, wishlist = [], onToggleWishlist }) {
                                 e.stopPropagation();
                                 if (onToggleWishlist) onToggleWishlist(product.id);
                             }}
-                            className="absolute top-1.5 right-1.5 p-1.5 bg-white/60 backdrop-blur-sm rounded-full active:bg-white transition-all"
+                            className="absolute top-1.5 right-1.5 p-1.5 bg-[var(--tg-theme-bg-color)] rounded-full active:bg-[var(--tg-theme-secondary-bg-color)] transition-all shadow-sm"
                         >
                             <Heart
                                 size={18}

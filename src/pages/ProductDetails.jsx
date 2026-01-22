@@ -44,10 +44,10 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] })
     return (
         <div className="bg-[var(--tg-theme-bg-color)] min-h-screen pb-24 relative font-sans">
             {/* Header / Nav */}
-            <div className="fixed top-0 left-0 right-0 z-20 flex items-center justify-between p-2">
+            <div className="fixed top-0 left-0 right-0 z-20 flex items-center justify-between p-2 pointer-events-none">
                 <button
                     onClick={() => navigate(-1)}
-                    className="w-8 h-8 flex items-center justify-center bg-[var(--tg-theme-bg-color)]/80 backdrop-blur rounded-full shadow-sm text-[var(--tg-theme-text-color)]"
+                    className="w-8 h-8 flex items-center justify-center bg-[var(--tg-theme-bg-color)] rounded-full shadow-sm text-[var(--tg-theme-text-color)] pointer-events-auto"
                 >
                     <ArrowLeft size={20} />
                 </button>
@@ -64,7 +64,7 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] })
                     onClick={() => {
                         if (toggleWishlist && product) toggleWishlist(product.id);
                     }}
-                    className="absolute top-4 right-4 p-3 bg-white/80 backdrop-blur-sm rounded-full shadow-md z-10 hover:bg-white transition-all active:scale-95"
+                    className="absolute top-4 right-4 p-3 bg-[var(--tg-theme-bg-color)] rounded-full shadow-md z-10 hover:bg-[var(--tg-theme-secondary-bg-color)] transition-all active:scale-95"
                 >
                     <Heart
                         size={24}

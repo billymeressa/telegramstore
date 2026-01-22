@@ -30,8 +30,8 @@ const Profile = () => {
     const getStatusIcon = (status) => {
         switch (status) {
             case 'pending': return <Clock size={16} className="text-yellow-500" />;
-            case 'shipped': return <Truck size={16} className="text-blue-500" />;
-            case 'delivered': return <CheckCircle size={16} className="text-green-500" />;
+            case 'shipped': return <Truck size={16} className="text-[var(--tg-theme-link-color)]" />;
+            case 'delivered': return <CheckCircle size={16} className="text-[var(--tg-theme-button-color)]" />;
             case 'cancelled': return <XCircle size={16} className="text-red-500" />;
             default: return <Package size={16} className="text-gray-500" />;
         }
@@ -109,7 +109,7 @@ const Profile = () => {
                                         </div>
                                         <div className="text-right">
                                             <div className="uppercase">Total</div>
-                                            <div className="text-[#054D3B] font-bold">{Math.floor(order.total_price)} Birr</div>
+                                            <div className="text-[var(--tg-theme-button-color)] font-bold">{Math.floor(order.total_price)} Birr</div>
                                         </div>
                                     </div>
 
@@ -123,7 +123,7 @@ const Profile = () => {
                                         <div className="space-y-2">
                                             {order.items.map((item, idx) => (
                                                 <div key={idx} className="flex justify-between text-sm">
-                                                    <span className="text-[#054D3B] hover:underline cursor-pointer">{item.quantity}x {item.title}</span>
+                                                    <span className="text-[var(--tg-theme-text-color)] hover:underline cursor-pointer">{item.quantity}x {item.title}</span>
 
                                                 </div>
                                             ))}

@@ -59,7 +59,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
     return (
         <div className="pb-4 pt-14">
             {/* Header */}
-            <div className="fixed top-0 left-0 right-0 z-20 bg-[var(--tg-theme-bg-color)]/95 backdrop-blur-md pt-2 pb-2 px-3 border-b border-[var(--tg-theme-section-separator-color)]">
+            <div className="fixed top-0 left-0 right-0 z-20 bg-[var(--tg-theme-bg-color)] pt-2 pb-2 px-3 border-b border-[var(--tg-theme-section-separator-color)]">
                 <div className="flex flex-col gap-2">
                     {/* Search Bar */}
                     <div className="relative">
@@ -120,7 +120,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                 <ProductList products={filteredProducts} onAdd={onAdd} wishlist={wishlist} onToggleWishlist={toggleWishlist} />
 
                 {isFetching && (
-                    <div className="py-4 text-[#054D3B] font-medium">
+                    <div className="py-4 text-[var(--tg-theme-button-color)] font-medium text-xs">
                         Loading more products...
                     </div>
                 )}

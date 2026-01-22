@@ -11,8 +11,8 @@ const Toast = ({ message, onClose, duration = 2000 }) => {
 
     return (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 animate-fadeIn">
-            <div className="bg-[#054D3B] text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2">
-                <CheckCircle size={20} className="text-[#D4AF37]" />
+            <div className="bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] px-6 py-3 rounded-full shadow-lg flex items-center gap-2">
+                <CheckCircle size={20} className="text-[var(--tg-theme-button-text-color)]" />
                 <span className="font-medium text-sm">{message}</span>
             </div>
         </div>

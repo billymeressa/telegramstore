@@ -42,8 +42,8 @@ function App() {
       tele.ready();
       tele.expand();
       try {
-        tele.headerColor = '#054D3B';
-        tele.backgroundColor = '#FAFAFA';
+        tele.headerColor = tele.themeParams.bg_color || '#ffffff';
+        tele.backgroundColor = tele.themeParams.secondary_bg_color || '#f4f4f5';
       } catch (e) {
         console.error(e);
       }

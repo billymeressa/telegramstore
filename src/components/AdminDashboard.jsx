@@ -175,8 +175,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
 
     return (
         <div className="bg-white rounded-md shadow-sm border border-gray-200 mt-4 overflow-hidden">
-            <div className="bg-[#054D3B] p-4">
-                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            <div className="bg-[var(--tg-theme-button-color)] p-4">
+                <h2 className="text-xl font-bold text-[var(--tg-theme-button-text-color)] flex items-center gap-2">
                     <LayoutDashboard size={24} />
                     Addis Seller Dashboard
                 </h2>
@@ -186,13 +186,13 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             <div className="flex border-b border-gray-200 bg-gray-50">
                 <button
                     onClick={() => setActiveTab('products')}
-                    className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'products' ? 'bg-white border-t-2 border-[#D4AF37] text-[#111827] font-bold' : 'text-gray-500 hover:text-[#111827]'}`}
+                    className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'products' ? 'bg-[var(--tg-theme-bg-color)] border-t-2 border-[var(--tg-theme-button-color)] text-[var(--tg-theme-text-color)] font-bold' : 'text-[var(--tg-theme-hint-color)] hover:text-[var(--tg-theme-text-color)]'}`}
                 >
                     Inventory
                 </button>
                 <button
                     onClick={() => setActiveTab('orders')}
-                    className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'orders' ? 'bg-white border-t-2 border-[#D4AF37] text-[#111827] font-bold' : 'text-gray-500 hover:text-[#111827]'}`}
+                    className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'orders' ? 'bg-[var(--tg-theme-bg-color)] border-t-2 border-[var(--tg-theme-button-color)] text-[var(--tg-theme-text-color)] font-bold' : 'text-[var(--tg-theme-hint-color)] hover:text-[var(--tg-theme-text-color)]'}`}
                 >
                     Orders
                 </button>
@@ -209,7 +209,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                 <input
                                     value={newProduct.title}
                                     onChange={e => setNewProduct({ ...newProduct, title: e.target.value })}
-                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[#054D3B] focus:ring-1 focus:ring-[#054D3B] outline-none bg-white text-[#0F1111] placeholder-gray-400"
+                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white text-[#0F1111] placeholder-gray-400"
                                     placeholder="Product Name"
                                 />
                             </div>
@@ -221,7 +221,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                         step="0.01"
                                         value={newProduct.price}
                                         onChange={e => setNewProduct({ ...newProduct, price: e.target.value })}
-                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[#054D3B] focus:ring-1 focus:ring-[#054D3B] outline-none bg-white text-[#0F1111] placeholder-gray-400"
+                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white text-[#0F1111] placeholder-gray-400"
                                         placeholder="0.00"
                                     />
                                 </div>
@@ -230,7 +230,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                     <select
                                         value={newProduct.department}
                                         onChange={e => setNewProduct({ ...newProduct, department: e.target.value })}
-                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[#054D3B] focus:ring-1 focus:ring-[#054D3B] outline-none bg-white text-[#0F1111]"
+                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white text-[#0F1111]"
                                     >
                                         <option value="Men">Men</option>
                                         <option value="Women">Women</option>
@@ -248,7 +248,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                 <input
                                     value={newProduct.category}
                                     onChange={e => setNewProduct({ ...newProduct, category: e.target.value })}
-                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[#054D3B] focus:ring-1 focus:ring-[#054D3B] outline-none bg-white text-[#0F1111] placeholder-gray-400"
+                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white text-[#0F1111] placeholder-gray-400"
                                     placeholder="e.g. Tops, Shoes..."
                                 />
                             </div>
@@ -258,7 +258,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                 <textarea
                                     value={newProduct.description}
                                     onChange={e => setNewProduct({ ...newProduct, description: e.target.value })}
-                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[#054D3B] focus:ring-1 focus:ring-[#054D3B] outline-none h-20 bg-white text-[#0F1111] placeholder-gray-400"
+                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none h-20 bg-white text-[#0F1111] placeholder-gray-400"
                                     placeholder="Product details..."
                                 />
                             </div>
@@ -285,7 +285,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                     multiple
                                     ref={fileInputRef}
                                     onChange={e => setImageFiles(e.target.files)}
-                                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#F4E08F] file:text-[#054D3B] hover:file:bg-[#D4AF37]"
+                                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[var(--tg-theme-button-color)]/10 file:text-[var(--tg-theme-button-color)] hover:file:bg-[var(--tg-theme-button-color)]/20"
                                 />
                                 <p className="text-xs text-gray-500 mt-1">Select one or more files to upload.</p>
                             </div>
@@ -295,7 +295,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                         Cancel
                                     </button>
                                 )}
-                                <button type="submit" disabled={isSubmitting} className="flex-1 bg-[#D4AF37] border border-[#C5A028] text-[#111827] font-medium py-2 rounded-md shadow-sm hover:bg-[#B59015] disabled:opacity-50">
+                                <button type="submit" disabled={isSubmitting} className="flex-1 bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] font-medium py-2 rounded-md shadow-sm active:opacity-80 disabled:opacity-50">
                                     {isSubmitting ? 'Saving...' : (editId ? 'Save Changes' : 'Add Product')}
                                 </button>
                             </div>
@@ -315,7 +315,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <button onClick={() => startEdit(p)} className="text-[#054D3B] hover:underline text-sm font-medium">Edit</button>
+                                        <button onClick={() => startEdit(p)} className="text-[var(--tg-theme-button-color)] hover:underline text-sm font-medium">Edit</button>
                                         <button onClick={() => handleDelete(p.id)} className="text-red-600 hover:underline text-sm font-medium">Delete</button>
                                     </div>
                                 </div>
@@ -329,8 +329,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                             <div key={order.id} className="bg-white p-4 rounded border border-gray-200 shadow-sm">
                                 <div className="flex justify-between items-start mb-2">
                                     <div>
-                                        <div className="font-bold text-[#054D3B]">Order #{order.id}</div>
-                                        <div className="text-xs text-gray-500">
+                                        <div className="font-bold text-[var(--tg-theme-button-color)]">Order #{order.id}</div>
+                                        <div className="text-xs text-[var(--tg-theme-hint-color)]">
                                             by {order.userInfo?.first_name}
                                         </div>
                                     </div>
@@ -355,7 +355,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                         </div>
                                     ))}
                                 </div>
-                                <div className="text-right font-bold text-[#054D3B] mb-3">
+                                <div className="text-right font-bold text-[var(--tg-theme-button-color)] mb-3">
                                     Total: {Math.floor(order.total_price)} Birr
                                 </div>
 

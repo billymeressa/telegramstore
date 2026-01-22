@@ -37,7 +37,7 @@ const Layout = ({ cartCount, isAdmin, user }) => {
             <Outlet context={{ isAdmin, user }} />
 
             {/* Bottom Navigation */}
-            <nav className="fixed bottom-0 left-0 right-0 bg-[var(--tg-theme-secondary-bg-color)]/80 backdrop-blur-md border-t border-[var(--tg-theme-section-separator-color)] pb-safe pt-1 px-2 flex justify-around items-center z-50">
+            <nav className="fixed bottom-0 left-0 right-0 bg-[var(--tg-theme-secondary-bg-color)] border-t border-[var(--tg-theme-section-separator-color)] pb-safe pt-1 px-2 flex justify-around items-center z-50">
                 <button
                     onClick={() => navigate('/')}
                     className={`flex flex-col items-center justify-center w-full py-1 gap-0.5 active:opacity-70 transition-opacity ${location.pathname === '/' ? 'text-[var(--tg-theme-button-color)]' : 'text-[var(--tg-theme-hint-color)]'}`}

@@ -79,8 +79,8 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
                             <X size={24} />
                         </button>
 
-                        <h3 className="text-xl font-bold text-[#111827] mb-2 flex items-center gap-2">
-                            <CheckCircle className="text-[#054D3B]" size={24} />
+                        <h3 className="text-xl font-bold text-[var(--tg-theme-text-color)] mb-2 flex items-center gap-2">
+                            <CheckCircle className="text-[var(--tg-theme-button-color)]" size={24} />
                             Order Placed!
                         </h3>
                         <p className="text-gray-600 text-sm mb-6">
@@ -90,7 +90,7 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
                         <div className="space-y-3">
                             <a
                                 href="tel:+251911234567"
-                                className="flex items-center justify-center gap-3 w-full bg-white border-2 border-[#054D3B] text-[#054D3B] font-bold py-3 rounded-xl hover:bg-[#F0FDF9] transition-colors"
+                                className="flex items-center justify-center gap-3 w-full bg-[var(--tg-theme-bg-color)] border-2 border-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-color)] font-bold py-3 rounded-xl active:bg-[var(--tg-theme-secondary-bg-color)] transition-colors"
                             >
                                 <Phone size={20} />
                                 Call Merchant
