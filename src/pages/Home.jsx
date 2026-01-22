@@ -89,7 +89,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                 )}
 
                 {/* Sticky Navigation */}
-                <div className="sticky top-[56px] z-40 bg-[var(--tg-theme-bg-color)]/95 backdrop-blur-md py-2 border-b border-[var(--tg-theme-section-separator-color)] shadow-sm">
+                <div className="sticky top-[56px] z-40 bg-[var(--tg-theme-bg-color)] py-2 border-b border-[var(--tg-theme-section-separator-color)] shadow-sm">
                     {/* Department Pills */}
                     <div className="flex gap-2 overflow-x-auto no-scrollbar items-center px-4">
                         {departments.map(dept => (
