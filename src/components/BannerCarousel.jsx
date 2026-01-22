@@ -4,30 +4,30 @@ import { ArrowRight } from 'lucide-react';
 const slides = [
     {
         id: 1,
-        title: "New Season Arrivals",
-        subtitle: "Check out the latest trends",
-        bg: "bg-gradient-to-r from-[#054D3B] to-[#0a6650]",
+        title: "Latest Laptops & Phones",
+        subtitle: "Deals on Samsung, HP, and more",
+        bg: "bg-gradient-to-r from-[#1e3a8a] to-[#3b82f6]",
         textColor: "text-white",
         buttonColor: "bg-[#D4AF37] text-[#111827]",
-        image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop"
+        image: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?q=80&w=2042&auto=format&fit=crop"
     },
     {
         id: 2,
-        title: "Flash Sale!",
-        subtitle: "Up to 50% off select items",
-        bg: "bg-gradient-to-r from-[#991b1b] to-[#b91c1c]",
+        title: "Computer Accessories",
+        subtitle: "Keyboards, Drives & Joysticks",
+        bg: "bg-gradient-to-r from-[#374151] to-[#4b5563]",
         textColor: "text-white",
-        buttonColor: "bg-white text-[#991b1b]",
-        image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=2070&auto=format&fit=crop"
+        buttonColor: "bg-white text-[#1f2937]",
+        image: "https://images.unsplash.com/photo-1587829741301-308231c8dbdd?q=80&w=2070&auto=format&fit=crop"
     },
     {
         id: 3,
-        title: "Premium Collection",
-        subtitle: "Exclusive styles for you",
-        bg: "bg-gradient-to-r from-[#111827] to-[#374151]",
+        title: "We Buy & Sell",
+        subtitle: "Trade in your used laptops for cash",
+        bg: "bg-gradient-to-r from-[#054D3B] to-[#047857]",
         textColor: "text-white",
         buttonColor: "bg-[#D4AF37] text-[#111827]",
-        image: "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=2070&auto=format&fit=crop"
+        image: "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?q=80&w=2070&auto=format&fit=crop"
     }
 ];
 
