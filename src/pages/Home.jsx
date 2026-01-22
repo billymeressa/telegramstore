@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import ProductList from '../components/ProductList';
+import BannerCarousel from '../components/BannerCarousel';
 import { Search } from 'lucide-react';
 
 const Home = ({ products, onAdd }) => {
@@ -98,10 +99,14 @@ const Home = ({ products, onAdd }) => {
 
 
 
+
+
+            <BannerCarousel />
+
             <div className="mt-2">
                 <ProductList products={filteredProducts} onAdd={onAdd} />
             </div>
-        </div>
+        </div >
     );
 };
 
