@@ -2,6 +2,17 @@ import { useState, useEffect, useRef } from 'react';
 import API_URL from '../config';
 import { LayoutDashboard, Package, Truck, CheckCircle, XCircle } from 'lucide-react';
 
+const SUBCATEGORIES = {
+    'Men': ['Shirts', 'T-Shirts', 'Pants', 'Jeans', 'Shoes', 'Suits', 'Accessories', 'Activewear', 'Other'],
+    'Women': ['Dresses', 'Tops', 'Skirts', 'Pants', 'Jeans', 'Shoes', 'Bags', 'Jewelry', 'Accessories', 'Other'],
+    'Kids': ['Boys Clothing', 'Girls Clothing', 'Baby', 'Shoes', 'Toys', 'School', 'Other'],
+    'Electronics': ['Phones', 'Laptops', 'Audio', 'Accessories', 'Gaming', 'Cameras', 'Other'],
+    'Home': ['Decor', 'Kitchen', 'Bedding', 'Furniture', 'Lighting', 'Tools', 'Other'],
+    'Beauty': ['Skincare', 'Makeup', 'Fragrance', 'Haircare', 'Personal Care', 'Other'],
+    'Sports': ['Gym Equipment', 'Team Sports', 'Outdoor', 'Running', 'Nutrition', 'Other'],
+    'Books': ['Fiction', 'Non-Fiction', 'Educational', 'Self-Help', 'Children', 'Other']
+};
+
 const AdminDashboard = ({ products, onProductUpdate }) => {
     const tele = window.Telegram?.WebApp;
     const [activeTab, setActiveTab] = useState('products'); // 'products' | 'orders'
@@ -245,12 +256,16 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                             </div>
                             <div>
                                 <label className="block text-xs font-bold text-[#0F1111] mb-1">Category</label>
-                                <input
+                                <select
                                     value={newProduct.category}
                                     onChange={e => setNewProduct({ ...newProduct, category: e.target.value })}
-                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white text-[#0F1111] placeholder-gray-400"
-                                    placeholder="e.g. Tops, Shoes..."
-                                />
+                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white text-[#0F1111]"
+                                >
+                                    <option value="">Select Category</option>
+                                    {(SUBCATEGORIES[newProduct.department] || []).map(cat => (
+                                        <option key={cat} value={cat}>{cat}</option>
+                                    ))}
+                                </select>
                             </div>
 
                             <div>
