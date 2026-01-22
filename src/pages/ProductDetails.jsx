@@ -3,13 +3,18 @@ import API_URL from '../config';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ShoppingBag, Heart } from 'lucide-react';
 
-const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist }) => {
+const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] }) => {
     const { id } = useParams();
     const navigate = useNavigate();
 
     const [selectedImage, setSelectedImage] = useState(null);
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    // Smart Recommendations Logic
+    const relatedProducts = product ? products
+        .filter(p => p.category === product.category && p.id !== product.id)
+        .slice(0, 6) : [];
 
     useEffect(() => {
         console.log("Fetching details for Product ID:", id);
@@ -125,6 +130,37 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist }) => {
                     </p>
                 </div>
             </div>
+
+            {/* Smart Recommendations */}
+            {relatedProducts.length > 0 && (
+                <div className="p-4 bg-gray-50 border-t border-gray-200">
+                    <h3 className="text-lg font-bold text-[#0F1111] mb-3">You might also like</h3>
+                    <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+                        {relatedProducts.map(rel => (
+                            <div
+                                key={rel.id}
+                                onClick={() => {
+                                    navigate(`/product/${rel.id}`);
+                                    window.scrollTo(0, 0);
+                                }}
+                                className="min-w-[140px] w-[140px] bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm cursor-pointer flex-shrink-0"
+                            >
+                                <div className="w-full h-32 bg-white flex items-center justify-center">
+                                    {rel.images?.[0] ? (
+                                        <img src={rel.images[0]} alt={rel.title} className="max-w-full max-h-full object-contain" />
+                                    ) : (
+                                        <span className="text-2xl opacity-20 grayscale">📦</span>
+                                    )}
+                                </div>
+                                <div className="p-2">
+                                    <h4 className="text-xs font-medium text-[#0F1111] line-clamp-2 h-8 leading-tight mb-1">{rel.title}</h4>
+                                    <p className="text-[#B12704] font-bold text-sm">{Math.floor(rel.price)} Birr</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* Static Action Button */}
             <div className="p-4 bg-white border-t border-gray-200 mt-4">
