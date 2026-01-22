@@ -1,6 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 
-function ProductList({ products }) {
+import { useNavigate } from 'react-router-dom';
+import { Heart } from 'lucide-react';
+
+function ProductList({ products, wishlist = [], onToggleWishlist }) {
     const navigate = useNavigate();
 
     return (
@@ -17,6 +20,19 @@ function ProductList({ products }) {
                         ) : (
                             <span className="text-4xl opacity-20 grayscale">📦</span>
                         )}
+                        {/* Wishlist Button */}
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (onToggleWishlist) onToggleWishlist(product.id);
+                            }}
+                            className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-all active:scale-95"
+                        >
+                            <Heart
+                                size={18}
+                                className={`transition-colors ${wishlist.includes(product.id) ? 'fill-[#ef4444] text-[#ef4444]' : 'text-gray-400'}`}
+                            />
+                        </button>
                     </div>
 
                     <div className="p-3 flex flex-col gap-1">

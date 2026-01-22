@@ -6,6 +6,7 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import CartPage from './pages/CartPage';
 import Profile from './pages/Profile';
+import WishlistPage from './pages/WishlistPage';
 import ProductDetails from './pages/ProductDetails';
 import AdminDashboard from './components/AdminDashboard';
 import Toast from './components/Toast'; // New Import
@@ -19,6 +20,14 @@ function App() {
   const [cart, setCart] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [user, setUser] = useState(null);
+  const [wishlist, setWishlist] = useState(() => {
+    try {
+      const saved = localStorage.getItem('wishlist');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [toast, setToast] = useState(null); // Toast State
   const [loading, setLoading] = useState(true); // Loading State
 
@@ -194,6 +203,25 @@ function App() {
     }
   };
 
+  const toggleWishlist = useCallback((productId) => {
+    setWishlist(prev => {
+      const exists = prev.includes(productId);
+      const newWishlist = exists
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId];
+
+      localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+
+      setToast(exists ? "Removed from wishlist" : "Added to wishlist");
+
+      if (window.Telegram?.WebApp?.HapticFeedback) {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+      }
+
+      return newWishlist;
+    });
+  }, []);
+
   const onRemove = (product) => {
     setCart(cart.filter((x) => x.id !== product.id));
     if (tele?.HapticFeedback) {
@@ -240,7 +268,7 @@ function App() {
       {loading && <LoadingScreen />}
       <Routes>
         <Route element={<Layout cartCount={cart.reduce((a, c) => a + c.quantity, 0)} isAdmin={isAdmin} user={user} />}>
-          <Route path="/" element={<Home products={products} onAdd={onAdd} />} />
+          <Route path="/" element={<Home products={products} onAdd={onAdd} wishlist={wishlist} toggleWishlist={toggleWishlist} />} />
           <Route path="/cart" element={
             <CartPage
               cart={cart}
@@ -251,7 +279,8 @@ function App() {
             />
           } />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/product/:id" element={<ProductDetails onAdd={onAdd} />} />
+          <Route path="/wishlist" element={<WishlistPage products={products} wishlist={wishlist} toggleWishlist={toggleWishlist} />} />
+          <Route path="/product/:id" element={<ProductDetails onAdd={onAdd} wishlist={wishlist} toggleWishlist={toggleWishlist} />} />
           <Route path="/admin" element={isAdmin ? <AdminDashboard products={products} onProductUpdate={setProducts} /> : <Navigate to="/" />} />
         </Route>
       </Routes>

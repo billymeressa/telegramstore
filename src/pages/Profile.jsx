@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import API_URL from '../config';
-import { Package, Clock, CheckCircle, Truck, XCircle, Settings } from 'lucide-react';
+import { Package, Clock, CheckCircle, Truck, XCircle, Settings, Heart } from 'lucide-react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 const tele = window.Telegram?.WebApp;
@@ -70,6 +70,18 @@ const Profile = () => {
                         <span className="text-gray-400">→</span>
                     </button>
                 )}
+
+                {/* Wishlist Button */}
+                <button
+                    onClick={() => navigate('/wishlist')}
+                    className="w-full bg-white border border-gray-300 p-4 rounded-lg flex items-center justify-between shadow-sm active:bg-gray-100 transition-colors"
+                >
+                    <div className="flex items-center gap-3">
+                        <Heart size={20} className="text-[#D4AF37]" />
+                        <span className="text-[#111827] font-medium">Your Wishlist</span>
+                    </div>
+                    <span className="text-gray-400">→</span>
+                </button>
 
                 {/* Order History */}
                 <div>

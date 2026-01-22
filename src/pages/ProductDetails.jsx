@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import API_URL from '../config';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Heart } from 'lucide-react';
 
-const ProductDetails = ({ onAdd }) => {
+const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist }) => {
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -62,7 +62,19 @@ const ProductDetails = ({ onAdd }) => {
             </div>
 
             {/* Image Area */}
-            <div className="w-full bg-white">
+            <div className="w-full bg-white relative">
+                {/* Wishlist Button */}
+                <button
+                    onClick={() => {
+                        if (toggleWishlist && product) toggleWishlist(product.id);
+                    }}
+                    className="absolute top-4 right-4 p-3 bg-white/80 backdrop-blur-sm rounded-full shadow-md z-10 hover:bg-white transition-all active:scale-95"
+                >
+                    <Heart
+                        size={24}
+                        className={`transition-colors ${wishlist.includes(product?.id) ? 'fill-[#ef4444] text-[#ef4444]' : 'text-gray-400'}`}
+                    />
+                </button>
                 {/* Main Image */}
                 <div className="w-full flex items-center justify-center bg-white">
                     {product.images && product.images.length > 0 ? (
