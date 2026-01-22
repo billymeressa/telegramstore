@@ -6,6 +6,7 @@ import { Phone, MessageSquare, X, CheckCircle, Send } from 'lucide-react';
 const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
     const [showContactModal, setShowContactModal] = useState(false);
     const [sellerUsername, setSellerUsername] = useState('AddisStoreSupport'); // Fallback
+    const [orderMessage, setOrderMessage] = useState('');
     const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -21,6 +22,14 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
     }, [showContactModal]);
 
     const handleCheckout = async () => {
+        // Prepare message before cart is cleared
+        let msg = `Hi! I just placed an order.\n\n`;
+        cart.forEach(item => {
+            msg += `- ${item.title} (x${item.quantity})\n`;
+        });
+        msg += `\nTotal: ${Math.floor(totalPrice)} Birr`;
+        setOrderMessage(encodeURIComponent(msg));
+
         await onCheckout();
         setShowContactModal(true);
     };
@@ -88,7 +97,7 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
                             </a>
 
                             <a
-                                href={`https://t.me/${sellerUsername}`}
+                                href={`https://t.me/${sellerUsername}?text=${orderMessage}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center justify-center gap-3 w-full bg-[#0088cc] border-2 border-[#0088cc] text-white font-bold py-3 rounded-xl hover:bg-[#0077b5] transition-colors"
