@@ -64,6 +64,7 @@ bot.on('web_app_data', (ctx) => {
         // Notify All Admins
         const adminIds = [
             process.env.ADMIN_ID,
+            process.env.SELLER_ID,
             ...(process.env.ADMIN_IDS || '').split(',')
         ]
             .map(id => (id || '').toString().trim())
@@ -281,6 +282,7 @@ app.post('/api/orders', async (req, res) => {
         // Notify All Admins via Telegram
         const adminIds = [
             process.env.ADMIN_ID,
+            process.env.SELLER_ID,
             ...(process.env.ADMIN_IDS || '').split(',')
         ]
             .map(id => (id || '').toString().trim())

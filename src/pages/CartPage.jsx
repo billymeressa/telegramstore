@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Cart from '../components/Cart';
+import { SELLER_USERNAME } from '../config';
 import { Phone, MessageSquare, X, CheckCircle, Send } from 'lucide-react';
 
 const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
@@ -75,7 +76,7 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
                             </a>
 
                             <a
-                                href="https://t.me/AddisStoreSupport"
+                                href={`https://t.me/${SELLER_USERNAME}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center justify-center gap-3 w-full bg-[#0088cc] border-2 border-[#0088cc] text-white font-bold py-3 rounded-xl hover:bg-[#0077b5] transition-colors"

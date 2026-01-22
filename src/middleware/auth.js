@@ -55,6 +55,7 @@ const verifyTelegramWebAppData = (req, res, next) => {
         const adminId = parseInt(process.env.ADMIN_ID);
         const adminIds = [
             process.env.ADMIN_ID,
+            process.env.SELLER_ID,
             ...(process.env.ADMIN_IDS || '').split(',')
         ]
             .map(id => (id || '').toString().trim())
