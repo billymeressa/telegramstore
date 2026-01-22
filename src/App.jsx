@@ -20,6 +20,11 @@ function App() {
   const [cart, setCart] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [user, setUser] = useState(null);
+
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const [wishlist, setWishlist] = useState(() => {
     try {
       const saved = localStorage.getItem('wishlist');
@@ -122,28 +127,60 @@ function App() {
       setIsAdmin(true);
     }
 
-    fetchProductData();
+    fetchProductData(1);
   }, []);
 
-  const fetchProductData = () => {
-    if (!API_URL) {
-      const msg = 'CONFIGURATION ERROR: VITE_API_URL is missing. The app cannot connect to the server.';
-      tele ? tele.showAlert(msg) : alert(msg);
-      return;
-    }
+  const fetchProductData = (pageNum = 1) => {
+    if (!API_URL) return;
 
-    fetch(`${API_URL}/api/products`)
+    setIsFetching(true);
+
+    // If page 1, we might want to show global loading, or just fetching state
+    if (pageNum === 1) setLoading(true);
+
+    fetch(`${API_URL}/api/products?page=${pageNum}&limit=20`)
       .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
-      .then(data => setProducts(data))
+      .then(data => {
+        // Backend now returns { products: [], ... }
+        // Determine if it's the old format (array) or new format (object)
+        let newProducts = [];
+        let more = false;
+
+        if (Array.isArray(data)) {
+          // Fallback for old API
+          newProducts = data;
+        } else {
+          newProducts = data.products || [];
+          more = data.hasMore;
+        }
+
+        if (pageNum === 1) {
+          setProducts(newProducts);
+        } else {
+          setProducts(prev => [...prev, ...newProducts]);
+        }
+
+        setHasMore(more);
+        setPage(pageNum);
+      })
       .catch(err => {
         console.error("Failed to fetch products", err);
         const msg = `Connection Failed: Could not load products. (${err.message}). Is the backend running?`;
         tele ? tele.showAlert(msg) : alert(msg);
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        setIsFetching(false);
+      });
+  };
+
+  const loadMore = () => {
+    if (!isFetching && hasMore) {
+      fetchProductData(page + 1);
+    }
   };
 
 
@@ -268,7 +305,17 @@ function App() {
       {loading && <LoadingScreen />}
       <Routes>
         <Route element={<Layout cartCount={cart.reduce((a, c) => a + c.quantity, 0)} isAdmin={isAdmin} user={user} />}>
-          <Route path="/" element={<Home products={products} onAdd={onAdd} wishlist={wishlist} toggleWishlist={toggleWishlist} />} />
+          <Route path="/" element={
+            <Home
+              products={products}
+              onAdd={onAdd}
+              wishlist={wishlist}
+              toggleWishlist={toggleWishlist}
+              hasMore={hasMore}
+              loadMore={loadMore}
+              isFetching={isFetching}
+            />
+          } />
           <Route path="/cart" element={
             <CartPage
               cart={cart}

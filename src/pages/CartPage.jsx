@@ -35,12 +35,12 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
     };
 
     return (
-        <div className="bg-[#F3F4F6] min-h-screen pb-32">
+        <div className="bg-[var(--tg-theme-secondary-bg-color)] min-h-screen pb-32 font-sans">
             {/* Header / Subtotal */}
             {cart.length > 0 && (
-                <div className="bg-white p-4 border-b border-gray-200 mb-3">
-                    <div className="text-lg text-[#0F1111]">
-                        Subtotal ({totalItems} items): <span className="font-bold">{Math.floor(totalPrice)} Birr</span>
+                <div className="bg-[var(--tg-theme-bg-color)] p-4 border-b border-[var(--tg-theme-section-separator-color)] mb-2">
+                    <div className="text-[var(--tg-theme-text-color)] text-base font-normal">
+                        Subtotal ({totalItems} items): <span className="font-semibold text-[var(--tg-theme-text-color)]">{Math.floor(totalPrice)} Birr</span>
                     </div>
                 </div>
             )}
@@ -56,12 +56,12 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
 
             {/* Bottom Checkout Bar */}
             {cart.length > 0 && (
-                <div className="fixed bottom-[60px] left-0 right-0 bg-white border-t border-gray-200 p-3 z-30 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+                <div className="fixed bottom-[56px] left-0 right-0 bg-[var(--tg-theme-bg-color)] border-t border-[var(--tg-theme-section-separator-color)] p-3 z-30 pb-safe">
                     <button
                         onClick={handleCheckout}
-                        className="w-full bg-[#D4AF37] text-[#111827] py-3 rounded-lg font-bold text-base shadow-sm border border-[#C5A028] active:bg-[#B59015]"
+                        className="w-full bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity"
                     >
-                        Proceed to checkout ({totalItems} items)
+                        Checkout ({totalItems} items)
                     </button>
 
                 </div>

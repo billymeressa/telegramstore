@@ -165,8 +165,23 @@ app.get('/api/seller-info', async (req, res) => {
 // GET /api/products
 app.get('/api/products', async (req, res) => {
     try {
-        const products = await Product.find({});
-        res.json(products);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20;
+        const skip = (page - 1) * limit;
+
+        const totalProducts = await Product.countDocuments({});
+        const products = await Product.find({})
+            .sort({ id: -1 }) // Newest first
+            .skip(skip)
+            .limit(limit);
+
+        res.json({
+            products,
+            currentPage: page,
+            totalPages: Math.ceil(totalProducts / limit),
+            totalProducts,
+            hasMore: page * limit < totalProducts
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

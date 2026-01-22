@@ -38,11 +38,11 @@ const Profile = () => {
     };
 
     return (
-        <div className="bg-gray-50 min-h-screen pb-4">
+        <div className="bg-[var(--tg-theme-secondary-bg-color)] min-h-screen pb-24 font-sans">
             {/* Header / User Info */}
-            <div className="bg-white p-4 border-b border-gray-200 mb-4">
+            <div className="bg-[var(--tg-theme-bg-color)] p-4 border-b border-[var(--tg-theme-section-separator-color)] mb-2">
                 <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-2xl font-bold text-gray-400 uppercase border border-gray-300 overflow-hidden">
+                    <div className="w-16 h-16 bg-[var(--tg-theme-secondary-bg-color)] rounded-full flex items-center justify-center text-2xl font-bold text-[var(--tg-theme-hint-color)] uppercase overflow-hidden">
                         {user?.photo_url ? (
                             <img src={user.photo_url} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
@@ -50,37 +50,41 @@ const Profile = () => {
                         )}
                     </div>
                     <div>
-                        <h2 className="font-bold text-xl text-[#111827]">Hello, {user?.first_name || 'Guest'}</h2>
-                        <p className="text-gray-500 text-sm">@{user?.username || 'user'}</p>
+                        <h2 className="font-semibold text-lg text-[var(--tg-theme-text-color)]">Hello, {user?.first_name || 'Guest'}</h2>
+                        <p className="text-[var(--tg-theme-hint-color)] text-sm">@{user?.username || 'user'}</p>
                     </div>
                 </div>
             </div>
 
-            <div className="px-4 space-y-4">
+            <div className="px-3 space-y-3">
                 {/* Admin Access Button */}
                 {isAdmin && (
                     <button
                         onClick={() => navigate('/admin')}
-                        className="w-full bg-white border border-gray-300 p-4 rounded-lg flex items-center justify-between shadow-sm active:bg-gray-100 transition-colors"
+                        className="w-full bg-[var(--tg-theme-bg-color)] p-3 rounded-xl flex items-center justify-between active:bg-[var(--tg-theme-secondary-bg-color)] transition-colors"
                     >
                         <div className="flex items-center gap-3">
-                            <Settings size={20} className="text-[#111827]" />
-                            <span className="text-[#111827] font-medium">Seller Dashboard</span>
+                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                <Settings size={18} className="text-blue-600" />
+                            </div>
+                            <span className="text-[var(--tg-theme-text-color)] font-medium text-sm">Seller Dashboard</span>
                         </div>
-                        <span className="text-gray-400">→</span>
+                        <span className="text-[var(--tg-theme-hint-color)] text-lg">›</span>
                     </button>
                 )}
 
                 {/* Wishlist Button */}
                 <button
                     onClick={() => navigate('/wishlist')}
-                    className="w-full bg-white border border-gray-300 p-4 rounded-lg flex items-center justify-between shadow-sm active:bg-gray-100 transition-colors"
+                    className="w-full bg-[var(--tg-theme-bg-color)] p-3 rounded-xl flex items-center justify-between active:bg-[var(--tg-theme-secondary-bg-color)] transition-colors"
                 >
                     <div className="flex items-center gap-3">
-                        <Heart size={20} className="text-[#D4AF37]" />
-                        <span className="text-[#111827] font-medium">Your Wishlist</span>
+                        <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                            <Heart size={18} className="text-red-500" />
+                        </div>
+                        <span className="text-[var(--tg-theme-text-color)] font-medium text-sm">Your Wishlist</span>
                     </div>
-                    <span className="text-gray-400">→</span>
+                    <span className="text-[var(--tg-theme-hint-color)] text-lg">›</span>
                 </button>
 
                 {/* Order History */}

@@ -5,14 +5,14 @@ function ProductList({ products, wishlist = [], onToggleWishlist }) {
     const navigate = useNavigate();
 
     return (
-        <div className="grid grid-cols-2 gap-3 p-3 pb-24 bg-[#F3F4F6]">
+        <div className="grid grid-cols-2 gap-2 p-2 pb-24">
             {products.map((product) => (
                 <div
                     key={product.id}
                     onClick={() => navigate(`/product/${product.id}`)}
-                    className="bg-white rounded-sm border border-gray-200 overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+                    className="bg-[var(--tg-theme-bg-color)] rounded-xl overflow-hidden cursor-pointer active:scale-95 transition-transform"
                 >
-                    <div className="relative w-full aspect-[4/5] bg-gray-100 flex items-center justify-center overflow-hidden">
+                    <div className="relative w-full aspect-square bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center overflow-hidden">
                         {product.images && product.images.length > 0 ? (
                             <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
                         ) : (
@@ -24,31 +24,23 @@ function ProductList({ products, wishlist = [], onToggleWishlist }) {
                                 e.stopPropagation();
                                 if (onToggleWishlist) onToggleWishlist(product.id);
                             }}
-                            className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-all active:scale-95"
+                            className="absolute top-1.5 right-1.5 p-1.5 bg-white/60 backdrop-blur-sm rounded-full active:bg-white transition-all"
                         >
                             <Heart
                                 size={18}
-                                className={`transition-colors ${wishlist.includes(product.id) ? 'fill-[#ef4444] text-[#ef4444]' : 'text-gray-400'}`}
+                                className={`transition-colors ${wishlist.includes(product.id) ? 'fill-[#ef4444] text-[#ef4444]' : 'text-gray-500'}`}
                             />
                         </button>
                     </div>
 
-                    <div className="p-3 flex flex-col gap-1">
-                        <h3 className="text-[#0F1111] text-base leading-snug line-clamp-2 h-12 overflow-hidden font-normal">
+                    <div className="p-2 flex flex-col gap-0.5">
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-[var(--tg-theme-text-color)] text-sm font-semibold">{Math.floor(product.price)}</span>
+                            <span className="text-[var(--tg-theme-hint-color)] text-xs">Birr</span>
+                        </div>
+                        <h3 className="text-[var(--tg-theme-text-color)] text-xs leading-snug line-clamp-2 h-8 overflow-hidden font-normal opacity-90">
                             {product.title}
                         </h3>
-
-                        <div className="flex items-baseline gap-1 mt-1">
-
-                            <span className="text-[#0F1111] text-2xl font-medium leading-none">{Math.floor(product.price)}</span>
-
-                            <span className="text-[#0F1111] text-sm font-bold ml-1">Birr</span>
-                        </div>
-
-
-
-                        {/* Fake Prime Badge or similar */}
-
                     </div>
                 </div>
             ))}
