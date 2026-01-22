@@ -80,6 +80,25 @@ bot.on('web_app_data', (ctx) => {
     }
 });
 
+bot.on('text', async (ctx) => {
+    try {
+        await ctx.reply(
+            `👋 *Hi there, ${ctx.from.first_name}!*\n\n` +
+            `I'm your shopping assistant. 🛍️\n\n` +
+            `Look looking for something stylish? Tap the button below to browse our full collection and place an order!\n\n` +
+            `_Need help? Contact support directly._`,
+            {
+                parse_mode: 'Markdown',
+                reply_markup: {
+                    inline_keyboard: [[{ text: "🛍️ Open Store", web_app: { url: process.env.WEB_APP_URL } }]]
+                }
+            }
+        );
+    } catch (e) {
+        console.error('Error handling text message:', e);
+    }
+});
+
 bot.launch();
 console.log('Bot is running...');
 
