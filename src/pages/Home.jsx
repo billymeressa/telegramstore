@@ -76,7 +76,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
             {/* Main Scrollable Content */}
             <div className="flex flex-col gap-4">
                 {/* Hero Section */}
-                <HeroSlider />
+                <HeroSlider onNavigate={handleDepartmentChange} />
 
                 {/* Sticky Navigation */}
                 <div className="sticky top-[56px] z-40 bg-[var(--tg-theme-bg-color)]/95 backdrop-blur-md py-2 border-b border-[var(--tg-theme-section-separator-color)] shadow-sm">

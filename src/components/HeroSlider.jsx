@@ -7,25 +7,28 @@ const SLIDES = [
         title: "Summer Collection",
         subtitle: "Up to 50% Off",
         bg: "bg-gradient-to-r from-blue-500 to-cyan-400",
-        text: "text-white"
+        text: "text-white",
+        category: "Men"
     },
     {
         id: 2,
         title: "New Arrivals",
         subtitle: "Check out the latest trends",
         bg: "bg-gradient-to-r from-purple-500 to-pink-500",
-        text: "text-white"
+        text: "text-white",
+        category: "Women"
     },
     {
         id: 3,
         title: "Tech Gadgets",
         subtitle: "Upgrade your gear today",
         bg: "bg-gradient-to-r from-emerald-500 to-teal-400",
-        text: "text-white"
+        text: "text-white",
+        category: "Electronics"
     }
 ];
 
-const HeroSlider = () => {
+const HeroSlider = ({ onNavigate }) => {
     const [current, setCurrent] = useState(0);
 
     useEffect(() => {
@@ -45,7 +48,10 @@ const HeroSlider = () => {
                     >
                         <span className={`text-xs font-bold uppercase tracking-wider mb-1 opacity-90 ${slide.text}`}>{slide.subtitle}</span>
                         <h2 className={`text-2xl font-bold mb-3 ${slide.text}`}>{slide.title}</h2>
-                        <button className="flex items-center gap-1 text-xs font-bold bg-white text-black px-3 py-1.5 rounded-full w-fit hover:bg-opacity-90 transition-all">
+                        <button
+                            onClick={() => onNavigate && onNavigate(slide.category)}
+                            className="flex items-center gap-1 text-xs font-bold bg-white text-black px-3 py-1.5 rounded-full w-fit hover:bg-opacity-90 transition-all active:scale-95"
+                        >
                             Shop Now <ArrowRight size={14} />
                         </button>
                     </div>
