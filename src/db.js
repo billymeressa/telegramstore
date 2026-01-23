@@ -51,5 +51,11 @@ const orderSchema = new mongoose.Schema({
 
 const Product = mongoose.model('Product', productSchema);
 const Order = mongoose.model('Order', orderSchema);
+const User = mongoose.model('User', new mongoose.Schema({
+    userId: { type: String, required: true, unique: true },
+    username: { type: String },
+    firstName: { type: String },
+    joinedAt: { type: Date, default: Date.now }
+}));
 
-export { connectDB, Product, Order };
+export { connectDB, Product, Order, User };

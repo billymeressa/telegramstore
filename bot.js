@@ -5,7 +5,7 @@ import cors from 'cors';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
-import { connectDB, Product, Order } from './src/db.js';
+import { connectDB, Product, Order, User } from './src/db.js';
 import path from 'path';
 
 
@@ -31,6 +31,17 @@ cloudinary.config({
 
 bot.command('start', async (ctx) => {
     try {
+        // Save User to DB
+        await User.findOneAndUpdate(
+            { userId: ctx.from.id.toString() },
+            {
+                username: ctx.from.username,
+                firstName: ctx.from.first_name,
+                userId: ctx.from.id.toString()
+            },
+            { upsert: true, new: true }
+        );
+
         // Remove old persistent keyboard if present
         await ctx.reply('Loading store...', { reply_markup: { remove_keyboard: true } });
 
@@ -257,6 +268,27 @@ app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), a
                 images: finalImages
             });
             await newProduct.save();
+
+            // Broadcast to all users
+            const users = await User.find({});
+            const productMessage = `🆕 *New Product Alert!*\n\n` +
+                `*${newProduct.title}*\n` +
+                `${newProduct.description ? newProduct.description.substring(0, 100) + (newProduct.description.length > 100 ? '...' : '') + '\n' : ''}` +
+                `Price: *${newProduct.price} ETB*\n\n` +
+                `Check it out now! 👇`;
+
+            users.forEach(user => {
+                bot.telegram.sendMessage(user.userId, productMessage, {
+                    parse_mode: 'Markdown',
+                    reply_markup: {
+                        inline_keyboard: [[{ text: "🛍️ View Product", web_app: { url: `${process.env.WEB_APP_URL}/product/${newProduct.id}` } }]]
+                    }
+                }).catch(err => {
+                    // console.error(`Failed to broadcast to ${user.userId}:`, err.message);
+                    // Silently fail if user blocked bot, etc.
+                });
+            });
+
             const allProducts = await Product.find({});
             res.json({ success: true, products: allProducts });
         }
