@@ -114,16 +114,16 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                 <div className="sticky top-[56px] z-40 bg-[var(--tg-theme-bg-color)] border-b border-[var(--tg-theme-section-separator-color)] shadow-sm">
                     {/* Level 1: Departments */}
                     <div className="flex gap-2 overflow-x-auto no-scrollbar items-center px-4 py-2">
-                        {DEPARTMENTS.map(dept => (
+                        {availableCategories.map(cat => (
                             <button
-                                key={dept}
-                                onClick={() => handleDepartmentChange(dept)}
-                                className={`whitespace-nowrap text-sm px-3 py-1 rounded-md transition-all font-bold ${selectedDepartment === dept
+                                key={cat}
+                                onClick={() => handleCategoryChange(cat)}
+                                className={`whitespace-nowrap text-sm px-3 py-1 rounded-md transition-all font-bold ${selectedCategory === cat
                                     ? 'text-[var(--tg-theme-button-color)] bg-[var(--tg-theme-secondary-bg-color)]'
                                     : 'text-[var(--tg-theme-hint-color)] hover:text-[var(--tg-theme-text-color)]'
                                     }`}
                             >
-                                {dept}
+                                {cat}
                             </button>
                         ))}
                     </div>
