@@ -113,33 +113,17 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                 {/* Sticky Navigation for Filters */}
                 <div className="sticky top-[56px] z-40 bg-[var(--tg-theme-bg-color)] border-b border-[var(--tg-theme-section-separator-color)] shadow-sm">
                     {/* Level 1: Departments */}
-                    <div className="flex gap-2 overflow-x-auto no-scrollbar items-center px-4 py-2 border-b border-gray-100">
+                    <div className="flex gap-2 overflow-x-auto no-scrollbar items-center px-4 py-2">
                         {DEPARTMENTS.map(dept => (
                             <button
                                 key={dept}
                                 onClick={() => handleDepartmentChange(dept)}
                                 className={`whitespace-nowrap text-sm px-3 py-1 rounded-md transition-all font-bold ${selectedDepartment === dept
-                                    ? 'text-[var(--tg-theme-button-color)]'
+                                    ? 'text-[var(--tg-theme-button-color)] bg-[var(--tg-theme-secondary-bg-color)]'
                                     : 'text-[var(--tg-theme-hint-color)] hover:text-[var(--tg-theme-text-color)]'
                                     }`}
                             >
                                 {dept}
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Level 2: Categories (Sub-categories) */}
-                    <div className="flex gap-2 overflow-x-auto no-scrollbar items-center px-4 py-2 bg-[var(--tg-theme-secondary-bg-color)]">
-                        {availableCategories.map(cat => (
-                            <button
-                                key={cat}
-                                onClick={() => handleCategoryChange(cat)}
-                                className={`whitespace-nowrap text-xs px-3 py-1.5 rounded-full transition-all font-medium border ${selectedCategory === cat
-                                    ? 'bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] border-[var(--tg-theme-button-color)] shadow-sm'
-                                    : 'bg-[var(--tg-theme-bg-color)] text-[var(--tg-theme-text-color)] border-[var(--tg-theme-section-separator-color)] hover:bg-[var(--tg-theme-section-separator-color)]'
-                                    }`}
-                            >
-                                {cat}
                             </button>
                         ))}
                     </div>
@@ -149,9 +133,19 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                 <div className="px-2">
                     <div className="flex items-center justify-between px-2 mb-2">
                         <h3 className="text-lg font-bold text-[var(--tg-theme-text-color)] flex items-center gap-2">
-                            {searchQuery ? 'Search Results' : 'Featured Products'}
+                            {searchQuery ? 'Search Results' : (selectedCategory !== 'All' ? selectedCategory : 'Featured Products')}
                             {!searchQuery && <span className="text-xs font-normal text-[var(--tg-theme-hint-color)] bg-[var(--tg-theme-section-separator-color)] px-2 py-0.5 rounded-full">{filteredProducts.length} items</span>}
                         </h3>
+
+                        {/* Clear Filter Button if a sub-category is selected */}
+                        {selectedCategory !== 'All' && (
+                            <button
+                                onClick={() => setSelectedCategory('All')}
+                                className="text-xs font-medium text-red-500 bg-red-50 px-2 py-1 rounded-full flex items-center"
+                            >
+                                Clear Filter ✕
+                            </button>
+                        )}
                     </div>
 
                     <ProductList products={filteredProducts} onAdd={onAdd} wishlist={wishlist} onToggleWishlist={toggleWishlist} />
