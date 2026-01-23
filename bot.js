@@ -64,7 +64,7 @@ bot.command('start', async (ctx) => {
         await ctx.reply(
             `👋 *Welcome to the Store, ${ctx.from.first_name}!*\n\n` +
             `We are excited to have you here. Click the button below to browse our collection and shop now! 🛍️\n\n` +
-            `_Have questions or feedback? Feel free to contact our admin specifically: [${adminUsername}](tg://user?id=${process.env.ADMIN_ID})_`,
+            `_Have questions or feedback? Feel free to contact our admin: @${adminUsername}_`,
             {
                 parse_mode: 'Markdown',
                 reply_markup: {
