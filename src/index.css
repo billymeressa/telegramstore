@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Premium Brand Palette */
+/* Light Mode (Default) - Override Telegram theme variables */
+/* To enable dark mode adaptation, use window.Telegram.WebApp.colorScheme in JS */
 :root {
   --tg-theme-bg-color: #ffffff;
   --tg-theme-secondary-bg-color: #f4f4f5;
@@ -15,6 +16,21 @@
   --tg-theme-section-bg-color: #ffffff;
   --tg-theme-section-separator-color: #e3e3e4;
 }
+
+/* Dark Mode (Preserved for future use) - Uncomment to enable
+:root[data-theme="dark"] {
+  --tg-theme-bg-color: #1c1c1e;
+  --tg-theme-secondary-bg-color: #2c2c2e;
+  --tg-theme-text-color: #ffffff;
+  --tg-theme-hint-color: #8e8e93;
+  --tg-theme-link-color: #0a84ff;
+  --tg-theme-button-color: #0a84ff;
+  --tg-theme-button-text-color: #ffffff;
+  --tg-theme-header-bg-color: #1c1c1e;
+  --tg-theme-section-bg-color: #1c1c1e;
+  --tg-theme-section-separator-color: #38383a;
+}
+*/
 
 body {
   background-color: var(--tg-theme-bg-color);
