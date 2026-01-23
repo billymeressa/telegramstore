@@ -42,9 +42,7 @@ function ProductList({ products, wishlist = [], onToggleWishlist }) {
                                 <span className="text-[var(--tg-theme-text-color)] text-base font-bold">{Math.floor(product.price)}</span>
                                 <span className="text-[var(--tg-theme-hint-color)] text-xs font-normal">ETB</span>
                             </div>
-                            <button className="bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] p-1 rounded-md">
-                                <span className="text-xs font-bold px-1">+</span>
-                            </button>
+
                         </div>
                     </div>
                 </div>

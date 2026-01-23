@@ -43,7 +43,7 @@
     "title": "Original Dell brand Usb Keyboard",
     "price": 500,
     "description": "Original Dell brand Usb Keyboard \nonly",
-    "category": "Keyboards",
+    "category": "Computer Accessories",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -82,7 +82,7 @@
     "title": "brand new Toshiba 500 GB 2.5\" Inch Laptop SAT",
     "price": 1700,
     "description": "brand new Toshiba 500 GB 2.5\" Inch Laptop SATA Internal Hard Disk Drive for laptop",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -108,7 +108,7 @@
     "title": "Wireless Keyboard Mouse Set",
     "price": 1500,
     "description": "Wireless Keyboard Mouse Set\n2.4Ghz wireless technology\ncompatible with desktop, laptop & tablet\nAddress",
-    "category": "Networking",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -121,7 +121,7 @@
     "title": "የ ፕሮጄክተር መሰኪያ (VGA port) ለሌላቸው ላፕቶፖች ወይም ዴስክቶፖች HD",
     "price": 300,
     "description": "የ ፕሮጄክተር መሰኪያ (VGA port) ለሌላቸው ላፕቶፖች ወይም ዴስክቶፖች HDMI to VGA ...birr\n USB 3.0 to VGA ...",
-    "category": "Cables & Adapters",
+    "category": "Computer Accessories",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -173,7 +173,7 @@
     "title": "Flexible USB keyboard to save space when carrying",
     "price": 400,
     "description": "Flexible USB keyboard to save space when carrying around",
-    "category": "Keyboards",
+    "category": "Computer Accessories",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -186,7 +186,7 @@
     "title": "",
     "price": 2200,
     "description": "------Sold out ----\nInternal hard disk for desktop 1tb",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -199,7 +199,7 @@
     "title": "Hard disk Enclosure USB 3.0 supports upto 3.0TB",
     "price": 400,
     "description": "Hard disk Enclosure USB 3.0 supports upto 3.0TB",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -251,7 +251,7 @@
     "title": "Transcend Store jet 2 tera External hard disk",
     "price": 7200,
     "description": "Transcend Store jet 2 tera External hard disk",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -264,7 +264,7 @@
     "title": "External case for internal hard disk USB 2.0",
     "price": 400,
     "description": "External case for internal hard disk USB 2.0 \nShop name",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -277,7 +277,7 @@
     "title": "1 tera transcend external hard disk",
     "price": 5000,
     "description": "1 tera transcend external hard disk \ndiscount if you buy more than one",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -290,7 +290,7 @@
     "title": "mini USB to type C converter........... When you f",
     "price": 50,
     "description": "mini USB to type C converter........... When you forget your c type charger you can use the old samsung with this to charge your phone only ()",
-    "category": "Cables & Adapters",
+    "category": "Phones",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -303,7 +303,7 @@
     "title": "Wireless mouse Mofii",
     "price": 600,
     "description": "Wireless mouse Mofii \nAn excellent brand",
-    "category": "Mice",
+    "category": "Computer Accessories",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -329,7 +329,7 @@
     "title": "",
     "price": 900,
     "description": "------Sold out----\n7 port USB 3.0 hub \nwith 1.2m cable length",
-    "category": "Cables & Adapters",
+    "category": "Other",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -355,7 +355,7 @@
     "title": "Original Chargers for Hp, Dell and Toshiba",
     "price": 1500,
     "description": "Original Chargers for Hp, Dell and Toshiba",
-    "category": "Cables & Adapters",
+    "category": "Other",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -394,7 +394,7 @@
     "title": "Internal hard disk for laptop 1 TB     price     3",
     "price": 3000,
     "description": "Internal hard disk for laptop 1 TB",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -407,7 +407,7 @@
     "title": "Hard disk Enclosure USB 2.0/3.0",
     "price": 700,
     "description": "Hard disk Enclosure USB 2.0/3.0 \nExternal hard disk case from WD",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -420,7 +420,7 @@
     "title": "",
     "price": 3600,
     "description": "------Sold out ------\nExternal hard disk with 2 tera movies",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -433,7 +433,7 @@
     "title": "",
     "price": 5500,
     "description": "------Sold out ----\nWD Elements 2 Tera External hard disk\nBrand new and packed",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -446,7 +446,7 @@
     "title": "Wired Controller -Desktop/ Laptop          500 bir",
     "price": 500,
     "description": "Wired Controller -Desktop/ Laptop Wired Controller-Playstation 2 (PS2) Wired Controller for PC (2 in 1) Wireless Controller-Playstation 2 Wireless Controller-Playstation 3 \nfor inquiries",
-    "category": "Gaming",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -459,7 +459,7 @@
     "title": "1 tera transcend external hard disk",
     "price": 6000,
     "description": "1 tera transcend external hard disk",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -472,7 +472,7 @@
     "title": "Wireless Keyboard Mouse Set",
     "price": 1500,
     "description": "Wireless Keyboard Mouse Set\n2.4Ghz wireless technology\ncompatible with desktop, laptop & tablet\nAddress",
-    "category": "Networking",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -498,7 +498,7 @@
     "title": "——sold out ——2 tera internal hard disk for laptop",
     "price": 4000,
     "description": "——sold out ——2 tera internal hard disk for laptop\nbrand new and packed",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -511,7 +511,7 @@
     "title": "አስተማማኝ External hard disk ሲፈልጉ",
     "price": 6000,
     "description": "አስተማማኝ External hard disk ሲፈልጉ \nወደ technologies ይምጡ ወይም ይደውሉ \n1 Tera Transcend 2 Tera Transcend. ያሉበት ድረስ እንደ ርቀቱ በተመጣጣኝ ተጨማሪ ክፍያ እናደርሳለን\nለሌሎች አመሳሳይ እቃዎች ቴሌግራም ቻናል ይቀላቀሉ (\nአድራሻ መገናኛ፥ መተባበር ህንጻ 2ኛ ፍሎር\nስልክ",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -524,7 +524,7 @@
     "title": "Wireless Keyboard Mouse Set",
     "price": 1500,
     "description": "Wireless Keyboard Mouse Set\n2.4Ghz wireless technology\ncompatible with desktop, laptop & tablet\nAddress",
-    "category": "Networking",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -537,7 +537,7 @@
     "title": "Wired Controller-Playstation 2 (PS2)        300 bi",
     "price": 300,
     "description": "Wired Controller-Playstation 2 (PS2) Wired Controller -Desktop/ Laptop Wired Controller for PC (2 in 1) Wireless Controller-Playstation 2 Wireless Controller-Playstation 3 \nfor inquiries",
-    "category": "Gaming",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -563,7 +563,7 @@
     "title": "A7 Technologies",
     "price": 0,
     "description": "Technologies\n🔔 አዲስና ያገለገሉ ላፕቶፖችን እንገዛለን\n👉 External Hard Disks\n👉 PlayStation Controllers\n👉 Computer Accessories\n👉 New and Used Laptops\n👉 Smartphones\n🔴 ያሉበት ድረስ በተመጣጣኝ ክፍያ እናደርሳለን\nየቴሌግራም ቻናላችንን ይቀላቀሉ 👇👇\nለቴሌግራም አጭር መልዕክት 👉 \nአድራሻ፦ መገናኛ መተባበር ህንጻ 2ኛ ፍሎር\n☎️",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -576,7 +576,7 @@
     "title": "Flexible USB keyboard to save space when carrying",
     "price": 400,
     "description": "Flexible USB keyboard to save space when carrying around",
-    "category": "Keyboards",
+    "category": "Computer Accessories",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -589,7 +589,7 @@
     "title": "Original Dell brand Usb Keyboard",
     "price": 500,
     "description": "Original Dell brand Usb Keyboard",
-    "category": "Keyboards",
+    "category": "Computer Accessories",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -602,7 +602,7 @@
     "title": "Hard disk Enclosure USB 2.0/3.0",
     "price": 700,
     "description": "Hard disk Enclosure USB 2.0/3.0 \nExternal hard disk case from WD",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -615,7 +615,7 @@
     "title": "አስተማማኝ External hard disk ሲፈልጉ",
     "price": 6000,
     "description": "አስተማማኝ External hard disk ሲፈልጉ \nወደ technologies ይምጡ ወይም ይደውሉ \nHoliday discount \n1 Tera Transcend discount for resellers\n ቴሌግራም ቻናል ይቀላቀሉ \nአድራሻ መገናኛ፥ መተባበር ህንጻ 2ኛ ፍሎር\nስልክ",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -654,7 +654,7 @@
     "title": "Wired Controller-Playstation 2 (PS2)        300 bi",
     "price": 300,
     "description": "Wired Controller-Playstation 2 (PS2) Wired Controller -Desktop/ Laptop Wired Controller for PC (2 in 1) Wireless Controller-Playstation 2 Wireless Controller-Playstation 3 \nfor inquiries",
-    "category": "Gaming",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -667,7 +667,7 @@
     "title": "Wired Controller-Playstation 2 (PS2)        300 bi",
     "price": 300,
     "description": "Wired Controller-Playstation 2 (PS2) Wired Controller -Desktop/ Laptop Wired Controller for PC (2 in 1) Wireless Controller-Playstation 2 Wireless Controller-Playstation 3 \nfor inquiries",
-    "category": "Gaming",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -680,7 +680,7 @@
     "title": "External hard disk 1 TB",
     "price": 6000,
     "description": "External hard disk 1 TB\n1 Tera Transcend \n or",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -693,7 +693,7 @@
     "title": "External hard disk 1 TB",
     "price": 5800,
     "description": "External hard disk 1 TB\n1 Tera Transcend \n or",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -719,7 +719,7 @@
     "title": "Wireless Keyboard Mouse Set",
     "price": 1500,
     "description": "Wireless Keyboard Mouse Set\n2.4Ghz wireless technology\ncompatible with desktop, laptop & tablet",
-    "category": "Networking",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -732,7 +732,7 @@
     "title": "External case for internal hard disk USB 2.0",
     "price": 450,
     "description": "External case for internal hard disk USB 2.0 \nConvert your internal hard disks to external hard disks\nor",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -797,7 +797,7 @@
     "title": "Hp pavilion 4 gb nvidia graphi s card( slightly us",
     "price": 29900,
     "description": "Hp pavilion 4 gb nvidia graphi s card( slightly used)\nSuitable for editing \nCore i5-7th genaration\n2.7 ghz processoe speed\n1000 gb hdd\n8 gb ram\n15.6\" screen size\nexcellent battery life",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -862,7 +862,7 @@
     "title": "Macbook pro corei5 2020 Retina",
     "price": 76000,
     "description": "Macbook pro corei5 2020 Retina\nStorage 512ssd\n16gb Ram\nTouch bar",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -888,7 +888,7 @@
     "title": "Geemy Professional Hair Clipper",
     "price": 2600,
     "description": "Geemy Professional Hair Clipper \nHigh Performance Stainless Steel Blade \nAdjustable Taper Control Cutting Length\n LCD Display Show Battery Capacity Percent \n Built In 2000mA Battery\n  Charge Time 3-4 Hours \n  Working Hours 4-5 Hours\n 3,6,10,13 mm Spacing Comb \nOil Bottle\nCleaning Brush \nCharging Adapter\n Stainless Steel chrome plate Segment \nTaper Lever Multi-cut clipper \n Ultimate power motor\n Special safety power supply cord",
-    "category": "Cables & Adapters",
+    "category": "Other",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -927,7 +927,7 @@
     "title": "hp Notebook",
     "price": 25000,
     "description": "hp Notebook\n9𝙩𝙝 𝙜𝙚𝙣𝙚𝙧𝙖𝙩𝙞𝙤n\nAMD A10 \n4 Logical processors\n10 Compute Cores\nHDD 1000🅖🅑 (1TB)\nRam 8🅖🅑\nprocesor speed 2.6Ghrz\n4GB RADION GRAPHICS CARD\nScreen size 15.6\"\nSlightly used\n☎️",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -966,7 +966,7 @@
     "title": "Lenovo Tinkpad",
     "price": 16000,
     "description": "Lenovo Tinkpad \n4𝙩𝙝 𝙜𝙚𝙣𝙚𝙧𝙖𝙩𝙞𝙤n\n Core i5\n4 Logical processors\nHDD 500🅖🅑 \nRam 4🅖🅑\nprocesor speed 2.6Ghrz\nScreen size 15.6\"\nSlightly Ｕｓｅｄ Ｌａｐｔｏｐ\n☎️",
-    "category": "Hard Drives",
+    "category": "Other",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1005,7 +1005,7 @@
     "title": "IPhone 11",
     "price": 0,
     "description": "IPhone 11 \n64GB \nBrand new \n100% battery \nPrice : 39,000\nExchange also possible",
-    "category": "Networking",
+    "category": "Phones",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1031,7 +1031,7 @@
     "title": "2 in 1 USB controller / joystick for pc (desktop a",
     "price": 700,
     "description": "2 in 1 USB controller / joystick for pc (desktop and laptop)\nBrand name: UCOM",
-    "category": "Gaming",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1044,7 +1044,7 @@
     "title": "Update November 10",
     "price": 27500,
     "description": "Update November 10\nBest student laptop \n-CORE I5\n-Ram 8\n-Storage  1 Tera \n-Generation 6th\n-(5 hours) battery life\n-Stereo speakers  yes\n-Screen size 14.1\n-webcam    yes\n-VGA           Yes\n-HDMI         Yes      \n-fingerprint Yes\n-clock speed 2.50\n-microphone yes\n-headphone  yes \n-Bluetooth     yes\n-with white led backlight keyboard",
-    "category": "Audio",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1096,7 +1096,7 @@
     "title": "Wireless Keyboard Mouse Set",
     "price": 1500,
     "description": "Wireless Keyboard Mouse Set\n2.4Ghz wireless technology\ncompatible with desktop, laptop & tablet",
-    "category": "Networking",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1161,7 +1161,7 @@
     "title": "External case for internal hard disk USB 2.0",
     "price": 500,
     "description": "External case for internal hard disk USB 2.0 \nConvert your internal hard disks to external hard disks\nor",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1213,7 +1213,7 @@
     "title": "Iphone Xs Max",
     "price": 33000,
     "description": "Iphone Xs Max\nStorage 64gb\nBtry 87\nTo \n Or",
-    "category": "Networking",
+    "category": "Phones",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1239,7 +1239,7 @@
     "title": "Samsung Galaxy S9",
     "price": 9,
     "description": "Samsung Galaxy S9\nBrand New 100% Original\n Korean phone\nAndroid version 12\n4G LTE Network \nCamera:12MP\n4 GB RAM\n64 GB storage\n3,000 mAh Battery capacity\nTo \n Or",
-    "category": "Networking",
+    "category": "Phones",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1265,7 +1265,7 @@
     "title": "Brand New Hp Elitebook  X360 Convertible",
     "price": 47500,
     "description": "Brand New Hp Elitebook  X360 Convertible\ncore i5-7th generation \nScreen size :14nch\nfull HD (1920x1080) screen display \nTouch screen \nStorage: 512SSD\nRam : 16GB DDR4\n9hrs hours battery life\nWhite keyboard light\nTo",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1278,7 +1278,7 @@
     "title": "Lenovo yoga almost new,360 degree touch screen",
     "price": 34500,
     "description": "Lenovo yoga almost new,360 degree touch screen\nfull hd\ncore i5-7th genaration\n2.7 ghz procesor speed\n1000 gb hdd,plus has SSD slot\n8 gb ram\nhas keyboard light\nexcellent battery life(above 8hrs)\nwith one year warranty\nTo",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1291,7 +1291,7 @@
     "title": "Iphone 8",
     "price": 15500,
     "description": "Iphone 8\nStorage 64gb \nTo",
-    "category": "Networking",
+    "category": "Phones",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1317,7 +1317,7 @@
     "title": "Lenovo yoga",
     "price": 33500,
     "description": "Lenovo yoga\nstylish design laptop\nbattery above 8rs\ntouch screen and X360\nIntel(R) Core(TM) i5 - 6th\n512GB SSD STORAGE\n8 GB RAM\nKeyboard backlight\n Ultra slim\n14 inch\nFULL HD\nwith pen\nTo",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1330,7 +1330,7 @@
     "title": "Lenovo IdeaPad",
     "price": 22000,
     "description": "Lenovo IdeaPad \n4𝙩𝙝 𝙜𝙚𝙣𝙚𝙧𝙖𝙩𝙞𝙤n\n Core i7\n4 Logical processors\nHDD 1000 GB\nRam 8 GB\nprocesor speed 2.6Ghrz\nScreen size 14.1\"\n Slightly used laptop\nTo",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1343,7 +1343,7 @@
     "title": "MacBook Pro 2022",
     "price": 175000,
     "description": "MacBook Pro 2022\nFactory Sealed Packed\n M2 Chip -2022 \n256GB SSD Storage \n8GB unified memory\n13.3-inch (diagonal) \nResolution display 2560 by 1600 pixels. \n8 Core CPU & 10 Core GPU\nTo",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1369,7 +1369,7 @@
     "title": "hp Probook",
     "price": 23000,
     "description": "hp Probook\n4𝙩𝙝 𝙜𝙚𝙣𝙚𝙧𝙖𝙩𝙞𝙤n\n Core i5\n4 Logical processors\nHDD 1000 GB \nRam 8 GB\nprocesor speed 2.6 Ghz\nScreen size 14.1\"\nSlightly used laptop \n To",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1382,7 +1382,7 @@
     "title": "Hp slim probook",
     "price": 35500,
     "description": "Hp slim probook \ni16gb DDR4 RAM\nCore i7 6th generation Processor 2.6ghz up to 3.40\nCondition:  NEW\n Screen :14.1 inch 1080p FHD\n Storage : 512 SSD\n GRAPHICS: intel UHD Graphics \n5hr.+ hours battery life \nWhite  keyboard backlit\nB&O HD Sound system\nTo",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1408,7 +1408,7 @@
     "title": "Hp core i5-7th genaration",
     "price": 24500,
     "description": "Hp core i5-7th genaration\ntouch screen\nwith orginal charger\n1000 gb hdd\n8gb ram\nexcellent battery life\n15.6 screen size\n To",
-    "category": "Hard Drives",
+    "category": "Other",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1421,7 +1421,7 @@
     "title": "External case for internal hard disk USB 2.0",
     "price": 500,
     "description": "External case for internal hard disk USB 2.0 \nConvert your internal hard disks to external hard disks\nor",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1434,7 +1434,7 @@
     "title": "Redmi Note 11 pro+ 5G",
     "price": 29500,
     "description": "Redmi Note 11 pro+ 5G\nBrand New Original/2022 model/\nAndroid version 12\nDual Sim/5G Network technology\nQuad camera:1O8MP\n 8+3 GB RAM\n 256 ⒼⒷ storage\n4,500 mAh Battery \n67 Watt Fast charger\n30 Minutes only for full charge \nTo",
-    "category": "Cables & Adapters",
+    "category": "Networking",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1447,7 +1447,7 @@
     "title": "Flexible USB keyboard",
     "price": 400,
     "description": "Flexible USB keyboard \nSaves space when carrying around\nTo \n or \nsellers can",
-    "category": "Keyboards",
+    "category": "Computer Accessories",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1460,7 +1460,7 @@
     "title": "Toshiba TECRA",
     "price": 14000,
     "description": "Toshiba TECRA\n Core i5\n4 Logical processors\nHDD 500 GB\nRam 4 GB\nprocesor speed 2.7 Ghz\nScreen size 14.1\"\n To",
-    "category": "Hard Drives",
+    "category": "Other",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1473,7 +1473,7 @@
     "title": "2 in 1 USB controller / joystick for pc (desktop a",
     "price": 700,
     "description": "2 in 1 USB controller / joystick for pc (desktop and laptop)\nBrand name: UCOM",
-    "category": "Gaming",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1486,7 +1486,7 @@
     "title": "Brand New Dell Precision Xps 15",
     "price": 79999,
     "description": "Brand New Dell Precision Xps 15\nIntel Core I7-8th Generation \n        FHD Screen Resolution \n512GB SSD storage \n16GB RAM DDR4 Memory\nFull HD 1920x1080\n15.6 inch Screen size\nWhite Keyboard light \n6-cores 12- logical processor \n Above 12 Hours Battery life\nNvidia Quadro P2000(Better than GTX 1650) 4GB dedicated graphics\nTo",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1512,7 +1512,7 @@
     "title": "BRAND NEW HP ENVY X360°",
     "price": 79500,
     "description": "BRAND NEW HP ENVY X360° \nIntel Core i7-10700U (4 Core 8 Logical Processor )\n 10th Generation \n2.5 Ghz Processor Speed \nTurbo Boost up to 5.0 Ghz\n512GB SSD \n12GB  DDR4 Ram\n🔋Long Last Battery Life,\n15.6\"  Screen Size\n   To",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1525,7 +1525,7 @@
     "title": "Macbook air 2020",
     "price": 59500,
     "description": "Macbook air 2020\n8 gb ram\n256 gb ssd\n13.3 inch screen\nTo",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1564,7 +1564,7 @@
     "title": "WD elements external hard disk",
     "price": 4200,
     "description": "WD elements external hard disk \n1 tera byte (1TB)\nTo",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1603,7 +1603,7 @@
     "title": "Hp elitebook g3",
     "price": 29000,
     "description": "Hp elitebook g3 \nCore i5 \n6th generation \nRam 8 GB\nStorage 1 TB\nTo",
-    "category": "Laptops",
+    "category": "Other",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1616,7 +1616,7 @@
     "title": "Hp elitebook g1",
     "price": 24000,
     "description": "Hp elitebook g1\nCore i5 4th generation \nRam 4 GB\nStorage 500 GB\nTo",
-    "category": "Laptops",
+    "category": "Other",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1629,7 +1629,7 @@
     "title": "2 in 1 USB controller / joystick for pc (desktop a",
     "price": 700,
     "description": "2 in 1 USB controller / joystick for pc (desktop and laptop)\nBrand name: UCOM",
-    "category": "Gaming",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1655,7 +1655,7 @@
     "title": "lenovo thinkpad",
     "price": 28500,
     "description": "lenovo thinkpad \n9 hours+ real battery life\nCore i5 7th generation \nIntel® Core™ i5-7200U Processor \n(6M Cache, up to 3.10 GHz)\nModel : thinkpad \nCondition: New\nScreen :14.1 inch FHD \n Storage : 1TB HDD + ssd slot\nRam : 8gb DDR4 \nGRAPHICS: intel® UHD\n9hr.+ hours battery life\n👉Slim & Lightweight\nHD Sound system\nwhite keyboard backlit\nTo",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1668,7 +1668,7 @@
     "title": "Wireless Keyboard Mouse Set",
     "price": 1500,
     "description": "Wireless Keyboard Mouse Set\n2.4Ghz wireless technology\ncompatible with desktop, laptop & tablet",
-    "category": "Networking",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1681,7 +1681,7 @@
     "title": "Flexible USB keyboard",
     "price": 400,
     "description": "Flexible USB keyboard \nSaves space when carrying around\nTo \n or",
-    "category": "Keyboards",
+    "category": "Computer Accessories",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1707,7 +1707,7 @@
     "title": "Lenovo yoga laptop",
     "price": 33500,
     "description": "Lenovo yoga laptop\nbattery above 8rs\ntouch screen and X360\nIntel(R) Core(TM) i5 - 6th\n512GB SSD STORAGE\n8 GB RAM\nKeyboard backlight\n Ultra slim\n14 inch\nFULL HD\nwith pen\nTo",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1746,7 +1746,7 @@
     "title": "Hp elitebook i5 8th generation",
     "price": 42500,
     "description": "Hp elitebook i5 8th generation \nProcessor - Intel core i5\nGeneration - 8th gen\nStorage - 512gb SSD\nRam - 8gb DDR4\nScreen - 14 inch Full HD \nGraphics - intel hd graphics \nAluminum body \nInfinity screen \nKeyboard backlit \nBattery - 7hrs and above \nStatus - Brand new\nTo",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1772,7 +1772,7 @@
     "title": "LENOVO Idealpad",
     "price": 15000,
     "description": "LENOVO Idealpad\n5th 𝙜𝙚𝙣𝙚𝙧𝙖𝙩𝙞𝙤n Core i3\n4 Logical processors\nHDD 750 GB\nRam 6 GB\nprocessor speed 2.6 Ghz\nScreen size 15.1''\n2 GB RADEON GRAPHICS CARD\n Status Used \nTo",
-    "category": "Hard Drives",
+    "category": "Other",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1785,7 +1785,7 @@
     "title": "hp Notebook",
     "price": 20000,
     "description": "hp Notebook\n4𝙩𝙝 𝙜𝙚𝙣𝙚𝙧𝙖𝙩𝙞𝙤n\n Core i5\n4 Logical processors\nHDD 500 GB\nRam 4 GB\nprocesor speed 2.4Ghz\n2 gb NVIDIA GFORCE Graphics Card\nScreen size 15.6\"\n Used laptop\nTo",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1837,7 +1837,7 @@
     "title": "2 in 1 USB controller / joystick for pc (desktop a",
     "price": 700,
     "description": "2 in 1 USB controller / joystick for pc (desktop and laptop)\nBrand name: UCOM",
-    "category": "Gaming",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1850,7 +1850,7 @@
     "title": "Lenovo idealpad",
     "price": 28000,
     "description": "Lenovo idealpad\n7𝙩𝙝 𝙜𝙚𝙣𝙚𝙧𝙖𝙩𝙞𝙤n\nCore i5\n4 logical processors\nHDD 1 TB\nRam 8 GB\nprocesor speed 2.7Ghz\n4 gb NVIDIA GFORCE Graphics Card\nScreen size 15.6\"\n Used laptop\n To",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1863,7 +1863,7 @@
     "title": "Wireless Keyboard Mouse Set",
     "price": 1500,
     "description": "Wireless Keyboard Mouse Set\n2.4Ghz wireless technology\ncompatible with desktop, laptop & tablet",
-    "category": "Networking",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1889,7 +1889,7 @@
     "title": "HP Pavillion Gaming laptop",
     "price": 60000,
     "description": "HP Pavillion Gaming laptop\nintel core i5 10th generation\nRam 8GB\nStorage 256GB SSD\nScreen size 15.6 inch full HD\nGraphics NVIDIA Geforce GTX 1650 4GB\nTo",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1902,7 +1902,7 @@
     "title": "Flexible USB keyboard",
     "price": 400,
     "description": "Flexible USB keyboard \nSaves space when carrying around\nTo \n or",
-    "category": "Keyboards",
+    "category": "Computer Accessories",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1915,7 +1915,7 @@
     "title": "Brand New Hp Envy core i7",
     "price": 75000,
     "description": "Brand New Hp Envy core i7 \n11th Generation \n512GB SSD\n12 GB RAM \nIris graphics card \nX360 touch 15.6” 4K screen\nTo",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1954,7 +1954,7 @@
     "title": "Hp Elitebook core i5",
     "price": 27000,
     "description": "Hp Elitebook core i5\n14 inch screen\n6th Generation \n256GB SSD\n8GB RAM \nTo",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -1993,7 +1993,7 @@
     "title": "lenevo thinkpad",
     "price": 32500,
     "description": "lenevo thinkpad\nSlim Core i5 6th Generation \n3.0 ghz processor\nModel :thinkpad T470\nGRAPHICS: intel HD graphics 520\nScreen :14.1inch 1080p FHD \n Storage : 1TB HDD AND 256SSD\nRam : 8gb DDR4\n5hr.+ hours battery life  \nwhite keyboard backlit\nfinger print support\nHD Sound system\nTo",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2032,7 +2032,7 @@
     "title": "hp Probook 650 G3",
     "price": 26000,
     "description": "hp Probook 650 G3\n Core i5 6th Generation\n4 Logical processors\nHDD 1000 GB\nRam 8 GB\nprocesor speed 2.8 Ghz\nScreen size 15.6''\nTouch Screen\n To",
-    "category": "Hard Drives",
+    "category": "Other",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2045,7 +2045,7 @@
     "title": "Microsoft Surface pro 6",
     "price": 38000,
     "description": "Microsoft Surface pro 6\nCorei5 8th generation\nStorage 128gb ssd\n8gb Ram\nTouch and Detachble\nTo",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2097,7 +2097,7 @@
     "title": "IPhone 11",
     "price": 40500,
     "description": "IPhone 11 \n64GB \nBrand new \n100% battery",
-    "category": "Networking",
+    "category": "Phones",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2123,7 +2123,7 @@
     "title": "Hp CORE I5",
     "price": 27500,
     "description": "Hp CORE I5\n-Ram 8\n-Storage  1 Tera \n-Generation 6th\n-Screen size 14.1 inch     \n-clock speed 2.50 Ghz\n-with white led backlight keyboard \n         To",
-    "category": "Keyboards",
+    "category": "Computer Accessories",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2136,7 +2136,7 @@
     "title": "Macbook pro (Retina, 13.3- inch, 2015)",
     "price": 42000,
     "description": "Macbook pro (Retina, 13.3- inch, 2015)\nProcessor: 2.7 GHz, intel Core i5\n256GB SSD Storage \n 8GB RAM\nvery excellent condition also have box\nWith intel iris Graphics card\nRetina display with True Tone\nwith 13- inch Screen in size\n 488 cycle count \nbattery above 7:00 hours \nit has warranty \nTo",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2149,7 +2149,7 @@
     "title": "MSI with box,RTX 3060,6 gb nvidia graphics card",
     "price": 112000,
     "description": "MSI with box,RTX 3060,6 gb nvidia graphics card\nfor gamers, for editing,rendering, architects \n16 gb ram\n512 gb ssd,plus has hdd slot\nFull HD \n15.6\" screen size\nTo",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2175,7 +2175,7 @@
     "title": "lenevo thinkpad",
     "price": 32500,
     "description": "lenevo thinkpad\nSlim Core i5 6th Generation \n3.0 ghz processor\nModel :thinkpad T470\nGRAPHICS: intel HD graphics 520\nScreen :14.1inch 1080p FHD \n Storage : 1TB HDD AND 256SSD\nRam : 8gb DDR4\n5hr.+ hours battery life  \nwhite keyboard backlit\nfinger print support\nHD Sound system\nTo",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2201,7 +2201,7 @@
     "title": "Hp CORE I5",
     "price": 27000,
     "description": "Hp CORE I5\nRam 8\nStorage  1 Tera \nGeneration 6th\n5 hours battery life\nclock speed 2.50 Ghz\nWith led backlight keyboard \n         To",
-    "category": "Keyboards",
+    "category": "Computer Accessories",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2214,7 +2214,7 @@
     "title": "Flexible USB keyboard",
     "price": 600,
     "description": "Flexible USB keyboard \nSaves space when carrying around\nTo \n or",
-    "category": "Keyboards",
+    "category": "Computer Accessories",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2240,7 +2240,7 @@
     "title": "Wireless Keyboard Mouse Set",
     "price": 1500,
     "description": "Wireless Keyboard Mouse Set\n2.4Ghz wireless technology\ncompatible with desktop, laptop & tablet",
-    "category": "Networking",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2253,7 +2253,7 @@
     "title": "airpods pro",
     "price": 2200,
     "description": "airpods pro\nFor fed up of wired earphones ?\nWireless earbuds\nWith wireless charging case\nblack and white colors available\nup to 4.5 hours of listening time\nor",
-    "category": "Audio",
+    "category": "Phones",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2266,7 +2266,7 @@
     "title": "Wireless Keyboard Mouse Set",
     "price": 1500,
     "description": "Wireless Keyboard Mouse Set\n2.4Ghz wireless technology\ncompatible with desktop, laptop & tablet",
-    "category": "Networking",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2279,7 +2279,7 @@
     "title": "Hp elitebook 840 G3",
     "price": 25500,
     "description": "Hp elitebook 840 G3\nTo see more details and other products visit the website below",
-    "category": "Laptops",
+    "category": "Other",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2305,7 +2305,7 @@
     "title": "Wireless Controller for Playstation 3",
     "price": 3,
     "description": "Wireless Controller for Playstation 3 \nbrand new and packed\ncharger not included in the package\nFree delivery included \nOrder on ishururu.com to get discount \nPhone number",
-    "category": "Gaming",
+    "category": "Phones",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2357,7 +2357,7 @@
     "title": "Wired controller / Joystick",
     "price": 600,
     "description": "Wired controller / Joystick\nFor laptop or desktop games\nBrand UCOM\nCable length 1.8m",
-    "category": "Gaming",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2383,7 +2383,7 @@
     "title": "airpods pro",
     "price": 2200,
     "description": "airpods pro\nfed up of repetitively purchasing wired earphones when they get damaged? \nWireless earbuds\nWith wireless charging case\nblack and white colors available\nup to 4.5 hours of listening time\nBy using only left or right a time you can get 9 hours of playback \nIncluding free delivery\nor",
-    "category": "Audio",
+    "category": "Phones",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2396,7 +2396,7 @@
     "title": "Wireless Keyboard Mouse Set",
     "price": 1500,
     "description": "Wireless Keyboard Mouse Set\n2.4Ghz wireless technology\ncompatible with desktop, laptop & tablet\nTo order",
-    "category": "Networking",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2409,7 +2409,7 @@
     "title": "Logitech Wireless Keyboard and mouse Combo",
     "price": 1700,
     "description": "Logitech Wireless Keyboard and mouse Combo\nFull sized keyboard with media keys, a number pad and precise cursor control\nFree delivery included",
-    "category": "Keyboards",
+    "category": "Computer Accessories",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2422,7 +2422,7 @@
     "title": "Transcend External hard disk 2 terabyte 2 TB",
     "price": 9800,
     "description": "Transcend External hard disk 2 terabyte 2 TB\nUsb 3.1 portable hard drive\nStore jet 25m3\nFree delivery included\nPhone number",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2435,7 +2435,7 @@
     "title": "Transcend 2TB hard disk",
     "price": 10000,
     "description": "Transcend 2TB hard disk\nUSB 3.1 Gen 1 portable hard drive\nStore jet 25M3",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2448,7 +2448,7 @@
     "title": "External Hard Disk",
     "price": 945542690,
     "description": "External Hard Disk\nPrice 8,000\n☎️ \nBrand: Seagate\nType: Hard disk\nCondition: Brand New\nStorage: 2TB",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2461,7 +2461,7 @@
     "title": "Wired controller / Joystick",
     "price": 600,
     "description": "Wired controller / Joystick\nFor laptop or desktop games\nBrand UCOM\nCable length 1.8m",
-    "category": "Gaming",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2487,7 +2487,7 @@
     "title": "Laptop HP EliteBook 840 G3",
     "price": 0,
     "description": "Laptop HP EliteBook 840 G3\nPrice 26,000\n☎️ \nRAM: 8 GB\nProcessor: Intel Core i5 6th generation\nStorage Capacity: 1 TB\nStorage Type: HDD\nDisplay Size: 14″\nOperating System: Windows 11",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2513,7 +2513,7 @@
     "title": "Sandisk 1 terabytes ( 1 tb) external ssd that can",
     "price": 0,
     "description": "Sandisk 1 terabytes ( 1 tb) external ssd that can fit in your pocket. Faster and much lighter than hard disk. \nPrice 14000",
-    "category": "Hard Drives",
+    "category": "Storage",
     "department": "Electronics",
     "variations": [],
     "images": [
@@ -2526,7 +2526,7 @@
     "title": "HP elitebook folio 1040 G1",
     "price": 0,
     "description": "HP elitebook folio 1040 G1\n14 inch screen slim laptop\nRam 8gb storage 256 gb SSD\nPrice 25000",
-    "category": "Hard Drives",
+    "category": "Laptops",
     "department": "Electronics",
     "variations": [],
     "images": [
