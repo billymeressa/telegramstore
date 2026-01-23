@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 const tele = window.Telegram?.WebApp;
 
-const Layout = ({ cartCount, isAdmin, user }) => {
+const Layout = ({ cartCount, isAdmin, isSuperAdmin, user }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -34,7 +34,7 @@ const Layout = ({ cartCount, isAdmin, user }) => {
 
     return (
         <div className="min-h-screen bg-[var(--tg-theme-secondary-bg-color)] pb-20 font-sans">
-            <Outlet context={{ isAdmin, user }} />
+            <Outlet context={{ isAdmin, isSuperAdmin, user }} />
 
             {/* Bottom Navigation (Hidden on ProductDetails) */}
             {!location.pathname.startsWith('/product/') && (

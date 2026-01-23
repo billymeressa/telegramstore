@@ -183,7 +183,11 @@ const upload = multer({ storage: storage });
 
 // GET /api/check-admin - Check if user is admin
 app.get('/api/check-admin', verifyTelegramWebAppData, (req, res) => {
-    res.json({ isAdmin: true, user: req.telegramUser });
+    const userId = req.telegramUser.id;
+    const mainAdminId = parseInt(process.env.ADMIN_ID);
+    const isSuperAdmin = userId === mainAdminId;
+
+    res.json({ isAdmin: true, isSuperAdmin, user: req.telegramUser });
 });
 
 // Helper to upload buffer to Cloudinary

@@ -8,7 +8,7 @@ const tele = window.Telegram?.WebApp;
 const Profile = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { isAdmin, user } = useOutletContext();
+    const { isAdmin, isSuperAdmin, user } = useOutletContext();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -72,20 +72,23 @@ const Profile = () => {
                             </div>
                             <span className="text-[var(--tg-theme-hint-color)] text-lg">›</span>
                         </button>
-
-                        <button
-                            onClick={() => navigate('/analytics')}
-                            className="w-full bg-[var(--tg-theme-bg-color)] p-3 rounded-xl flex items-center justify-between active:bg-[var(--tg-theme-secondary-bg-color)] transition-colors"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
-                                    <BarChart3 size={18} className="text-purple-600" />
-                                </div>
-                                <span className="text-[var(--tg-theme-text-color)] font-medium text-sm">Analytics</span>
-                            </div>
-                            <span className="text-[var(--tg-theme-hint-color)] text-lg">›</span>
-                        </button>
                     </>
+                )}
+
+                {/* Analytics Button - Super Admin Only */}
+                {isSuperAdmin && (
+                    <button
+                        onClick={() => navigate('/analytics')}
+                        className="w-full bg-[var(--tg-theme-bg-color)] p-3 rounded-xl flex items-center justify-between active:bg-[var(--tg-theme-secondary-bg-color)] transition-colors"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                                <BarChart3 size={18} className="text-purple-600" />
+                            </div>
+                            <span className="text-[var(--tg-theme-text-color)] font-medium text-sm">Analytics</span>
+                        </div>
+                        <span className="text-[var(--tg-theme-hint-color)] text-lg">›</span>
+                    </button>
                 )}
 
                 {/* Wishlist Button */}

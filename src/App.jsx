@@ -21,6 +21,7 @@ function App() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [user, setUser] = useState(null);
 
   // Pagination State
@@ -66,12 +67,17 @@ function App() {
           if (data.isAdmin) {
             setIsAdmin(true);
           }
+          if (data.isSuperAdmin) {
+            setIsSuperAdmin(true);
+          }
         } else {
           setIsAdmin(false);
+          setIsSuperAdmin(false);
         }
       } catch (e) {
         console.error("Admin check failed", e);
         setIsAdmin(false);
+        setIsSuperAdmin(false);
       }
     };
 
@@ -127,6 +133,7 @@ function App() {
         photo_url: "https://via.placeholder.com/150"
       });
       setIsAdmin(true);
+      setIsSuperAdmin(true);
     }
 
     fetchProductData(1);
@@ -312,7 +319,7 @@ function App() {
     <BrowserRouter>
       {loading && <LoadingScreen />}
       <Routes>
-        <Route element={<Layout cartCount={cart.reduce((a, c) => a + c.quantity, 0)} isAdmin={isAdmin} user={user} />}>
+        <Route element={<Layout cartCount={cart.reduce((a, c) => a + c.quantity, 0)} isAdmin={isAdmin} isSuperAdmin={isSuperAdmin} user={user} />}>
           <Route path="/" element={
             <Home
               products={products}
@@ -337,7 +344,7 @@ function App() {
           <Route path="/wishlist" element={<WishlistPage products={products} wishlist={wishlist} toggleWishlist={toggleWishlist} />} />
           <Route path="/product/:id" element={<ProductDetails onAdd={onAdd} wishlist={wishlist} toggleWishlist={toggleWishlist} products={products} />} />
           <Route path="/admin" element={isAdmin ? <AdminDashboard products={products} onProductUpdate={setProducts} /> : <Navigate to="/" />} />
-          <Route path="/analytics" element={isAdmin ? <AnalyticsDashboard /> : <Navigate to="/" />} />
+          <Route path="/analytics" element={isSuperAdmin ? <AnalyticsDashboard /> : <Navigate to="/" />} />
         </Route>
       </Routes>
       {toast && <Toast message={toast} onClose={() => setToast(null)} />}
