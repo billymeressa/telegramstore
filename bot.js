@@ -37,7 +37,8 @@ bot.command('start', async (ctx) => {
             {
                 username: ctx.from.username,
                 firstName: ctx.from.first_name,
-                userId: ctx.from.id.toString()
+                userId: ctx.from.id.toString(),
+                lastActiveAt: new Date()
             },
             { upsert: true, new: true }
         );
@@ -401,6 +402,65 @@ const PORT = process.env.PORT || 3000; // Use env PORT for Render
 app.listen(PORT, () => {
     console.log(`API Server running on http://localhost:${PORT}`);
 });
+
+// --- RE-ENGAGEMENT SYSTEM ---
+const checkInactiveUsers = async () => {
+    // console.log('Checking for inactive users...');
+    try {
+        const now = new Date();
+        const INACTIVE_THRESHOLD_DAYS = 7;
+        const REENGAGEMENT_COOLDOWN_DAYS = 30; // Don't annoy them too often
+
+        const inactiveDate = new Date(now.getTime() - (INACTIVE_THRESHOLD_DAYS * 24 * 60 * 60 * 1000));
+
+        // Find users active before threshold, but NOT re-engaged recently
+        const recentReengagementDate = new Date(now.getTime() - (REENGAGEMENT_COOLDOWN_DAYS * 24 * 60 * 60 * 1000));
+
+        const inactiveUsers = await User.find({
+            lastActiveAt: { $lt: inactiveDate },
+            $or: [
+                { lastReengagementAt: { $exists: false } },
+                { lastReengagementAt: { $lt: recentReengagementDate } },
+                { lastReengagementAt: null }
+            ]
+        });
+
+        if (inactiveUsers.length > 0) {
+            console.log(`Found ${inactiveUsers.length} inactive users. Sending reminders...`);
+
+            for (const user of inactiveUsers) {
+                try {
+                    await bot.telegram.sendMessage(
+                        user.userId,
+                        `👋 *We miss you, ${user.firstName || 'there'}!*\n\n` +
+                        `It's been a while since you visited. We've added lots of new exciting products since then!\n\n` +
+                        `Come take a look at what's new. 👇`,
+                        {
+                            parse_mode: 'Markdown',
+                            reply_markup: {
+                                inline_keyboard: [[{ text: "🛍️ Visit Store", web_app: { url: process.env.WEB_APP_URL } }]]
+                            }
+                        }
+                    );
+
+                    // Update re-engagement timestamp
+                    await User.updateOne({ userId: user.userId }, { lastReengagementAt: new Date() });
+                } catch (err) {
+                    console.error(`Failed to send re-engagement to ${user.userId}:`, err.message);
+                    // Could also delete user if blocked
+                }
+            }
+        }
+    } catch (err) {
+        console.error('Error in re-engagement job:', err);
+    }
+};
+
+// Run check daily (every 24 hours)
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+setInterval(checkInactiveUsers, ONE_DAY_MS);
+// Run once on startup after a delay to catch up (e.g., 1 min)
+setTimeout(checkInactiveUsers, 60 * 1000);
 
 // Enable graceful stop
 process.once('SIGINT', () => { bot.stop('SIGINT'); process.exit(0); });

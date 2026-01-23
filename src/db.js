@@ -55,7 +55,9 @@ const User = mongoose.model('User', new mongoose.Schema({
     userId: { type: String, required: true, unique: true },
     username: { type: String },
     firstName: { type: String },
-    joinedAt: { type: Date, default: Date.now }
+    joinedAt: { type: Date, default: Date.now },
+    lastActiveAt: { type: Date, default: Date.now },
+    lastReengagementAt: { type: Date }
 }));
 
 export { connectDB, Product, Order, User };
