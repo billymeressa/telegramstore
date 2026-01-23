@@ -9,43 +9,33 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
 
 
-    // Extract departments and categories
-    const departments = useMemo(() => {
-        const depts = products.map(p => p.department).filter(Boolean);
-        return ["All", ...new Set(depts)];
+    // Extract categories directly
+    const categories = useMemo(() => {
+        const cats = products.map(p => p.category).filter(Boolean);
+        return ["All", ...new Set(cats)];
     }, [products]);
-    const [selectedDepartment, setSelectedDepartment] = useState("All");
-    const [selectedSubCategory, setSelectedSubCategory] = useState("All");
+
+    const [selectedCategory, setSelectedCategory] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
 
     // Helper to get random products for demo rows
     const trendingProducts = useMemo(() => products.slice(0, 5), [products]);
     const newArrivals = useMemo(() => products.slice(5, 12), [products]);
 
-    // Get unique categories based on selected department
-    const availableSubCategories = useMemo(() => {
-        if (selectedDepartment === "All") return [];
-        const cats = products
-            .filter(p => p.department === selectedDepartment)
-            .map(p => p.category);
-        return ["All", ...new Set(cats)];
-    }, [products, selectedDepartment]);
+    // Derived sub-categories are no longer needed since we filter by category directly
 
     const filteredProducts = useMemo(() => {
         return products.filter(p => {
-            const matchesDepartment = selectedDepartment === "All" || p.department === selectedDepartment;
-            const matchesCategory = selectedSubCategory === "All" || p.category === selectedSubCategory;
+            const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
             const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase()));
 
-            return matchesDepartment && matchesCategory && matchesSearch;
+            return matchesCategory && matchesSearch;
         });
-    }, [products, selectedDepartment, selectedSubCategory, searchQuery]);
+    }, [products, selectedCategory, searchQuery]);
 
-    // Reset subcategory when department changes
-    const handleDepartmentChange = (dept) => {
-        setSelectedDepartment(dept);
-        setSelectedSubCategory("All");
+    const handleCategoryChange = (cat) => {
+        setSelectedCategory(cat);
     };
 
     // Infinite Scroll Listener
@@ -81,48 +71,30 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
             {/* Main Scrollable Content */}
             <div className="flex flex-col gap-4">
                 {/* Horizontal Scroll Rows (Only show on Home / No Search) */}
-                {!searchQuery && selectedDepartment === "All" && (
+                {!searchQuery && selectedCategory === "All" && (
                     <div className="flex flex-col gap-2 mb-2">
-                        <CategoryColumnRow categories={departments} onSelect={handleDepartmentChange} />
+                        <CategoryColumnRow categories={categories} onSelect={handleCategoryChange} />
                         <HorizontalProductRow title="✨ New Arrivals" products={newArrivals} />
                     </div>
                 )}
 
                 {/* Sticky Navigation */}
                 <div className="sticky top-[56px] z-40 bg-[var(--tg-theme-bg-color)] py-2 border-b border-[var(--tg-theme-section-separator-color)] shadow-sm">
-                    {/* Department Pills */}
+                    {/* Category Pills */}
                     <div className="flex gap-2 overflow-x-auto no-scrollbar items-center px-4">
-                        {departments.map(dept => (
+                        {categories.map(cat => (
                             <button
-                                key={dept}
-                                onClick={() => handleDepartmentChange(dept)}
-                                className={`whitespace-nowrap text-sm px-4 py-1.5 rounded-full transition-all font-medium ${selectedDepartment === dept
+                                key={cat}
+                                onClick={() => handleCategoryChange(cat)}
+                                className={`whitespace-nowrap text-sm px-4 py-1.5 rounded-full transition-all font-medium ${selectedCategory === cat
                                     ? 'bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] shadow-md transform scale-105'
                                     : 'bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] hover:bg-[var(--tg-theme-section-separator-color)]'
                                     }`}
                             >
-                                {dept}
+                                {cat}
                             </button>
                         ))}
                     </div>
-
-                    {/* Sub-Category Pills */}
-                    {selectedDepartment !== "All" && availableSubCategories.length > 0 && (
-                        <div className="flex gap-2 overflow-x-auto no-scrollbar items-center px-4 pt-2 animate-in slide-in-from-top-2 duration-200">
-                            {availableSubCategories.map(cat => (
-                                <button
-                                    key={cat}
-                                    onClick={() => setSelectedSubCategory(cat)}
-                                    className={`whitespace-nowrap text-xs px-3 py-1 rounded-full border transition-all ${selectedSubCategory === cat
-                                        ? 'border-[var(--tg-theme-button-color)] bg-[var(--tg-theme-button-color)]/10 text-[var(--tg-theme-button-color)] font-semibold'
-                                        : 'border-[var(--tg-theme-section-separator-color)] text-[var(--tg-theme-hint-color)] hover:border-[var(--tg-theme-hint-color)]'
-                                        }`}
-                                >
-                                    {cat}
-                                </button>
-                            ))}
-                        </div>
-                    )}
                 </div>
 
                 {/* Product Section */}
