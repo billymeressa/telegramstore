@@ -5,7 +5,7 @@ import cors from 'cors';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
-import { connectDB, Product, Order, User, AnalyticsEvent } from './src/db.js';
+import { connectDB, Product, Order, User, AnalyticsEvent, Session } from './src/db.js';
 import path from 'path';
 
 
@@ -238,6 +238,66 @@ app.post('/api/track', async (req, res) => {
     }
 });
 
+// POST /api/session/start - Start a new session
+app.post('/api/session/start', async (req, res) => {
+    try {
+        const { userId } = req.body;
+        if (!userId) {
+            return res.status(400).json({ error: 'Missing userId' });
+        }
+
+        // End any active sessions for this user first
+        await Session.updateMany(
+            { userId, isActive: true },
+            {
+                endTime: new Date(),
+                isActive: false,
+                $set: { duration: { $divide: [{ $subtract: [new Date(), "$startTime"] }, 1000] } }
+            }
+        );
+
+        // Create new session
+        const session = new Session({
+            userId,
+            startTime: new Date(),
+            isActive: true
+        });
+        await session.save();
+
+        res.json({ success: true, sessionId: session._id });
+    } catch (err) {
+        console.error("Session Start Error:", err);
+        res.status(500).json({ error: 'Failed to start session' });
+    }
+});
+
+// POST /api/session/end - End current session
+app.post('/api/session/end', async (req, res) => {
+    try {
+        const { userId } = req.body;
+        if (!userId) {
+            return res.status(400).json({ error: 'Missing userId' });
+        }
+
+        const session = await Session.findOne({ userId, isActive: true }).sort({ startTime: -1 });
+
+        if (session) {
+            const endTime = new Date();
+            const duration = Math.floor((endTime - session.startTime) / 1000); // seconds
+
+            session.endTime = endTime;
+            session.duration = duration;
+            session.isActive = false;
+            await session.save();
+        }
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error("Session End Error:", err);
+        res.status(500).json({ error: 'Failed to end session' });
+    }
+});
+
 // GET /api/analytics/stats - Get aggregated analytics data
 app.get('/api/analytics/stats', async (req, res) => {
     try {
@@ -262,13 +322,61 @@ app.get('/api/analytics/stats', async (req, res) => {
             { $project: { productId: '$_id', count: 1, productTitle: 1, _id: 0 } }
         ]);
 
+        // Time-series data for last 7 days
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+        const dailyStats = await AnalyticsEvent.aggregate([
+            { $match: { timestamp: { $gte: sevenDaysAgo } } },
+            {
+                $group: {
+                    _id: {
+                        date: { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
+                        eventType: "$eventType"
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { "_id.date": 1 } }
+        ]);
+
+        // Format for frontend consumption
+        const chartData = {};
+        dailyStats.forEach(item => {
+            const date = item._id.date;
+            if (!chartData[date]) {
+                chartData[date] = { date, app_open: 0, view_product: 0, add_to_cart: 0 };
+            }
+            chartData[date][item._id.eventType] = item.count;
+        });
+
+        const timeSeriesData = Object.values(chartData).sort((a, b) => a.date.localeCompare(b.date));
+
+        // Session metrics
+        const totalSessions = await Session.countDocuments({});
+        const completedSessions = await Session.find({ isActive: false, duration: { $exists: true } });
+
+        const avgSessionDuration = completedSessions.length > 0
+            ? Math.floor(completedSessions.reduce((sum, s) => sum + (s.duration || 0), 0) / completedSessions.length)
+            : 0;
+
+        const sessionsPerUser = totalSessions > 0 && uniqueUsers.length > 0
+            ? (totalSessions / uniqueUsers.length).toFixed(1)
+            : 0;
+
         res.json({
             totalEvents,
             uniqueUsers: uniqueUsers.length,
             appOpens,
             productViews,
             addToCarts,
-            topProducts
+            topProducts,
+            timeSeriesData,
+            sessionMetrics: {
+                totalSessions,
+                avgSessionDuration, // in seconds
+                sessionsPerUser: parseFloat(sessionsPerUser)
+            }
         });
     } catch (err) {
         console.error("Analytics Error:", err);

@@ -9,7 +9,13 @@ const AnalyticsDashboard = () => {
         appOpens: 0,
         productViews: 0,
         addToCarts: 0,
-        topProducts: []
+        topProducts: [],
+        timeSeriesData: [],
+        sessionMetrics: {
+            totalSessions: 0,
+            avgSessionDuration: 0,
+            sessionsPerUser: 0
+        }
     });
     const [loading, setLoading] = useState(true);
 
@@ -70,6 +76,43 @@ const AnalyticsDashboard = () => {
                     />
                 </div>
 
+                {/* Session Metrics */}
+                <div className="bg-[var(--tg-theme-bg-color)] rounded-xl p-4 border border-[var(--tg-theme-section-separator-color)] mb-6">
+                    <h2 className="text-lg font-bold text-[var(--tg-theme-text-color)] mb-3">
+                        Session Insights
+                    </h2>
+                    <div className="grid grid-cols-3 gap-3">
+                        <div className="text-center">
+                            <p className="text-2xl font-bold text-[var(--tg-theme-button-color)]">
+                                {stats.sessionMetrics.totalSessions}
+                            </p>
+                            <p className="text-xs text-[var(--tg-theme-hint-color)] mt-1">Total Sessions</p>
+                        </div>
+                        <div className="text-center">
+                            <p className="text-2xl font-bold text-[var(--tg-theme-button-color)]">
+                                {Math.floor(stats.sessionMetrics.avgSessionDuration / 60)}m {stats.sessionMetrics.avgSessionDuration % 60}s
+                            </p>
+                            <p className="text-xs text-[var(--tg-theme-hint-color)] mt-1">Avg Session</p>
+                        </div>
+                        <div className="text-center">
+                            <p className="text-2xl font-bold text-[var(--tg-theme-button-color)]">
+                                {stats.sessionMetrics.sessionsPerUser}
+                            </p>
+                            <p className="text-xs text-[var(--tg-theme-hint-color)] mt-1">Sessions/User</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Activity Chart */}
+                {stats.timeSeriesData.length > 0 && (
+                    <div className="bg-[var(--tg-theme-bg-color)] rounded-xl p-4 border border-[var(--tg-theme-section-separator-color)] mb-6">
+                        <h2 className="text-lg font-bold text-[var(--tg-theme-text-color)] mb-4">
+                            Activity Over Time (Last 7 Days)
+                        </h2>
+                        <SimpleLineChart data={stats.timeSeriesData} />
+                    </div>
+                )}
+
                 {/* Top Products */}
                 <div className="bg-[var(--tg-theme-bg-color)] rounded-xl p-4 border border-[var(--tg-theme-section-separator-color)]">
                     <h2 className="text-lg font-bold text-[var(--tg-theme-text-color)] mb-3">
@@ -126,6 +169,108 @@ const StatCard = ({ icon, label, value, color }) => {
             <p className="text-xs text-[var(--tg-theme-hint-color)]">
                 {label}
             </p>
+        </div>
+    );
+};
+
+const SimpleLineChart = ({ data }) => {
+    if (!data || data.length === 0) return null;
+
+    const width = 100; // percentage
+    const height = 200;
+    const padding = 20;
+
+    // Find max value for scaling
+    const maxValue = Math.max(
+        ...data.map(d => Math.max(d.app_open || 0, d.view_product || 0, d.add_to_cart || 0))
+    );
+
+    const scaleY = (value) => {
+        return height - padding - ((value / (maxValue || 1)) * (height - 2 * padding));
+    };
+
+    const scaleX = (index) => {
+        return padding + (index / (data.length - 1 || 1)) * (300 - 2 * padding);
+    };
+
+    const createPath = (key, color) => {
+        const points = data.map((d, i) => `${scaleX(i)},${scaleY(d[key] || 0)}`).join(' L ');
+        return points ? `M ${points}` : '';
+    };
+
+    return (
+        <div className="w-full overflow-x-auto">
+            <svg viewBox="0 0 320 200" className="w-full" style={{ minWidth: '300px' }}>
+                {/* Grid lines */}
+                {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => (
+                    <line
+                        key={i}
+                        x1={padding}
+                        y1={height - padding - ratio * (height - 2 * padding)}
+                        x2={300 - padding}
+                        y2={height - padding - ratio * (height - 2 * padding)}
+                        stroke="var(--tg-theme-hint-color)"
+                        strokeOpacity="0.1"
+                        strokeWidth="1"
+                    />
+                ))}
+
+                {/* Lines */}
+                <path
+                    d={createPath('app_open')}
+                    fill="none"
+                    stroke="#10b981"
+                    strokeWidth="2"
+                />
+                <path
+                    d={createPath('view_product')}
+                    fill="none"
+                    stroke="#8b5cf6"
+                    strokeWidth="2"
+                />
+                <path
+                    d={createPath('add_to_cart')}
+                    fill="none"
+                    stroke="#f97316"
+                    strokeWidth="2"
+                />
+
+                {/* Data points */}
+                {data.map((d, i) => (
+                    <g key={i}>
+                        <circle cx={scaleX(i)} cy={scaleY(d.app_open || 0)} r="3" fill="#10b981" />
+                        <circle cx={scaleX(i)} cy={scaleY(d.view_product || 0)} r="3" fill="#8b5cf6" />
+                        <circle cx={scaleX(i)} cy={scaleY(d.add_to_cart || 0)} r="3" fill="#f97316" />
+                    </g>
+                ))}
+            </svg>
+
+            {/* Legend */}
+            <div className="flex justify-center gap-4 mt-4 text-xs">
+                <div className="flex items-center gap-1">
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span className="text-[var(--tg-theme-text-color)]">App Opens</span>
+                </div>
+                <div className="flex items-center gap-1">
+                    <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                    <span className="text-[var(--tg-theme-text-color)]">Product Views</span>
+                </div>
+                <div className="flex items-center gap-1">
+                    <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                    <span className="text-[var(--tg-theme-text-color)]">Add to Carts</span>
+                </div>
+            </div>
+
+            {/* Date labels */}
+            <div className="flex justify-between mt-2 text-xs text-[var(--tg-theme-hint-color)] px-5">
+                {data.map((d, i) => {
+                    if (i === 0 || i === data.length - 1 || i === Math.floor(data.length / 2)) {
+                        const date = new Date(d.date);
+                        return <span key={i}>{date.getMonth() + 1}/{date.getDate()}</span>;
+                    }
+                    return null;
+                }).filter(Boolean)}
+            </div>
         </div>
     );
 };

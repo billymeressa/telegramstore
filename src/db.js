@@ -67,4 +67,13 @@ const AnalyticsEvent = mongoose.model('AnalyticsEvent', new mongoose.Schema({
     timestamp: { type: Date, default: Date.now }
 }));
 
-export { connectDB, Product, Order, User, AnalyticsEvent };
+const Session = mongoose.model('Session', new mongoose.Schema({
+    userId: { type: String, required: true, index: true },
+    startTime: { type: Date, required: true },
+    endTime: { type: Date },
+    duration: { type: Number }, // in seconds
+    eventsCount: { type: Number, default: 0 },
+    isActive: { type: Boolean, default: true }
+}));
+
+export { connectDB, Product, Order, User, AnalyticsEvent, Session };

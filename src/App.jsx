@@ -11,7 +11,7 @@ import ProductDetails from './pages/ProductDetails';
 import AdminDashboard from './components/AdminDashboard';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import Toast from './components/Toast'; // New Import
-import { trackEvent } from './utils/track';
+import { trackEvent, startSession, endSession } from './utils/track';
 
 // Removed top-level tele
 const ADMIN_ID = 748823605; // Make sure this matches your .env ADMIN_ID
@@ -138,8 +138,14 @@ function App() {
 
     fetchProductData(1);
 
-    // Track app open
+    // Track app open and start session
     trackEvent('app_open');
+    startSession();
+
+    // End session when app closes/unmounts
+    return () => {
+      endSession();
+    };
   }, []);
 
   const fetchProductData = (pageNum = 1) => {

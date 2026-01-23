@@ -30,3 +30,47 @@ export const trackEvent = async (eventType, metadata = {}) => {
         console.warn("Analytics tracking failed:", e);
     }
 };
+
+/**
+ * Starts a new session for the user
+ */
+export const startSession = async () => {
+    const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (!user) return;
+
+    try {
+        await fetch(`${API_URL}/api/session/start`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: user.id.toString()
+            })
+        });
+    } catch (e) {
+        console.warn("Session start failed:", e);
+    }
+};
+
+/**
+ * Ends the current session for the user
+ */
+export const endSession = async () => {
+    const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (!user) return;
+
+    try {
+        await fetch(`${API_URL}/api/session/end`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: user.id.toString()
+            })
+        });
+    } catch (e) {
+        console.warn("Session end failed:", e);
+    }
+};
