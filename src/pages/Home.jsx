@@ -9,30 +9,61 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
 
 
-    // Extract categories directly
-    const categories = useMemo(() => {
-        const cats = products.map(p => p.category).filter(Boolean);
-        return ["All", ...new Set(cats)];
-    }, [products]);
+    const DEPARTMENTS = ["All", "Electronics", "Men", "Women", "Kids", "Home", "Beauty", "Sports", "Books"];
 
+    // Sub-category mapping (simplified version of what's in AdminDashboard)
+    // In a real app, this might come from the backend or a shared constant file
+    const SUBCATEGORIES = {
+        'Men': ['Shirts', 'T-Shirts', 'Pants', 'Jeans', 'Shoes', 'Suits', 'Accessories', 'Activewear', 'Other'],
+        'Women': ['Dresses', 'Tops', 'Skirts', 'Pants', 'Jeans', 'Shoes', 'Bags', 'Jewelry', 'Accessories', 'Other'],
+        'Kids': ['Boys Clothing', 'Girls Clothing', 'Baby', 'Shoes', 'Toys', 'School', 'Other'],
+        'Electronics': ['Phones', 'Laptops', 'Audio', 'Storage', 'Computer Accessories', 'Gaming', 'Networking', 'Smart Home', 'Other'],
+        'Home': ['Decor', 'Kitchen', 'Bedding', 'Furniture', 'Lighting', 'Tools', 'Other'],
+        'Beauty': ['Skincare', 'Makeup', 'Fragrance', 'Haircare', 'Personal Care', 'Other'],
+        'Sports': ['Gym Equipment', 'Team Sports', 'Outdoor', 'Running', 'Nutrition', 'Other'],
+        'Books': ['Fiction', 'Non-Fiction', 'Educational', 'Self-Help', 'Children', 'Other']
+    };
+
+    const [selectedDepartment, setSelectedDepartment] = useState("All");
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
+
+    // Dynamic Sub-categories based on actual products in the store
+    const availableCategories = useMemo(() => {
+        let relevantProducts = products;
+
+        if (selectedDepartment !== "All") {
+            relevantProducts = products.filter(p => p.department === selectedDepartment);
+        }
+
+        const cats = relevantProducts.map(p => p.category).filter(Boolean);
+        // unique categories
+        const uniqueCats = [...new Set(cats)].sort();
+
+        return ["All", ...uniqueCats];
+    }, [selectedDepartment, products]);
 
     // Helper to get random products for demo rows
     const trendingProducts = useMemo(() => products.slice(0, 5), [products]);
     const newArrivals = useMemo(() => products.slice(5, 12), [products]);
 
-    // Derived sub-categories are no longer needed since we filter by category directly
-
     const filteredProducts = useMemo(() => {
         return products.filter(p => {
+            const matchesDepartment = selectedDepartment === "All" || p.department === selectedDepartment;
+            // If category is "All", we only filter by department. Otherwise both.
             const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
+
             const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase()));
 
-            return matchesCategory && matchesSearch;
+            return matchesDepartment && matchesCategory && matchesSearch;
         });
-    }, [products, selectedCategory, searchQuery]);
+    }, [products, selectedDepartment, selectedCategory, searchQuery]);
+
+    const handleDepartmentChange = (dept) => {
+        setSelectedDepartment(dept);
+        setSelectedCategory("All"); // Reset sub-category when department changes
+    };
 
     const handleCategoryChange = (cat) => {
         setSelectedCategory(cat);
@@ -71,24 +102,41 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
             {/* Main Scrollable Content */}
             <div className="flex flex-col gap-4">
                 {/* Horizontal Scroll Rows (Only show on Home / No Search) */}
-                {!searchQuery && selectedCategory === "All" && (
+                {!searchQuery && selectedDepartment === "All" && selectedCategory === "All" && (
                     <div className="flex flex-col gap-2 mb-2">
-                        <CategoryColumnRow categories={categories} onSelect={handleCategoryChange} />
+                        {/* Show dynamic sub-categories visually */}
+                        <CategoryColumnRow categories={availableCategories} onSelect={handleCategoryChange} />
                         <HorizontalProductRow title="✨ New Arrivals" products={newArrivals} />
                     </div>
                 )}
 
-                {/* Sticky Navigation */}
-                <div className="sticky top-[56px] z-40 bg-[var(--tg-theme-bg-color)] py-2 border-b border-[var(--tg-theme-section-separator-color)] shadow-sm">
-                    {/* Category Pills */}
-                    <div className="flex gap-2 overflow-x-auto no-scrollbar items-center px-4">
-                        {categories.map(cat => (
+                {/* Sticky Navigation for Filters */}
+                <div className="sticky top-[56px] z-40 bg-[var(--tg-theme-bg-color)] border-b border-[var(--tg-theme-section-separator-color)] shadow-sm">
+                    {/* Level 1: Departments */}
+                    <div className="flex gap-2 overflow-x-auto no-scrollbar items-center px-4 py-2 border-b border-gray-100">
+                        {DEPARTMENTS.map(dept => (
+                            <button
+                                key={dept}
+                                onClick={() => handleDepartmentChange(dept)}
+                                className={`whitespace-nowrap text-sm px-3 py-1 rounded-md transition-all font-bold ${selectedDepartment === dept
+                                    ? 'text-[var(--tg-theme-button-color)]'
+                                    : 'text-[var(--tg-theme-hint-color)] hover:text-[var(--tg-theme-text-color)]'
+                                    }`}
+                            >
+                                {dept}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Level 2: Categories (Sub-categories) */}
+                    <div className="flex gap-2 overflow-x-auto no-scrollbar items-center px-4 py-2 bg-[var(--tg-theme-secondary-bg-color)]">
+                        {availableCategories.map(cat => (
                             <button
                                 key={cat}
                                 onClick={() => handleCategoryChange(cat)}
-                                className={`whitespace-nowrap text-sm px-4 py-1.5 rounded-full transition-all font-medium ${selectedCategory === cat
-                                    ? 'bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] shadow-md transform scale-105'
-                                    : 'bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] hover:bg-[var(--tg-theme-section-separator-color)]'
+                                className={`whitespace-nowrap text-xs px-3 py-1.5 rounded-full transition-all font-medium border ${selectedCategory === cat
+                                    ? 'bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] border-[var(--tg-theme-button-color)] shadow-sm'
+                                    : 'bg-[var(--tg-theme-bg-color)] text-[var(--tg-theme-text-color)] border-[var(--tg-theme-section-separator-color)] hover:bg-[var(--tg-theme-section-separator-color)]'
                                     }`}
                             >
                                 {cat}
