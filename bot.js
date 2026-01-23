@@ -98,8 +98,8 @@ bot.on('text', async (ctx) => {
         await ctx.reply(
             `👋 *Hi there, ${ctx.from.first_name}!*\n\n` +
             `I'm your shopping assistant. 🛍️\n\n` +
-            `Look looking for something stylish? Tap the button below to browse our full collection and place an order!\n\n` +
-            `_Need help? Contact support directly._`,
+            `Looking for something stylish? Tap the button below to browse our full collection and place an order!\n\n` +
+            `_Need help or have any feedback? We'd love to hear from you! Contact the admin directly: [Admin](tg://user?id=${process.env.ADMIN_ID})_`,
             {
                 parse_mode: 'Markdown',
                 reply_markup: {
