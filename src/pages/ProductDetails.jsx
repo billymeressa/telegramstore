@@ -108,11 +108,11 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] })
 
                 {/* Title & Price */}
                 <div className="mb-4">
-                    <h1 className="text-xl font-semibold text-[var(--tg-theme-text-color)] leading-snug mb-2">
+                    <h1 className="text-2xl font-bold text-[var(--tg-theme-text-color)] leading-snug mb-2">
                         {product.title}
                     </h1>
                     <div className="flex items-baseline gap-1">
-                        <span className="text-2xl font-bold text-[var(--tg-theme-text-color)]">{Math.floor(product.price)}</span>
+                        <span className="text-3xl font-bold text-[var(--tg-theme-text-color)]">{Math.floor(product.price)}</span>
                         <span className="text-sm font-medium text-[var(--tg-theme-hint-color)]">Birr</span>
                     </div>
                 </div>
@@ -160,18 +160,18 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] })
                                     navigate(`/product/${rel.id}`);
                                     window.scrollTo(0, 0);
                                 }}
-                                className="min-w-[120px] w-[120px] bg-[var(--tg-theme-bg-color)] rounded-xl overflow-hidden shadow-sm cursor-pointer flex-shrink-0 active:scale-95 transition-transform"
+                                className="min-w-[160px] w-[160px] bg-[var(--tg-theme-bg-color)] rounded-xl overflow-hidden shadow-sm cursor-pointer flex-shrink-0 active:scale-95 transition-transform"
                             >
-                                <div className="w-full h-28 bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center">
+                                <div className="w-full h-40 bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center">
                                     {rel.images?.[0] ? (
                                         <img src={rel.images[0]} alt={rel.title} className="max-w-full max-h-full object-contain" />
                                     ) : (
-                                        <span className="text-2xl opacity-20 grayscale">📦</span>
+                                        <span className="text-4xl opacity-20 grayscale">📦</span>
                                     )}
                                 </div>
-                                <div className="p-2">
-                                    <h4 className="text-[11px] font-medium text-[var(--tg-theme-text-color)] line-clamp-2 h-7 leading-tight mb-0.5">{rel.title}</h4>
-                                    <p className="text-[var(--tg-theme-button-color)] font-bold text-xs">{Math.floor(rel.price)} Birr</p>
+                                <div className="p-3">
+                                    <h4 className="text-sm font-bold text-[var(--tg-theme-text-color)] line-clamp-2 h-10 leading-snug mb-1">{rel.title}</h4>
+                                    <p className="text-[var(--tg-theme-button-color)] font-bold text-base">{Math.floor(rel.price)} Birr</p>
                                 </div>
                             </div>
                         ))}

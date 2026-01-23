@@ -31,8 +31,8 @@ const HorizontalProductRow = ({ title, products }) => {
                             )}
                         </div>
                         <div className="flex flex-col">
-                            <h4 className="text-[var(--tg-theme-text-color)] text-xs font-medium line-clamp-1">{product.title}</h4>
-                            <p className="text-[var(--tg-theme-hint-color)] text-xs">{Math.floor(product.price)} ETB</p>
+                            <h4 className="text-[var(--tg-theme-text-color)] text-sm font-bold line-clamp-1">{product.title}</h4>
+                            <p className="text-[var(--tg-theme-button-color)] text-sm font-bold">{Math.floor(product.price)} ETB</p>
                         </div>
                     </div>
                 ))}

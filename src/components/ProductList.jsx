@@ -34,12 +34,12 @@ function ProductList({ products, wishlist = [], onToggleWishlist }) {
                     </div>
 
                     <div className="p-2.5 flex flex-col gap-1 text-left">
-                        <h3 className="text-[var(--tg-theme-text-color)] text-sm leading-tight line-clamp-2 min-h-[2.5em] font-medium">
+                        <h3 className="text-[var(--tg-theme-text-color)] text-base leading-tight line-clamp-2 min-h-[2.5em] font-bold">
                             {product.title}
                         </h3>
                         <div className="flex items-center justify-between mt-1">
                             <div className="flex items-baseline gap-0.5">
-                                <span className="text-[var(--tg-theme-text-color)] text-base font-bold">{Math.floor(product.price)}</span>
+                                <span className="text-[var(--tg-theme-text-color)] text-lg font-extrabold">{Math.floor(product.price)}</span>
                                 <span className="text-[var(--tg-theme-hint-color)] text-xs font-normal">ETB</span>
                             </div>
 
