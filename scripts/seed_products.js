@@ -46,9 +46,9 @@ const seedProducts = async () => {
         await Product.deleteMany({});
         console.log('Cleared existing products from Database');
 
-        const productsToInsert = [];
-
         console.log('Starting image uploads to Cloudinary (this may take a while)...');
+
+        const productsToInsert = [];
 
         // Process each product sequentially to avoid rate limits
         for (const [index, p] of productsData.entries()) {
@@ -72,15 +72,9 @@ const seedProducts = async () => {
             }
 
             if (uploadedImages.length > 0) {
-                productsToInsert.push({
-                    id: p.id,
-                    title: p.title,
-                    price: p.price,
-                    description: p.description,
-                    category: p.category,
-                    department: p.department,
-                    images: uploadedImages
-                });
+                // Update the product object with new URLs
+                p.images = uploadedImages;
+                productsToInsert.push(p);
             } else {
                 console.warn(`Product ${p.id} skipped - no valid images.`);
             }
@@ -88,7 +82,21 @@ const seedProducts = async () => {
             if ((index + 1) % 10 === 0) console.log(`Processed ${index + 1} products...`);
         }
 
-        await Product.insertMany(productsToInsert);
+        // SAVE THE UPDATED FILE so we don't lose the Cloudinary URLs
+        fs.writeFileSync(productsPath, JSON.stringify(productsData, null, 2));
+        console.log('Updated products.json with Cloudinary URLs');
+
+        const dbProducts = productsToInsert.map(p => ({
+            id: p.id,
+            title: p.title,
+            price: p.price,
+            description: p.description,
+            category: p.category,
+            department: p.department,
+            images: p.images
+        }));
+
+        await Product.insertMany(dbProducts);
         console.log(`Successfully seeded ${productsToInsert.length} products to Database with Cloudinary Images`);
 
         process.exit(0);
