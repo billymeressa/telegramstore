@@ -1,67 +1,37 @@
-
+import 'dotenv/config'; // To load MONGODB_URI
 import mongoose from 'mongoose';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import 'dotenv/config'; // Load .env
 import { connectDB, Product } from '../src/db.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const PRODUCTS_FILE = path.join(__dirname, '../scraped_data/products.json');
-
-const seedData = async () => {
+const seedDB = async () => {
     try {
         await connectDB();
 
-        if (!fs.existsSync(PRODUCTS_FILE)) {
-            console.error('Products file not found!');
-            process.exit(1);
-        }
+        const productsPath = path.join(__dirname, '../products.json');
+        const productsData = JSON.parse(fs.readFileSync(productsPath, 'utf8'));
 
-        const data = fs.readFileSync(PRODUCTS_FILE, 'utf8');
-        const products = JSON.parse(data);
+        console.log(`Found ${productsData.length} products to seed.`);
 
-        console.log(`Found ${products.length} products to seed.`);
+        // Clear existing products
+        await Product.deleteMany({});
+        console.log('Cleared existing products.');
 
-        let added = 0;
-        let updated = 0;
+        // Format data to match schema if necessary (schema matches json mostly)
+        // Ensure ID is unique and number (cleaned data has numeric IDs)
 
-        for (const item of products) {
-            // Transform to Schema format
-            const productData = {
-                id: parseInt(item.id),
-                title: item.name, // JSON has name, Schema has title
-                price: item.price,
-                description: item.description,
-                category: item.category,
-                department: 'Men', // Default
-                images: [item.imageUrl] // Schema expects array
-                // imageUrl in json is "uploads/..." which is relative url. 
-                // Frontend should handle it. Or we prepend full URL?
-                // For now, relative is better if we serve from same domain.
-            };
+        await Product.insertMany(productsData);
+        console.log('Successfully inserted products.');
 
-            // Check if exists
-            const exists = await Product.findOne({ id: productData.id });
-            if (exists) {
-                // Update
-                await Product.findOneAndUpdate({ id: productData.id }, productData);
-                updated++;
-            } else {
-                // Insert
-                await Product.create(productData);
-                added++;
-            }
-        }
-
-        console.log(`Seeding complete. Added: ${added}, Updated: ${updated}`);
         process.exit(0);
-    } catch (error) {
-        console.error('Seeding failed:', error);
+    } catch (err) {
+        console.error('Error seeding database:', err);
         process.exit(1);
     }
 };
 
-seedData();
+seedDB();
