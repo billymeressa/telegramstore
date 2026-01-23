@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import API_URL from '../config';
-import { Package, Clock, CheckCircle, Truck, XCircle, Settings, Heart } from 'lucide-react';
+import { Package, Clock, CheckCircle, Truck, XCircle, Settings, Heart, BarChart3 } from 'lucide-react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 const tele = window.Telegram?.WebApp;
@@ -59,18 +59,33 @@ const Profile = () => {
             <div className="px-3 space-y-3">
                 {/* Admin Access Button */}
                 {isAdmin && (
-                    <button
-                        onClick={() => navigate('/admin')}
-                        className="w-full bg-[var(--tg-theme-bg-color)] p-3 rounded-xl flex items-center justify-between active:bg-[var(--tg-theme-secondary-bg-color)] transition-colors"
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                <Settings size={18} className="text-blue-600" />
+                    <>
+                        <button
+                            onClick={() => navigate('/admin')}
+                            className="w-full bg-[var(--tg-theme-bg-color)] p-3 rounded-xl flex items-center justify-between active:bg-[var(--tg-theme-secondary-bg-color)] transition-colors"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <Settings size={18} className="text-blue-600" />
+                                </div>
+                                <span className="text-[var(--tg-theme-text-color)] font-medium text-sm">Seller Dashboard</span>
                             </div>
-                            <span className="text-[var(--tg-theme-text-color)] font-medium text-sm">Seller Dashboard</span>
-                        </div>
-                        <span className="text-[var(--tg-theme-hint-color)] text-lg">›</span>
-                    </button>
+                            <span className="text-[var(--tg-theme-hint-color)] text-lg">›</span>
+                        </button>
+
+                        <button
+                            onClick={() => navigate('/analytics')}
+                            className="w-full bg-[var(--tg-theme-bg-color)] p-3 rounded-xl flex items-center justify-between active:bg-[var(--tg-theme-secondary-bg-color)] transition-colors"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                                    <BarChart3 size={18} className="text-purple-600" />
+                                </div>
+                                <span className="text-[var(--tg-theme-text-color)] font-medium text-sm">Analytics</span>
+                            </div>
+                            <span className="text-[var(--tg-theme-hint-color)] text-lg">›</span>
+                        </button>
+                    </>
                 )}
 
                 {/* Wishlist Button */}

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import API_URL from '../config';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ShoppingBag, Heart } from 'lucide-react';
+import { trackEvent } from '../utils/track';
 
 const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] }) => {
     const { id } = useParams();
@@ -28,6 +29,9 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] })
             .then(data => {
                 console.log("Product Data Loaded:", data);
                 setProduct(data);
+
+                // Track product view
+                trackEvent('view_product', { productId: data.id, productTitle: data.title, category: data.category });
             })
             .catch(err => {
                 console.error("Fetch Error:", err);

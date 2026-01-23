@@ -5,7 +5,7 @@ import cors from 'cors';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
-import { connectDB, Product, Order, User } from './src/db.js';
+import { connectDB, Product, Order, User, AnalyticsEvent } from './src/db.js';
 import path from 'path';
 
 
@@ -75,6 +75,26 @@ bot.command('start', async (ctx) => {
     } catch (e) {
         console.error('Error sending start message:', e);
     }
+});
+
+bot.command('about', async (ctx) => {
+    await ctx.reply(
+        `🌟 *About Our Store* 🌟\n\n` +
+        `Welcome to your one-stop shop for premium Electronics, Fashion, and more! We are dedicated to providing:\n` +
+        `✅ Top-quality products\n` +
+        `✅ Best market prices\n` +
+        `✅ Fast and reliable delivery\n` +
+        `✅ Excellent customer support\n\n` +
+        `📍 *Location:* Addis Ababa, Ethiopia\n` +
+        `📞 *Contact:* [${adminUsername}](tg://user?id=${process.env.ADMIN_ID})\n\n` +
+        `Thank you for choosing us! 🚀`,
+        {
+            parse_mode: 'Markdown',
+            reply_markup: {
+                inline_keyboard: [[{ text: "🛍️ Shop Now", web_app: { url: process.env.WEB_APP_URL } }]]
+            }
+        }
+    );
 });
 
 bot.on('web_app_data', (ctx) => {
@@ -192,6 +212,63 @@ app.get('/api/seller-info', async (req, res) => {
     } catch (err) {
         console.error("Error fetching seller info:", err);
         res.status(500).json({ error: 'Failed to fetch seller info' });
+    }
+});
+
+// POST /api/track - Save analytics event
+app.post('/api/track', async (req, res) => {
+    try {
+        const { userId, eventType, metadata } = req.body;
+        if (!userId || !eventType) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        // Fire and forget (don't block response)
+        const event = new AnalyticsEvent({ userId, eventType, metadata });
+        await event.save(); // Await is fine here as it's fast
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error("Tracking Error:", err);
+        res.status(500).json({ error: 'Failed to track event' });
+    }
+});
+
+// GET /api/analytics/stats - Get aggregated analytics data
+app.get('/api/analytics/stats', async (req, res) => {
+    try {
+        const totalEvents = await AnalyticsEvent.countDocuments({});
+        const uniqueUsers = await AnalyticsEvent.distinct('userId');
+        const appOpens = await AnalyticsEvent.countDocuments({ eventType: 'app_open' });
+        const productViews = await AnalyticsEvent.countDocuments({ eventType: 'view_product' });
+        const addToCarts = await AnalyticsEvent.countDocuments({ eventType: 'add_to_cart' });
+
+        // Top viewed products
+        const topProducts = await AnalyticsEvent.aggregate([
+            { $match: { eventType: 'view_product' } },
+            {
+                $group: {
+                    _id: '$metadata.productId',
+                    count: { $sum: 1 },
+                    productTitle: { $first: '$metadata.productTitle' }
+                }
+            },
+            { $sort: { count: -1 } },
+            { $limit: 5 },
+            { $project: { productId: '$_id', count: 1, productTitle: 1, _id: 0 } }
+        ]);
+
+        res.json({
+            totalEvents,
+            uniqueUsers: uniqueUsers.length,
+            appOpens,
+            productViews,
+            addToCarts,
+            topProducts
+        });
+    } catch (err) {
+        console.error("Analytics Error:", err);
+        res.status(500).json({ error: 'Failed to fetch analytics' });
     }
 });
 

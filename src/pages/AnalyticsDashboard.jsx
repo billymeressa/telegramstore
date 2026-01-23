@@ -1,0 +1,133 @@
+import { useState, useEffect } from 'react';
+import API_URL from '../config';
+import { BarChart3, Users, Eye, ShoppingCart, TrendingUp } from 'lucide-react';
+
+const AnalyticsDashboard = () => {
+    const [stats, setStats] = useState({
+        totalEvents: 0,
+        uniqueUsers: 0,
+        appOpens: 0,
+        productViews: 0,
+        addToCarts: 0,
+        topProducts: []
+    });
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetch(`${API_URL}/api/analytics/stats`)
+            .then(res => res.json())
+            .then(data => {
+                setStats(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error('Failed to load analytics:', err);
+                setLoading(false);
+            });
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--tg-theme-button-color)]"></div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen bg-[var(--tg-theme-secondary-bg-color)] p-4 pb-20">
+            <div className="max-w-4xl mx-auto">
+                <h1 className="text-2xl font-bold text-[var(--tg-theme-text-color)] mb-6 flex items-center gap-2">
+                    <BarChart3 size={28} className="text-[var(--tg-theme-button-color)]" />
+                    Analytics Dashboard
+                </h1>
+
+                {/* Stats Grid */}
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                    <StatCard
+                        icon={<Users size={20} />}
+                        label="Unique Users"
+                        value={stats.uniqueUsers}
+                        color="blue"
+                    />
+                    <StatCard
+                        icon={<TrendingUp size={20} />}
+                        label="App Opens"
+                        value={stats.appOpens}
+                        color="green"
+                    />
+                    <StatCard
+                        icon={<Eye size={20} />}
+                        label="Product Views"
+                        value={stats.productViews}
+                        color="purple"
+                    />
+                    <StatCard
+                        icon={<ShoppingCart size={20} />}
+                        label="Add to Carts"
+                        value={stats.addToCarts}
+                        color="orange"
+                    />
+                </div>
+
+                {/* Top Products */}
+                <div className="bg-[var(--tg-theme-bg-color)] rounded-xl p-4 border border-[var(--tg-theme-section-separator-color)]">
+                    <h2 className="text-lg font-bold text-[var(--tg-theme-text-color)] mb-3">
+                        Top Viewed Products
+                    </h2>
+                    {stats.topProducts.length > 0 ? (
+                        <div className="space-y-2">
+                            {stats.topProducts.map((item, idx) => (
+                                <div
+                                    key={idx}
+                                    className="flex items-center justify-between p-3 bg-[var(--tg-theme-secondary-bg-color)] rounded-lg"
+                                >
+                                    <div className="flex-1">
+                                        <p className="font-medium text-[var(--tg-theme-text-color)] text-sm">
+                                            {item.productTitle || `Product #${item.productId}`}
+                                        </p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-xs text-[var(--tg-theme-hint-color)]">Views</p>
+                                        <p className="text-lg font-bold text-[var(--tg-theme-button-color)]">
+                                            {item.count}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-[var(--tg-theme-hint-color)] text-sm text-center py-4">
+                            No data yet
+                        </p>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const StatCard = ({ icon, label, value, color }) => {
+    const colorClasses = {
+        blue: 'text-blue-500',
+        green: 'text-green-500',
+        purple: 'text-purple-500',
+        orange: 'text-orange-500'
+    };
+
+    return (
+        <div className="bg-[var(--tg-theme-bg-color)] rounded-xl p-4 border border-[var(--tg-theme-section-separator-color)]">
+            <div className={`${colorClasses[color]} mb-2`}>
+                {icon}
+            </div>
+            <p className="text-2xl font-bold text-[var(--tg-theme-text-color)] mb-1">
+                {value.toLocaleString()}
+            </p>
+            <p className="text-xs text-[var(--tg-theme-hint-color)]">
+                {label}
+            </p>
+        </div>
+    );
+};
+
+export default AnalyticsDashboard;

@@ -9,7 +9,9 @@ import Profile from './pages/Profile';
 import WishlistPage from './pages/WishlistPage';
 import ProductDetails from './pages/ProductDetails';
 import AdminDashboard from './components/AdminDashboard';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import Toast from './components/Toast'; // New Import
+import { trackEvent } from './utils/track';
 
 // Removed top-level tele
 const ADMIN_ID = 748823605; // Make sure this matches your .env ADMIN_ID
@@ -128,6 +130,9 @@ function App() {
     }
 
     fetchProductData(1);
+
+    // Track app open
+    trackEvent('app_open');
   }, []);
 
   const fetchProductData = (pageNum = 1) => {
@@ -204,6 +209,9 @@ function App() {
     }
 
     setToast(`Added ${product.title} to cart`); // Trigger Toast
+
+    // Track add to cart
+    trackEvent('add_to_cart', { productId: product.id, productTitle: product.title, price: product.price });
   };
 
   const onIncrease = (product) => {
@@ -329,6 +337,7 @@ function App() {
           <Route path="/wishlist" element={<WishlistPage products={products} wishlist={wishlist} toggleWishlist={toggleWishlist} />} />
           <Route path="/product/:id" element={<ProductDetails onAdd={onAdd} wishlist={wishlist} toggleWishlist={toggleWishlist} products={products} />} />
           <Route path="/admin" element={isAdmin ? <AdminDashboard products={products} onProductUpdate={setProducts} /> : <Navigate to="/" />} />
+          <Route path="/analytics" element={isAdmin ? <AnalyticsDashboard /> : <Navigate to="/" />} />
         </Route>
       </Routes>
       {toast && <Toast message={toast} onClose={() => setToast(null)} />}

@@ -60,4 +60,11 @@ const User = mongoose.model('User', new mongoose.Schema({
     lastReengagementAt: { type: Date }
 }));
 
-export { connectDB, Product, Order, User };
+const AnalyticsEvent = mongoose.model('AnalyticsEvent', new mongoose.Schema({
+    userId: { type: String, index: true },
+    eventType: { type: String, required: true }, // e.g., 'app_open', 'view_product'
+    metadata: { type: mongoose.Schema.Types.Mixed }, // Additional data (productId, etc.)
+    timestamp: { type: Date, default: Date.now }
+}));
+
+export { connectDB, Product, Order, User, AnalyticsEvent };
