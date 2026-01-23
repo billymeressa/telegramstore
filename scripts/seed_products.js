@@ -3,9 +3,34 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import 'dotenv/config';
 import { connectDB, Product } from '../src/db.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Cloudinary Config
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+const uploadImage = async (localPath) => {
+    try {
+        const fullPath = path.join(__dirname, '..', localPath);
+        if (!fs.existsSync(fullPath)) {
+            console.warn(`File not found: ${fullPath}`);
+            return null;
+        }
+        const result = await cloudinary.uploader.upload(fullPath, {
+            folder: 'telegram_store_products',
+        });
+        return result.secure_url;
+    } catch (err) {
+        console.error(`Error uploading ${localPath}:`, err.message);
+        return null; // Keep local path or handle error? For now, skip if failed.
+    }
+};
 
 const seedProducts = async () => {
     try {
@@ -21,20 +46,50 @@ const seedProducts = async () => {
         await Product.deleteMany({});
         console.log('Cleared existing products from Database');
 
-        // Insert new products
-        // Ensure format matches Schema
-        const productsToInsert = productsData.map(p => ({
-            id: p.id,
-            title: p.title,
-            price: p.price,
-            description: p.description,
-            category: p.category,
-            department: p.department,
-            images: p.images // This is an array of strings
-        }));
+        const productsToInsert = [];
+
+        console.log('Starting image uploads to Cloudinary (this may take a while)...');
+
+        // Process each product sequentially to avoid rate limits
+        for (const [index, p] of productsData.entries()) {
+            const uploadedImages = [];
+
+            for (const imgPath of p.images) {
+                // Check if it's already a URL (e.g. from previous run or external source)
+                if (imgPath.startsWith('http')) {
+                    uploadedImages.push(imgPath);
+                } else {
+                    // It's a local path like "/uploads/..."
+                    // Remove leading slash for path.join relative to root
+                    const relativePath = imgPath.startsWith('/') ? imgPath.slice(1) : imgPath;
+                    const cloudUrl = await uploadImage(relativePath);
+                    if (cloudUrl) {
+                        uploadedImages.push(cloudUrl);
+                    } else {
+                        console.warn(`Skipping image ${imgPath} for product ${p.id} due to upload failure (or missing file).`);
+                    }
+                }
+            }
+
+            if (uploadedImages.length > 0) {
+                productsToInsert.push({
+                    id: p.id,
+                    title: p.title,
+                    price: p.price,
+                    description: p.description,
+                    category: p.category,
+                    department: p.department,
+                    images: uploadedImages
+                });
+            } else {
+                console.warn(`Product ${p.id} skipped - no valid images.`);
+            }
+
+            if ((index + 1) % 10 === 0) console.log(`Processed ${index + 1} products...`);
+        }
 
         await Product.insertMany(productsToInsert);
-        console.log(`Successfully seeded ${productsToInsert.length} products to Database`);
+        console.log(`Successfully seeded ${productsToInsert.length} products to Database with Cloudinary Images`);
 
         process.exit(0);
     } catch (error) {
