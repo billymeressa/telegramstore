@@ -13,6 +13,21 @@ import path from 'path';
 const token = process.env.BOT_TOKEN;
 if (!token) throw new Error('BOT_TOKEN must be provided!');
 const bot = new Telegraf(token);
+let adminUsername = 'Admin';
+
+// Fetch Admin Username on startup
+const fetchAdminProfile = async () => {
+    try {
+        if (process.env.ADMIN_ID) {
+            const chat = await bot.telegram.getChat(process.env.ADMIN_ID);
+            if (chat.username) adminUsername = `@${chat.username}`;
+            else if (chat.first_name) adminUsername = chat.first_name;
+        }
+    } catch (e) {
+        console.error('Failed to fetch admin profile:', e.message);
+    }
+};
+fetchAdminProfile(); // Start fetching immediately
 
 // DEBUG: Log available environment variables (Keys only for security)
 console.log('--- ENVIRONMENT VARIABLES DEBUG ---');
@@ -46,11 +61,17 @@ bot.command('start', async (ctx) => {
         // Remove old persistent keyboard if present
         await ctx.reply('Loading store...', { reply_markup: { remove_keyboard: true } });
 
-        await ctx.reply('Welcome to the Store! Click below to shop.', {
-            reply_markup: {
-                inline_keyboard: [[{ text: "🛍️ Open Store", web_app: { url: process.env.WEB_APP_URL } }]]
+        await ctx.reply(
+            `👋 *Welcome to the Store, ${ctx.from.first_name}!*\n\n` +
+            `We are excited to have you here. Click the button below to browse our collection and shop now! 🛍️\n\n` +
+            `_Have questions or feedback? Feel free to contact our admin specifically: [${adminUsername}](tg://user?id=${process.env.ADMIN_ID})_`,
+            {
+                parse_mode: 'Markdown',
+                reply_markup: {
+                    inline_keyboard: [[{ text: "🛍️ Open Store", web_app: { url: process.env.WEB_APP_URL } }]]
+                }
             }
-        });
+        );
     } catch (e) {
         console.error('Error sending start message:', e);
     }
@@ -99,7 +120,7 @@ bot.on('text', async (ctx) => {
             `👋 *Hi there, ${ctx.from.first_name}!*\n\n` +
             `I'm your shopping assistant. 🛍️\n\n` +
             `Looking for something stylish? Tap the button below to browse our full collection and place an order!\n\n` +
-            `_Need help or have any feedback? We'd love to hear from you! Contact the admin directly: [Admin](tg://user?id=${process.env.ADMIN_ID})_`,
+            `_Need help or have any feedback? We'd love to hear from you! Contact the admin directly: [${adminUsername}](tg://user?id=${process.env.ADMIN_ID})_`,
             {
                 parse_mode: 'Markdown',
                 reply_markup: {
