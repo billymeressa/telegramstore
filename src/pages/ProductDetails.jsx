@@ -42,7 +42,7 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] })
 
 
     return (
-        <div className="bg-[var(--tg-theme-bg-color)] min-h-screen pb-24 relative font-sans">
+        <div className="bg-[var(--tg-theme-bg-color)] min-h-screen relative font-sans">
             {/* Header / Nav */}
             <div className="fixed top-0 left-0 right-0 z-20 flex items-center justify-between p-2 pointer-events-none">
                 <button
@@ -126,6 +126,26 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] })
                         </p>
                     </div>
                 </div>
+
+                {/* Call & Add to Cart Action */}
+                <div className="flex gap-3 mt-6 mb-2">
+                    {product.seller_phone && (
+                        <a
+                            href={`tel:${product.seller_phone}`}
+                            className="flex-1 bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] py-3 rounded-xl font-semibold text-base shadow border border-[var(--tg-theme-button-color)] flex items-center justify-center active:opacity-80 transition-opacity"
+                        >
+                            Call Merchant
+                        </a>
+                    )}
+                    <button
+                        onClick={() => {
+                            onAdd({ ...product });
+                        }}
+                        className="flex-[2] bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity"
+                    >
+                        Add to Cart
+                    </button>
+                </div>
             </div>
 
             {/* Smart Recommendations */}
@@ -159,27 +179,7 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] })
                 </div>
             )}
 
-            {/* Static Action Button */}
-            <div className="fixed bottom-0 left-0 right-0 p-3 bg-[var(--tg-theme-bg-color)] border-t border-[var(--tg-theme-section-separator-color)] z-30 pb-safe">
-                <div className="flex gap-3">
-                    {product.seller_phone && (
-                        <a
-                            href={`tel:${product.seller_phone}`}
-                            className="flex-1 bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] py-3 rounded-xl font-semibold text-base shadow border border-[var(--tg-theme-button-color)] flex items-center justify-center active:opacity-80 transition-opacity"
-                        >
-                            Call Merchant
-                        </a>
-                    )}
-                    <button
-                        onClick={() => {
-                            onAdd({ ...product });
-                        }}
-                        className="flex-[2] bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity"
-                    >
-                        Add to Cart
-                    </button>
-                </div>
-            </div>
+
         </div>
     );
 };

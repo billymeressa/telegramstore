@@ -5,7 +5,7 @@ function ProductList({ products, wishlist = [], onToggleWishlist }) {
     const navigate = useNavigate();
 
     return (
-        <div className="grid grid-cols-2 gap-3 p-3 pb-24">
+        <div className="grid grid-cols-2 gap-2 p-2 pb-24">
             {products.map((product) => (
                 <div
                     key={product.id}

@@ -21,7 +21,7 @@ const HorizontalProductRow = ({ title, products }) => {
                     <div
                         key={product.id}
                         onClick={() => navigate(`/product/${product.id}`)}
-                        className="min-w-[120px] w-[120px] snap-start flex flex-col gap-1.5 cursor-pointer active:opacity-80 transition-opacity"
+                        className="min-w-[140px] w-[140px] snap-start flex flex-col gap-1.5 cursor-pointer active:opacity-80 transition-opacity"
                     >
                         <div className="w-full aspect-[4/5] bg-[var(--tg-theme-bg-color)] rounded-lg overflow-hidden border border-[var(--tg-theme-section-separator-color)] relative">
                             {product.images && product.images.length > 0 ? (
