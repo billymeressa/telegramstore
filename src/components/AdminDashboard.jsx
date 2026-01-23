@@ -18,7 +18,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
     const [activeTab, setActiveTab] = useState('products'); // 'products' | 'orders'
     const [newProduct, setNewProduct] = useState({ title: '', price: '', category: '', department: 'Men', description: '', images: [] });
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [imageFiles, setImageFiles] = useState([]); // Array of File objects
+    const [mainImageFile, setMainImageFile] = useState(null);
+    const [additionalImageFiles, setAdditionalImageFiles] = useState([]);
     const [editId, setEditId] = useState(null); // Track if editing
     const fileInputRef = useRef(null);
     const [orders, setOrders] = useState([]);
@@ -74,9 +75,15 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             newProduct.images.forEach(img => formData.append('existingImages', img));
         }
 
-        // Append new files
-        if (imageFiles && imageFiles.length > 0) {
-            Array.from(imageFiles).forEach(file => {
+        // Append Main Image FIRST (to ensure it's index 0 if new)
+        // If we are editing, and didn't select a new main image, the existing main image is at newProduct.images[0]
+        if (mainImageFile) {
+            formData.append('images', mainImageFile);
+        }
+
+        // Append Additional Images
+        if (additionalImageFiles && additionalImageFiles.length > 0) {
+            Array.from(additionalImageFiles).forEach(file => {
                 formData.append('images', file);
             });
         }
@@ -105,7 +112,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             if (data.success) {
                 onProductUpdate(data.products);
                 setNewProduct({ title: '', price: '', category: '', department: 'Men', description: '', images: [] });
-                setImageFiles([]);
+                setMainImageFile(null);
+                setAdditionalImageFiles([]);
                 setEditId(null);
                 if (fileInputRef.current) fileInputRef.current.value = '';
                 const successMsg = 'Product Saved Successfully!';
@@ -138,7 +146,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
 
     const cancelEdit = () => {
         setNewProduct({ title: '', price: '', category: '', department: 'Men', description: '', images: [] });
-        setImageFiles([]);
+        setMainImageFile(null);
+        setAdditionalImageFiles([]);
         setEditId(null);
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
@@ -277,33 +286,57 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                     placeholder="Product details..."
                                 />
                             </div>
-                            <div>
-                                <label className="block text-xs font-bold text-[#0F1111] mb-1">Images</label>
-                                {/* Active Images List */}
-                                <div className="flex flex-wrap gap-2 mb-2">
-                                    {newProduct.images && newProduct.images.map((img, idx) => (
-                                        <div key={idx} className="relative w-16 h-16 border rounded bg-white flex items-center justify-center">
-                                            <img src={img} className="max-w-full max-h-full object-contain" />
-                                            <button
-                                                type="button"
-                                                onClick={() => removeExistingImage(idx)}
-                                                className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center hover:bg-red-600"
-                                            >
-                                                &times;
-                                            </button>
-                                        </div>
-                                    ))}
+
+                            {/* Image Upload Section */}
+                            <div className="space-y-3 border-t border-gray-200 pt-3">
+                                <label className="block text-sm font-bold text-[#0F1111]">Product Images</label>
+
+                                {/* Existing Images Preview */}
+                                {newProduct.images && newProduct.images.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mb-2">
+                                        {newProduct.images.map((img, idx) => (
+                                            <div key={idx} className="relative w-20 h-20 border rounded bg-white flex items-center justify-center group">
+                                                <img src={img} className="max-w-full max-h-full object-contain" />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeExistingImage(idx)}
+                                                    className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center hover:bg-red-600 shadow-sm z-10"
+                                                >
+                                                    &times;
+                                                </button>
+                                                {idx === 0 && <span className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-[10px] text-center">Main</span>}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Main Image Input */}
+                                <div>
+                                    <label className="block text-xs font-bold text-[#0F1111] mb-1">Main Image <span className="text-red-500">*</span></label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={e => setMainImageFile(e.target.files[0])}
+                                        className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[var(--tg-theme-button-color)] file:text-[var(--tg-theme-button-text-color)] hover:file:opacity-90"
+                                    />
+                                    <p className="text-[10px] text-gray-500 mt-1">This will be the primary thumbnail.</p>
                                 </div>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    multiple
-                                    ref={fileInputRef}
-                                    onChange={e => setImageFiles(e.target.files)}
-                                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[var(--tg-theme-button-color)]/10 file:text-[var(--tg-theme-button-color)] hover:file:bg-[var(--tg-theme-button-color)]/20"
-                                />
-                                <p className="text-xs text-gray-500 mt-1">Select one or more files to upload.</p>
+
+                                {/* Additional Images Input */}
+                                <div>
+                                    <label className="block text-xs font-bold text-[#0F1111] mb-1">Additional Images</label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        ref={fileInputRef}
+                                        onChange={e => setAdditionalImageFiles(e.target.files)}
+                                        className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300"
+                                    />
+                                    <p className="text-[10px] text-gray-500 mt-1">Select multiple files for the gallery.</p>
+                                </div>
                             </div>
+
                             <div className="flex gap-2 pt-2">
                                 {editId && (
                                     <button type="button" onClick={cancelEdit} className="flex-1 bg-white border border-gray-300 text-[#0F1111] font-medium py-2 rounded-md shadow-sm hover:bg-gray-50">
