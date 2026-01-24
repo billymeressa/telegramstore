@@ -352,6 +352,7 @@ function App() {
               hasMore={hasMore}
               loadMore={loadMore}
               isFetching={isFetching}
+              isAdmin={isAdmin}
             />
           } />
           <Route path="/cart" element={

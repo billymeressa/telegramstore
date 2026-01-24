@@ -5,7 +5,7 @@ import CategoryColumnRow from '../components/CategoryColumnRow';
 import { smartSearch } from '../utils/smartSearch';
 import { Search } from 'lucide-react';
 
-const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, isFetching }) => {
+const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, isFetching, isAdmin = false }) => {
 
 
 
@@ -154,7 +154,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                     </div>
 
                     <div data-product-grid>
-                        <ProductList products={filteredProducts} onAdd={onAdd} wishlist={wishlist} onToggleWishlist={toggleWishlist} />
+                        <ProductList products={filteredProducts} onAdd={onAdd} wishlist={wishlist} onToggleWishlist={toggleWishlist} isAdmin={isAdmin} />
                     </div>
 
                     {isFetching && (

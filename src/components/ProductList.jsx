@@ -1,8 +1,14 @@
 import { useNavigate } from 'react-router-dom';
-import { Heart } from 'lucide-react';
+import { Heart, Edit2 } from 'lucide-react';
 
-function ProductList({ products, wishlist = [], onToggleWishlist }) {
+function ProductList({ products, wishlist = [], onToggleWishlist, isAdmin = false }) {
     const navigate = useNavigate();
+
+    const handleEditProduct = (e, productId) => {
+        e.stopPropagation();
+        // Navigate to admin dashboard with product ID in URL hash
+        navigate(`/profile?tab=admin&edit=${productId}`);
+    };
 
     return (
         <div className="grid grid-cols-2 gap-2 p-2 pb-24">
@@ -18,6 +24,18 @@ function ProductList({ products, wishlist = [], onToggleWishlist }) {
                         ) : (
                             <span className="text-4xl opacity-20 grayscale">📦</span>
                         )}
+
+                        {/* Admin Edit Button */}
+                        {isAdmin && (
+                            <button
+                                onClick={(e) => handleEditProduct(e, product.id)}
+                                className="absolute top-2 left-2 p-1.5 bg-blue-500 text-white rounded-full active:scale-90 transition-all shadow-md hover:bg-blue-600"
+                                title="Edit product"
+                            >
+                                <Edit2 size={14} />
+                            </button>
+                        )}
+
                         {/* Wishlist Button */}
                         <button
                             onClick={(e) => {
