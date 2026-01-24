@@ -1,7 +1,10 @@
 import React from 'react';
 
 function Cart({ cartItems, onIncrease, onDecrease, onRemove }) {
-    const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const totalPrice = cartItems.reduce((sum, item) => {
+        const itemPrice = item.selectedVariation ? item.selectedVariation.price : item.price;
+        return sum + itemPrice * item.quantity;
+    }, 0);
 
     if (cartItems.length === 0) {
         return (
@@ -28,9 +31,16 @@ function Cart({ cartItems, onIncrease, onDecrease, onRemove }) {
                     <div className="flex-1 flex flex-col justify-between py-0.5">
                         <div>
                             <div className="flex justify-between items-start gap-2">
-                                <h4 className="font-medium text-[var(--tg-theme-text-color)] text-sm leading-snug line-clamp-2">
-                                    {item.title}
-                                </h4>
+                                <div>
+                                    <h4 className="font-medium text-[var(--tg-theme-text-color)] text-sm leading-snug line-clamp-2">
+                                        {item.title}
+                                    </h4>
+                                    {item.selectedVariation && (
+                                        <p className="text-xs text-[var(--tg-theme-hint-color)] mt-0.5">
+                                            {item.selectedVariation.name}
+                                        </p>
+                                    )}
+                                </div>
                                 <button
                                     onClick={() => onRemove(item)}
                                     className="text-[var(--tg-theme-hint-color)] p-1 -mr-1 -mt-1 active:text-red-500"
@@ -40,7 +50,7 @@ function Cart({ cartItems, onIncrease, onDecrease, onRemove }) {
                             </div>
 
                             <div className="text-base font-bold text-[var(--tg-theme-text-color)] mt-1">
-                                {Math.floor(item.price)} <span className="text-xs font-normal text-[var(--tg-theme-hint-color)]">Birr</span>
+                                {Math.floor(item.selectedVariation ? item.selectedVariation.price : item.price)} <span className="text-xs font-normal text-[var(--tg-theme-hint-color)]">Birr</span>
                             </div>
                         </div>
 

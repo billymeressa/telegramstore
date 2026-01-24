@@ -11,6 +11,7 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] })
     const [selectedImage, setSelectedImage] = useState(null);
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [selectedVariation, setSelectedVariation] = useState(null);
 
     // Smart Recommendations Logic
     const relatedProducts = product ? products
@@ -29,6 +30,11 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] })
             .then(data => {
                 console.log("Product Data Loaded:", data);
                 setProduct(data);
+
+                // Auto-select first variation if product has variations
+                if (data.variations && data.variations.length > 0) {
+                    setSelectedVariation(data.variations[0]);
+                }
 
                 // Track product view
                 trackEvent('view_product', { productId: data.id, productTitle: data.title, category: data.category });
@@ -115,8 +121,34 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] })
                     <h1 className="text-2xl font-bold text-[var(--tg-theme-text-color)] leading-snug mb-2">
                         {product.title}
                     </h1>
+
+                    {/* Variation Selector */}
+                    {product.variations && product.variations.length > 0 && (
+                        <div className="mb-3">
+                            <h3 className="text-xs font-medium text-[var(--tg-theme-hint-color)] uppercase tracking-wide mb-2">
+                                Select Option
+                            </h3>
+                            <div className="flex flex-wrap gap-2">
+                                {product.variations.map((variation, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => setSelectedVariation(variation)}
+                                        className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${selectedVariation?.name === variation.name
+                                            ? 'bg-[var(--tg-theme-button-color)] text-white shadow-md'
+                                            : 'bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] border border-gray-300'
+                                            }`}
+                                    >
+                                        {variation.name} - {Math.floor(variation.price)} Birr
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                     <div className="flex items-baseline gap-1">
-                        <span className="text-3xl font-bold text-[var(--tg-theme-text-color)]">{Math.floor(product.price)}</span>
+                        <span className="text-3xl font-bold text-[var(--tg-theme-text-color)]">
+                            {selectedVariation ? Math.floor(selectedVariation.price) : Math.floor(product.price)}
+                        </span>
                         <span className="text-sm font-medium text-[var(--tg-theme-hint-color)]">Birr</span>
                     </div>
                 </div>
@@ -143,7 +175,7 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] })
                     )}
                     <button
                         onClick={() => {
-                            onAdd({ ...product });
+                            onAdd({ ...product, selectedVariation });
                         }}
                         className="flex-[2] bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity"
                     >

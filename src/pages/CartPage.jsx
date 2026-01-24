@@ -7,7 +7,10 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
     const [showContactModal, setShowContactModal] = useState(false);
     const [sellerUsername, setSellerUsername] = useState('AddisStoreSupport'); // Fallback
     const [orderMessage, setOrderMessage] = useState('');
-    const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const totalPrice = cart.reduce((sum, item) => {
+        const itemPrice = item.selectedVariation ? item.selectedVariation.price : item.price;
+        return sum + itemPrice * item.quantity;
+    }, 0);
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
     useEffect(() => {
@@ -25,7 +28,9 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
         // Prepare message before cart is cleared
         let msg = `Hi! I just placed an order.\n\n`;
         cart.forEach(item => {
-            msg += `- ${item.title} (x${item.quantity})\n`;
+            const itemPrice = item.selectedVariation ? item.selectedVariation.price : item.price;
+            const variationText = item.selectedVariation ? ` - ${item.selectedVariation.name}` : '';
+            msg += `- ${item.title}${variationText} (x${item.quantity}) - ${Math.floor(itemPrice * item.quantity)} Birr\n`;
         });
         msg += `\nTotal: ${Math.floor(totalPrice)} Birr`;
         setOrderMessage(encodeURIComponent(msg));

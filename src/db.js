@@ -29,7 +29,13 @@ const productSchema = new mongoose.Schema({
     description: { type: String },
     category: { type: String, default: 'General' },
     department: { type: String, default: 'Men' },
-    images: [{ type: String }] // Array of image URLs (Cloudinary)
+    images: [{ type: String }], // Array of image URLs (Cloudinary)
+    variations: [{ // Product variations (e.g., different storage sizes)
+        name: { type: String, required: true }, // e.g., "16GB", "32GB", "Blue"
+        price: { type: Number, required: true }, // Price for this variation
+        stock: { type: Number, default: 0 }, // Optional: stock for this variation
+        sku: { type: String } // Optional: unique SKU
+    }]
 }, { timestamps: true });
 
 const orderSchema = new mongoose.Schema({

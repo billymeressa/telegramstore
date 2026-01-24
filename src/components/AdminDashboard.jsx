@@ -16,7 +16,7 @@ const SUBCATEGORIES = {
 const AdminDashboard = ({ products, onProductUpdate }) => {
     const tele = window.Telegram?.WebApp;
     const [activeTab, setActiveTab] = useState('products'); // 'products' | 'orders'
-    const [newProduct, setNewProduct] = useState({ title: '', price: '', category: '', department: 'Men', description: '', images: [] });
+    const [newProduct, setNewProduct] = useState({ title: '', price: '', category: '', department: 'Men', description: '', images: [], variations: [] });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [mainImageFile, setMainImageFile] = useState(null);
     const [additionalImageFiles, setAdditionalImageFiles] = useState([]);
@@ -138,14 +138,15 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             category: product.category,
             department: product.department || 'Men',
             description: product.description || '',
-            images: product.images || []
+            images: product.images || [],
+            variations: product.variations || []
         });
         setEditId(product.id);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const cancelEdit = () => {
-        setNewProduct({ title: '', price: '', category: '', department: 'Men', description: '', images: [] });
+        setNewProduct({ title: '', price: '', category: '', department: 'Men', description: '', images: [], variations: [] });
         setMainImageFile(null);
         setAdditionalImageFiles([]);
         setEditId(null);
@@ -285,6 +286,70 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none h-20 bg-white text-[#0F1111] placeholder-gray-400"
                                     placeholder="Product details..."
                                 />
+                            </div>
+
+                            {/* Product Variations */}
+                            <div className="border-t border-gray-200 pt-3">
+                                <label className="block text-sm font-bold text-[#0F1111] mb-2">
+                                    Product Variations <span className="text-xs font-normal text-gray-500">(Optional - e.g., sizes, storage)</span>
+                                </label>
+
+                                {newProduct.variations && newProduct.variations.length > 0 && (
+                                    <div className="space-y-2 mb-3">
+                                        {newProduct.variations.map((variation, idx) => (
+                                            <div key={idx} className="flex gap-2 items-start bg-white p-2 rounded border border-gray-200">
+                                                <div className="flex-1">
+                                                    <input
+                                                        type="text"
+                                                        value={variation.name}
+                                                        onChange={e => {
+                                                            const updated = [...newProduct.variations];
+                                                            updated[idx].name = e.target.value;
+                                                            setNewProduct({ ...newProduct, variations: updated });
+                                                        }}
+                                                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm mb-1"
+                                                        placeholder="Name (e.g., 16GB)"
+                                                    />
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        value={variation.price}
+                                                        onChange={e => {
+                                                            const updated = [...newProduct.variations];
+                                                            updated[idx].price = e.target.value;
+                                                            setNewProduct({ ...newProduct, variations: updated });
+                                                        }}
+                                                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+                                                        placeholder="Price"
+                                                    />
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const updated = newProduct.variations.filter((_, i) => i !== idx);
+                                                        setNewProduct({ ...newProduct, variations: updated });
+                                                    }}
+                                                    className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600 mt-1"
+                                                >
+                                                    Remove
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setNewProduct({
+                                            ...newProduct,
+                                            variations: [...newProduct.variations, { name: '', price: '' }]
+                                        });
+                                    }}
+                                    className="bg-gray-200 text-gray-700 px-3 py-1.5 rounded text-sm font-medium hover:bg-gray-300"
+                                >
+                                    + Add Variation
+                                </button>
                             </div>
 
                             {/* Image Upload Section */}
