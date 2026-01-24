@@ -13,6 +13,7 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
     const [loading, setLoading] = useState(true);
     const [selectedVariation, setSelectedVariation] = useState(null);
 
+
     // Edit mode states
     const [isEditMode, setIsEditMode] = useState(false);
     const [editFormData, setEditFormData] = useState({
@@ -20,7 +21,9 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
         price: '',
         description: '',
         category: '',
-        department: ''
+        department: '',
+        variations: [],
+        variationType: ''
     });
     const [isSaving, setIsSaving] = useState(false);
 
@@ -65,7 +68,9 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
             price: product.price || '',
             description: product.description || '',
             category: product.category || '',
-            department: product.department || ''
+            department: product.department || '',
+            variations: product.variations || [],
+            variationType: product.variations && product.variations.length > 0 ? 'Variation' : ''
         });
         setIsEditMode(true);
     };
@@ -78,7 +83,9 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
             price: '',
             description: '',
             category: '',
-            department: ''
+            department: '',
+            variations: [],
+            variationType: ''
         });
     };
 
@@ -98,6 +105,7 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
                     description: editFormData.description,
                     category: editFormData.category,
                     department: editFormData.department,
+                    variations: editFormData.variations,
                     existingImages: product.images || []
                 })
             });
@@ -303,6 +311,78 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
                                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
                             />
                         </div>
+
+                        {/* Variations Section */}
+                        <div className="border-t border-gray-200 pt-4 mt-4">
+                            <h3 className="text-sm font-medium text-[var(--tg-theme-text-color)] mb-3">Product Variations (Optional)</h3>
+
+                            {/* Variation Type */}
+                            <div className="mb-3">
+                                <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">
+                                    Variation Type (e.g., Size, Color, Storage)
+                                </label>
+                                <input
+                                    type="text"
+                                    value={editFormData.variationType}
+                                    onChange={(e) => setEditFormData({ ...editFormData, variationType: e.target.value })}
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                    placeholder="e.g., Storage, Size, Color"
+                                />
+                            </div>
+
+                            {/* Variation Options */}
+                            {editFormData.variations.map((variation, index) => (
+                                <div key={index} className="flex gap-2 mb-2">
+                                    <input
+                                        type="text"
+                                        value={variation.name}
+                                        onChange={(e) => {
+                                            const newVariations = [...editFormData.variations];
+                                            newVariations[index].name = e.target.value;
+                                            setEditFormData({ ...editFormData, variations: newVariations });
+                                        }}
+                                        className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                        placeholder={`${editFormData.variationType || 'Option'} name`}
+                                    />
+                                    <input
+                                        type="number"
+                                        value={variation.price}
+                                        onChange={(e) => {
+                                            const newVariations = [...editFormData.variations];
+                                            newVariations[index].price = e.target.value;
+                                            setEditFormData({ ...editFormData, variations: newVariations });
+                                        }}
+                                        className="w-24 border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                        placeholder="Price"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const newVariations = editFormData.variations.filter((_, i) => i !== index);
+                                            setEditFormData({ ...editFormData, variations: newVariations });
+                                        }}
+                                        className="px-3 py-2 bg-red-500 text-white rounded-lg active:opacity-80"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+                            ))}
+
+                            {/* Add Variation Button */}
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setEditFormData({
+                                        ...editFormData,
+                                        variations: [...editFormData.variations, { name: '', price: '' }]
+                                    });
+                                }}
+                                className="w-full mt-2 py-2 border-2 border-dashed border-gray-300 rounded-lg text-[var(--tg-theme-hint-color)] active:opacity-80"
+                            >
+                                + Add {editFormData.variationType || 'Variation'} Option
+                            </button>
+                        </div>
+
 
                         {/* Action Buttons */}
                         <div className="flex gap-3 pt-4">
