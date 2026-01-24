@@ -423,7 +423,18 @@ app.get('/api/products/:id', async (req, res) => {
 
 // POST /api/products (Add/Edit) - PROTECTED
 app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), async (req, res) => {
-    const { title, price, description, category, department, id } = req.body;
+    const { title, price, description, category, department, id, variations } = req.body;
+
+    // Parse variations if it's a string (from FormData)
+    let parsedVariations = [];
+    if (variations) {
+        try {
+            parsedVariations = typeof variations === 'string' ? JSON.parse(variations) : variations;
+        } catch (e) {
+            console.error('Error parsing variations:', e);
+            parsedVariations = [];
+        }
+    }
 
     // Determine image paths
     let existingImages = req.body.existingImages;
@@ -455,7 +466,8 @@ app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), a
                     description,
                     category,
                     department: department || 'Men',
-                    images: finalImages // This overwrites, assuming frontend logic sends full list
+                    images: finalImages, // This overwrites, assuming frontend logic sends full list
+                    variations: parsedVariations
                 },
                 { new: true }
             );
@@ -476,7 +488,8 @@ app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), a
                 description: description || '',
                 category: category || 'General',
                 department: department || 'Men',
-                images: finalImages
+                images: finalImages,
+                variations: parsedVariations
             });
             await newProduct.save();
 

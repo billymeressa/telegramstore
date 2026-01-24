@@ -90,6 +90,11 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             });
         }
 
+        // Append variations as JSON string
+        if (newProduct.variations && newProduct.variations.length > 0) {
+            formData.append('variations', JSON.stringify(newProduct.variations));
+        }
+
         if (editId) {
             formData.append('id', editId);
         }
