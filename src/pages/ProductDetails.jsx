@@ -81,20 +81,73 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] })
                         className={`transition-colors ${wishlist.includes(product?.id) ? 'fill-[#ef4444] text-[#ef4444]' : 'text-gray-400'}`}
                     />
                 </button>
-                {/* Main Image */}
-                <div className="w-full flex items-center justify-center bg-white">
+
+                {/* Swipeable Image Carousel */}
+                <div className="relative w-full bg-white overflow-hidden">
                     {product.images && product.images.length > 0 ? (
-                        <img
-                            src={selectedImage || product.images[0]}
-                            alt={product.title}
-                            className="w-full h-auto object-contain transition-opacity duration-300"
-                        />
+                        <>
+                            {/* Image Container */}
+                            <div
+                                className="flex transition-transform duration-300 ease-out"
+                                style={{
+                                    transform: `translateX(-${(product.images.indexOf(selectedImage || product.images[0])) * 100}%)`
+                                }}
+                                onTouchStart={(e) => {
+                                    const touch = e.touches[0];
+                                    e.currentTarget.dataset.startX = touch.clientX;
+                                }}
+                                onTouchEnd={(e) => {
+                                    const touch = e.changedTouches[0];
+                                    const startX = parseFloat(e.currentTarget.dataset.startX);
+                                    const diff = touch.clientX - startX;
+                                    const currentIndex = product.images.indexOf(selectedImage || product.images[0]);
+
+                                    // Swipe threshold: 50px
+                                    if (diff > 50 && currentIndex > 0) {
+                                        // Swipe right - go to previous image
+                                        setSelectedImage(product.images[currentIndex - 1]);
+                                    } else if (diff < -50 && currentIndex < product.images.length - 1) {
+                                        // Swipe left - go to next image
+                                        setSelectedImage(product.images[currentIndex + 1]);
+                                    }
+                                }}
+                            >
+                                {product.images.map((img, idx) => (
+                                    <div key={idx} className="w-full flex-shrink-0 flex items-center justify-center">
+                                        <img
+                                            src={img}
+                                            alt={`${product.title} - Image ${idx + 1}`}
+                                            className="w-full h-auto object-contain"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Pagination Dots */}
+                            {product.images.length > 1 && (
+                                <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+                                    {product.images.map((img, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => setSelectedImage(img)}
+                                            className={`w-2 h-2 rounded-full transition-all ${(selectedImage || product.images[0]) === img
+                                                    ? 'bg-[var(--tg-theme-button-color)] w-6'
+                                                    : 'bg-gray-300'
+                                                }`}
+                                            aria-label={`View image ${idx + 1}`}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </>
                     ) : (
-                        <span className="text-9xl select-none opacity-20 grayscale py-10">📦</span>
+                        <div className="w-full flex items-center justify-center py-10">
+                            <span className="text-9xl select-none opacity-20 grayscale">📦</span>
+                        </div>
                     )}
                 </div>
 
-                {/* Thumbnails */}
+                {/* Thumbnails - Keep for additional navigation option */}
                 {product.images && product.images.length > 1 && (
                     <div className="flex gap-2 overflow-x-auto p-4 no-scrollbar justify-center">
                         {product.images.map((img, idx) => (
