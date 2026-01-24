@@ -13,6 +13,17 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
     const [loading, setLoading] = useState(true);
     const [selectedVariation, setSelectedVariation] = useState(null);
 
+    // Edit mode states
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [editFormData, setEditFormData] = useState({
+        title: '',
+        price: '',
+        description: '',
+        category: '',
+        department: ''
+    });
+    const [isSaving, setIsSaving] = useState(false);
+
     // Smart Recommendations Logic
     const relatedProducts = product ? products
         .filter(p => p.category === product.category && p.id !== product.id)
@@ -47,6 +58,70 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
             .finally(() => setLoading(false));
     }, [id, navigate]);
 
+    // Handle entering edit mode
+    const handleEditClick = () => {
+        setEditFormData({
+            title: product.title || '',
+            price: product.price || '',
+            description: product.description || '',
+            category: product.category || '',
+            department: product.department || ''
+        });
+        setIsEditMode(true);
+    };
+
+    // Handle canceling edit
+    const handleCancelEdit = () => {
+        setIsEditMode(false);
+        setEditFormData({
+            title: '',
+            price: '',
+            description: '',
+            category: '',
+            department: ''
+        });
+    };
+
+    // Handle saving edits
+    const handleSaveEdit = async () => {
+        setIsSaving(true);
+        try {
+            const response = await fetch(`${API_URL}/api/products`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: product.id,
+                    title: editFormData.title,
+                    price: editFormData.price,
+                    description: editFormData.description,
+                    category: editFormData.category,
+                    department: editFormData.department,
+                    existingImages: product.images || []
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                // Update local product state
+                const updatedProduct = data.products.find(p => p.id === product.id);
+                if (updatedProduct) {
+                    setProduct(updatedProduct);
+                }
+                setIsEditMode(false);
+                alert('Product updated successfully!');
+            } else {
+                alert('Failed to update product');
+            }
+        } catch (error) {
+            console.error('Error updating product:', error);
+            alert('Error updating product');
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     if (loading || !product) return <div className="p-10 text-center">Loading...</div>;
 
 
@@ -70,9 +145,9 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
             {/* Image Area */}
             <div className="w-full bg-[var(--tg-theme-secondary-bg-color)] relative pt-safe">
                 {/* Admin Edit Button */}
-                {isAdmin && product && (
+                {isAdmin && product && !isEditMode && (
                     <button
-                        onClick={() => navigate(`/profile?tab=admin&edit=${product.id}`)}
+                        onClick={handleEditClick}
                         className="absolute top-4 left-4 p-3 bg-blue-500 text-white rounded-full shadow-md z-10 hover:bg-blue-600 transition-all active:scale-95"
                         title="Edit product"
                     >
@@ -180,52 +255,124 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
             {/* Content Container */}
             <div className="px-4 py-5 bg-[var(--tg-theme-bg-color)] rounded-t-3xl -mt-6 relative z-10 shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
 
-                {/* Title & Price */}
-                <div className="mb-4">
-                    <h1 className="text-2xl font-bold text-[var(--tg-theme-text-color)] leading-snug mb-2">
-                        {product.title}
-                    </h1>
+                {isEditMode ? (
+                    /* Edit Mode Form */
+                    <div className="space-y-4 mb-6">
+                        <h2 className="text-xl font-bold text-[var(--tg-theme-text-color)] mb-4">Edit Product</h2>
 
-                    {/* Variation Selector */}
-                    {product.variations && product.variations.length > 0 && (
-                        <div className="mb-3">
-                            <h3 className="text-xs font-medium text-[var(--tg-theme-hint-color)] uppercase tracking-wide mb-2">
-                                Select Option
-                            </h3>
-                            <div className="flex flex-wrap gap-2">
-                                {product.variations.map((variation, idx) => (
-                                    <button
-                                        key={idx}
-                                        onClick={() => setSelectedVariation(variation)}
-                                        className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${selectedVariation?.name === variation.name
-                                            ? 'bg-[var(--tg-theme-button-color)] text-white shadow-md'
-                                            : 'bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] border border-gray-300'
-                                            }`}
-                                    >
-                                        {variation.name} - {Math.floor(variation.price)} Birr
-                                    </button>
-                                ))}
+                        {/* Title Input */}
+                        <div>
+                            <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">Title</label>
+                            <input
+                                type="text"
+                                value={editFormData.title}
+                                onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                            />
+                        </div>
+
+                        {/* Price Input */}
+                        <div>
+                            <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">Price (Birr)</label>
+                            <input
+                                type="number"
+                                value={editFormData.price}
+                                onChange={(e) => setEditFormData({ ...editFormData, price: e.target.value })}
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                            />
+                        </div>
+
+                        {/* Description Input */}
+                        <div>
+                            <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">Description</label>
+                            <textarea
+                                value={editFormData.description}
+                                onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+                                rows={4}
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                            />
+                        </div>
+
+                        {/* Category Input */}
+                        <div>
+                            <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">Category</label>
+                            <input
+                                type="text"
+                                value={editFormData.category}
+                                onChange={(e) => setEditFormData({ ...editFormData, category: e.target.value })}
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                            />
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex gap-3 pt-4">
+                            <button
+                                onClick={handleCancelEdit}
+                                className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold active:opacity-80"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSaveEdit}
+                                disabled={isSaving}
+                                className="flex-1 bg-[var(--tg-theme-button-color)] text-white py-3 rounded-xl font-semibold active:opacity-80 disabled:opacity-50"
+                            >
+                                {isSaving ? 'Saving...' : 'Save Changes'}
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    /* View Mode */
+                    <>
+                        {/* Title & Price */}
+                        <div className="mb-4">
+                            <h1 className="text-2xl font-bold text-[var(--tg-theme-text-color)] leading-snug mb-2">
+                                {product.title}
+                            </h1>
+
+                            {/* Variation Selector */}
+                            {product.variations && product.variations.length > 0 && (
+                                <div className="mb-3">
+                                    <h3 className="text-xs font-medium text-[var(--tg-theme-hint-color)] uppercase tracking-wide mb-2">
+                                        Select Option
+                                    </h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {product.variations.map((variation, idx) => (
+                                            <button
+                                                key={idx}
+                                                onClick={() => setSelectedVariation(variation)}
+                                                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${selectedVariation?.name === variation.name
+                                                    ? 'bg-[var(--tg-theme-button-color)] text-white shadow-md'
+                                                    : 'bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] border border-gray-300'
+                                                    }`}
+                                            >
+                                                {variation.name} - {Math.floor(variation.price)} Birr
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-3xl font-bold text-[var(--tg-theme-text-color)]">
+                                    {selectedVariation ? Math.floor(selectedVariation.price) : Math.floor(product.price)}
+                                </span>
+                                <span className="text-sm font-medium text-[var(--tg-theme-hint-color)]">Birr</span>
                             </div>
                         </div>
-                    )}
 
-                    <div className="flex items-baseline gap-1">
-                        <span className="text-3xl font-bold text-[var(--tg-theme-text-color)]">
-                            {selectedVariation ? Math.floor(selectedVariation.price) : Math.floor(product.price)}
-                        </span>
-                        <span className="text-sm font-medium text-[var(--tg-theme-hint-color)]">Birr</span>
-                    </div>
-                </div>
+                        {/* Info */}
+                        <div className="space-y-4">
+                            <div>
+                                <h3 className="text-sm font-medium text-[var(--tg-theme-hint-color)] uppercase tracking-wide mb-1.5">Description</h3>
+                                <p className="text-[var(--tg-theme-text-color)] leading-relaxed text-sm opacity-90">
+                                    {product.description || "No description available."}
+                                </p>
+                            </div>
+                        </div>
+                    </>
+                )}
 
-                {/* Info */}
-                <div className="space-y-4">
-                    <div>
-                        <h3 className="text-sm font-medium text-[var(--tg-theme-hint-color)] uppercase tracking-wide mb-1.5">Description</h3>
-                        <p className="text-[var(--tg-theme-text-color)] leading-relaxed text-sm opacity-90">
-                            {product.description || "No description available."}
-                        </p>
-                    </div>
-                </div>
 
                 {/* Call & Add to Cart Action */}
                 <div className="flex gap-3 mt-6 mb-2">
