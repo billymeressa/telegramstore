@@ -1,36 +1,11 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Store, ShoppingBag, User, LayoutDashboard } from 'lucide-react';
-import { useEffect } from 'react';
 
 const tele = window.Telegram?.WebApp;
 
 const Layout = ({ cartCount, isAdmin, isSuperAdmin, user }) => {
     const navigate = useNavigate();
     const location = useLocation();
-
-    useEffect(() => {
-        if (tele && tele.BackButton) {
-            try {
-                if (location.pathname !== '/') {
-                    tele.BackButton.show();
-                    tele.BackButton.onClick(() => navigate(-1));
-                } else {
-                    tele.BackButton.hide();
-                }
-            } catch (e) {
-                console.error("BackButton error:", e);
-            }
-        }
-        return () => {
-            if (tele && tele.BackButton) {
-                try {
-                    tele.BackButton.offClick(() => navigate(-1));
-                } catch (e) {
-                    console.error("BackButton cleanup error:", e);
-                }
-            }
-        };
-    }, [location, navigate]);
 
     return (
         <div className="min-h-screen bg-[var(--tg-theme-secondary-bg-color)] pb-20 font-sans">
