@@ -39,8 +39,25 @@ function ProductList({ products, wishlist = [], onToggleWishlist }) {
                         </h3>
                         <div className="flex items-center justify-between mt-1">
                             <div className="flex items-baseline gap-0.5">
-                                <span className="text-[var(--tg-theme-text-color)] text-lg font-extrabold">{Math.floor(product.price)}</span>
-                                <span className="text-[var(--tg-theme-hint-color)] text-xs font-normal">ETB</span>
+                                {product.variations && product.variations.length > 0 ? (
+                                    // Show price range for products with variations
+                                    <>
+                                        <span className="text-[var(--tg-theme-text-color)] text-lg font-extrabold">
+                                            {Math.floor(Math.min(...product.variations.map(v => v.price)))}
+                                        </span>
+                                        <span className="text-[var(--tg-theme-text-color)] text-sm font-normal mx-0.5">-</span>
+                                        <span className="text-[var(--tg-theme-text-color)] text-lg font-extrabold">
+                                            {Math.floor(Math.max(...product.variations.map(v => v.price)))}
+                                        </span>
+                                        <span className="text-[var(--tg-theme-hint-color)] text-xs font-normal">ETB</span>
+                                    </>
+                                ) : (
+                                    // Show single price for regular products
+                                    <>
+                                        <span className="text-[var(--tg-theme-text-color)] text-lg font-extrabold">{Math.floor(product.price)}</span>
+                                        <span className="text-[var(--tg-theme-hint-color)] text-xs font-normal">ETB</span>
+                                    </>
+                                )}
                             </div>
 
                         </div>

@@ -245,15 +245,24 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-bold text-[#0F1111] mb-1">Price</label>
+                                    <label className="block text-xs font-bold text-[#0F1111] mb-1">
+                                        Price {newProduct.variations && newProduct.variations.length > 0 && (
+                                            <span className="text-xs font-normal text-gray-500">(Optional - using variation prices)</span>
+                                        )}
+                                    </label>
                                     <input
                                         type="number"
                                         step="0.01"
                                         value={newProduct.price}
                                         onChange={e => setNewProduct({ ...newProduct, price: e.target.value })}
                                         className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white text-[#0F1111] placeholder-gray-400"
-                                        placeholder="0.00"
+                                        placeholder={newProduct.variations && newProduct.variations.length > 0 ? "Base price (optional)" : "0.00"}
                                     />
+                                    {newProduct.variations && newProduct.variations.length > 0 && (
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            💡 Price will be determined by selected variation
+                                        </p>
+                                    )}
                                 </div>
                                 <div>
                                     <label className="block text-xs font-bold text-[#0F1111] mb-1">Department</label>
