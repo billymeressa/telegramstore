@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import ProductList from '../components/ProductList';
 import HorizontalProductRow from '../components/HorizontalProductRow';
 import CategoryColumnRow from '../components/CategoryColumnRow';
+import { smartSearch } from '../utils/smartSearch';
 import { Search } from 'lucide-react';
 
 const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, isFetching }) => {
@@ -49,16 +50,19 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
     const newArrivals = useMemo(() => products.slice(5, 12), [products]);
 
     const filteredProducts = useMemo(() => {
-        return products.filter(p => {
+        // First, filter by department and category
+        let filtered = products.filter(p => {
             const matchesDepartment = selectedDepartment === "All" || p.department === selectedDepartment;
-            // If category is "All", we only filter by department. Otherwise both.
             const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
-
-            const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase()));
-
-            return matchesDepartment && matchesCategory && matchesSearch;
+            return matchesDepartment && matchesCategory;
         });
+
+        // Then apply smart search if there's a query
+        if (searchQuery && searchQuery.trim() !== '') {
+            filtered = smartSearch(filtered, searchQuery);
+        }
+
+        return filtered;
     }, [products, selectedDepartment, selectedCategory, searchQuery]);
 
     const handleDepartmentChange = (dept) => {
@@ -107,7 +111,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                     <div className="flex flex-col gap-2 mb-2">
                         {/* Show dynamic sub-categories visually */}
                         <CategoryColumnRow categories={availableCategories} onSelect={handleCategoryChange} />
-                        <HorizontalProductRow title="✨ New Arrivals" products={newArrivals} />
+                        <HorizontalProductRow title="New Arrivals" products={newArrivals} />
                     </div>
                 )}
 
@@ -149,7 +153,9 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                         )}
                     </div>
 
-                    <ProductList products={filteredProducts} onAdd={onAdd} wishlist={wishlist} onToggleWishlist={toggleWishlist} />
+                    <div data-product-grid>
+                        <ProductList products={filteredProducts} onAdd={onAdd} wishlist={wishlist} onToggleWishlist={toggleWishlist} />
+                    </div>
 
                     {isFetching && (
                         <div className="py-8 flex justify-center">

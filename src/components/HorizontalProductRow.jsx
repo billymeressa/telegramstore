@@ -11,7 +11,16 @@ const HorizontalProductRow = ({ title, products }) => {
         <div className="py-2">
             <div className="flex items-center justify-between px-4 mb-2">
                 <h3 className="text-base font-bold text-[var(--tg-theme-text-color)]">{title}</h3>
-                <button className="text-[var(--tg-theme-link-color)] text-xs font-medium flex items-center gap-0.5">
+                <button
+                    onClick={() => {
+                        // Scroll to main product grid
+                        const productGrid = document.querySelector('[data-product-grid]');
+                        if (productGrid) {
+                            productGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }}
+                    className="text-[var(--tg-theme-link-color)] text-xs font-medium flex items-center gap-0.5 active:opacity-70 transition-opacity"
+                >
                     See All <ArrowRight size={12} />
                 </button>
             </div>
