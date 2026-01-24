@@ -352,7 +352,6 @@ function App() {
               hasMore={hasMore}
               loadMore={loadMore}
               isFetching={isFetching}
-              isAdmin={isAdmin}
             />
           } />
           <Route path="/cart" element={
@@ -366,7 +365,7 @@ function App() {
           } />
           <Route path="/profile" element={<Profile />} />
           <Route path="/wishlist" element={<WishlistPage products={products} wishlist={wishlist} toggleWishlist={toggleWishlist} />} />
-          <Route path="/product/:id" element={<ProductDetails onAdd={onAdd} wishlist={wishlist} toggleWishlist={toggleWishlist} products={products} />} />
+          <Route path="/product/:id" element={<ProductDetails onAdd={onAdd} wishlist={wishlist} toggleWishlist={toggleWishlist} products={products} isAdmin={isAdmin} />} />
           <Route path="/admin" element={isAdmin ? <AdminDashboard products={products} onProductUpdate={setProducts} /> : <Navigate to="/" />} />
           <Route path="/analytics" element={isSuperAdmin ? <AnalyticsDashboard /> : <Navigate to="/" />} />
         </Route>

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import API_URL from '../config';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShoppingBag, Heart } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Heart, Edit2 } from 'lucide-react';
 import { trackEvent } from '../utils/track';
 
-const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] }) => {
+const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], isAdmin = false }) => {
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -69,6 +69,17 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] })
             {/* Product Title & Brand */}
             {/* Image Area */}
             <div className="w-full bg-[var(--tg-theme-secondary-bg-color)] relative pt-safe">
+                {/* Admin Edit Button */}
+                {isAdmin && product && (
+                    <button
+                        onClick={() => navigate(`/profile?tab=admin&edit=${product.id}`)}
+                        className="absolute top-4 left-4 p-3 bg-blue-500 text-white rounded-full shadow-md z-10 hover:bg-blue-600 transition-all active:scale-95"
+                        title="Edit product"
+                    >
+                        <Edit2 size={20} />
+                    </button>
+                )}
+
                 {/* Wishlist Button */}
                 <button
                     onClick={() => {
@@ -131,8 +142,8 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [] })
                                             key={idx}
                                             onClick={() => setSelectedImage(img)}
                                             className={`w-2 h-2 rounded-full transition-all ${(selectedImage || product.images[0]) === img
-                                                    ? 'bg-[var(--tg-theme-button-color)] w-6'
-                                                    : 'bg-gray-300'
+                                                ? 'bg-[var(--tg-theme-button-color)] w-6'
+                                                : 'bg-gray-300'
                                                 }`}
                                             aria-label={`View image ${idx + 1}`}
                                         />
