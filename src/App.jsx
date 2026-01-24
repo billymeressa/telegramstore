@@ -92,6 +92,23 @@ function App() {
       return true;
     };
 
+    // Force light mode - Override Telegram's theme
+    if (tele) {
+      // Set theme parameters to light mode
+      document.documentElement.style.setProperty('--tg-theme-bg-color', '#ffffff');
+      document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', '#f4f4f5');
+      document.documentElement.style.setProperty('--tg-theme-text-color', '#000000');
+      document.documentElement.style.setProperty('--tg-theme-hint-color', '#999999');
+      document.documentElement.style.setProperty('--tg-theme-link-color', '#2481cc');
+      document.documentElement.style.setProperty('--tg-theme-button-color', '#3390ec');
+      document.documentElement.style.setProperty('--tg-theme-button-text-color', '#ffffff');
+      document.documentElement.style.setProperty('--tg-theme-section-separator-color', '#e3e3e4');
+
+      // Also set background color on body
+      document.body.style.backgroundColor = '#ffffff';
+    }
+
+
     // 1. Try getting user immediately
     let currentUser = tele?.initDataUnsafe?.user;
     let intervalId; // Declare intervalId here
