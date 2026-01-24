@@ -154,7 +154,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                     </div>
 
                     <div data-product-grid>
-                        <ProductList products={filteredProducts} onAdd={onAdd} wishlist={wishlist} onToggleWishlist={toggleWishlist} />
+                        <ProductList products={filteredProducts} />
                     </div>
 
                     {isFetching && (
