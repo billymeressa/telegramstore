@@ -94,11 +94,6 @@ function App() {
 
     // Force light mode - Override Telegram's theme
     if (tele) {
-      // Hide Telegram back button globally
-      if (tele.BackButton) {
-        tele.BackButton.hide();
-      }
-
       // Set theme parameters to light mode
       document.documentElement.style.setProperty('--tg-theme-bg-color', '#ffffff');
       document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', '#f4f4f5');
