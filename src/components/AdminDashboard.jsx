@@ -23,6 +23,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
     const [editId, setEditId] = useState(null); // Track if editing
     const fileInputRef = useRef(null);
     const [orders, setOrders] = useState([]);
+    const [variationType, setVariationType] = useState(''); // e.g., "Storage", "Size", "Color"
 
 
 
@@ -111,10 +112,11 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             const data = await res.json();
             if (data.success) {
                 onProductUpdate(data.products);
-                setNewProduct({ title: '', price: '', category: '', department: 'Men', description: '', images: [] });
+                setNewProduct({ title: '', price: '', category: '', department: 'Men', description: '', images: [], variations: [] });
                 setMainImageFile(null);
                 setAdditionalImageFiles([]);
                 setEditId(null);
+                setVariationType('');
                 if (fileInputRef.current) fileInputRef.current.value = '';
                 const successMsg = 'Product Saved Successfully!';
                 tele ? tele.showAlert(successMsg) : alert(successMsg);
@@ -150,6 +152,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
         setMainImageFile(null);
         setAdditionalImageFiles([]);
         setEditId(null);
+        setVariationType('');
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
@@ -291,14 +294,37 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                             {/* Product Variations */}
                             <div className="border-t border-gray-200 pt-3">
                                 <label className="block text-sm font-bold text-[#0F1111] mb-2">
-                                    Product Variations <span className="text-xs font-normal text-gray-500">(Optional - e.g., sizes, storage)</span>
+                                    Product Variations <span className="text-xs font-normal text-gray-500">(Optional)</span>
                                 </label>
 
+                                {/* Step 1: Variation Type */}
+                                <div className="mb-3">
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                                        Variation Type <span className="text-gray-500">(e.g., Storage, Size, Color)</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={variationType}
+                                        onChange={e => setVariationType(e.target.value)}
+                                        className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white"
+                                        placeholder="e.g., Storage, Size, Color"
+                                    />
+                                    {variationType && (
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            Adding options for: <span className="font-semibold">{variationType}</span>
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* Step 2: Variation Options */}
                                 {newProduct.variations && newProduct.variations.length > 0 && (
                                     <div className="space-y-2 mb-3">
+                                        <p className="text-xs font-medium text-gray-700">
+                                            {variationType || 'Variation'} Options:
+                                        </p>
                                         {newProduct.variations.map((variation, idx) => (
-                                            <div key={idx} className="flex gap-2 items-start bg-white p-2 rounded border border-gray-200">
-                                                <div className="flex-1">
+                                            <div key={idx} className="flex gap-2 items-center bg-white p-2 rounded border border-gray-200">
+                                                <div className="flex-1 grid grid-cols-2 gap-2">
                                                     <input
                                                         type="text"
                                                         value={variation.name}
@@ -307,8 +333,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                                             updated[idx].name = e.target.value;
                                                             setNewProduct({ ...newProduct, variations: updated });
                                                         }}
-                                                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm mb-1"
-                                                        placeholder="Name (e.g., 16GB)"
+                                                        className="border border-gray-300 rounded px-2 py-1.5 text-sm"
+                                                        placeholder={`${variationType || 'Option'} (e.g., 16GB)`}
                                                     />
                                                     <input
                                                         type="number"
@@ -319,8 +345,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                                             updated[idx].price = e.target.value;
                                                             setNewProduct({ ...newProduct, variations: updated });
                                                         }}
-                                                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
-                                                        placeholder="Price"
+                                                        className="border border-gray-300 rounded px-2 py-1.5 text-sm"
+                                                        placeholder="Price (Birr)"
                                                     />
                                                 </div>
                                                 <button
@@ -329,9 +355,9 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                                         const updated = newProduct.variations.filter((_, i) => i !== idx);
                                                         setNewProduct({ ...newProduct, variations: updated });
                                                     }}
-                                                    className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600 mt-1"
+                                                    className="bg-red-500 text-white px-2 py-1.5 rounded text-xs hover:bg-red-600 flex-shrink-0"
                                                 >
-                                                    Remove
+                                                    ✕
                                                 </button>
                                             </div>
                                         ))}
@@ -346,9 +372,9 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                             variations: [...newProduct.variations, { name: '', price: '' }]
                                         });
                                     }}
-                                    className="bg-gray-200 text-gray-700 px-3 py-1.5 rounded text-sm font-medium hover:bg-gray-300"
+                                    className="bg-[var(--tg-theme-button-color)] text-white px-4 py-2 rounded text-sm font-medium hover:opacity-90 transition-opacity"
                                 >
-                                    + Add Variation
+                                    + Add {variationType || 'Variation'} Option
                                 </button>
                             </div>
 
