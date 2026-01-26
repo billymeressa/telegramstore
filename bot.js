@@ -438,8 +438,15 @@ app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), a
 
     // Determine image paths
     let existingImages = req.body.existingImages;
-    if (typeof existingImages === 'string') existingImages = [existingImages];
-    if (!existingImages) existingImages = [];
+    if (typeof existingImages === 'string') {
+        try {
+            existingImages = JSON.parse(existingImages);
+        } catch (e) {
+            existingImages = [existingImages]; // fallback to array with single string
+        }
+    }
+    if (!Array.isArray(existingImages)) existingImages = [];
+
 
     let newImagePaths = [];
     if (req.files && req.files.length > 0) {
