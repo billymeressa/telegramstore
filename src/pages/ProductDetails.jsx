@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import API_URL from '../config';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ShoppingBag, Heart, Edit2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { trackEvent } from '../utils/track';
 
 const SUBCATEGORIES = {
@@ -200,17 +201,27 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
                 )}
 
                 {/* Wishlist Button */}
-                <button
+                <motion.button
+                    initial={{ scale: 1 }}
+                    whileTap={{ scale: 0.8 }}
                     onClick={() => {
                         if (toggleWishlist && product) toggleWishlist(product.id);
                     }}
-                    className="absolute top-4 right-4 p-3 bg-[var(--tg-theme-bg-color)] rounded-full shadow-md z-10 hover:bg-[var(--tg-theme-secondary-bg-color)] transition-all active:scale-95"
+                    className="absolute top-4 right-4 p-3 bg-[var(--tg-theme-bg-color)] rounded-full shadow-md z-10 hover:bg-[var(--tg-theme-secondary-bg-color)] active:scale-95"
                 >
-                    <Heart
-                        size={24}
-                        className={`transition-colors ${wishlist.includes(product?.id) ? 'fill-[#ef4444] text-[#ef4444]' : 'text-gray-400'}`}
-                    />
-                </button>
+                    <motion.div
+                        animate={{
+                            scale: wishlist.includes(product?.id) ? [1, 1.5, 1] : 1,
+                            rotate: wishlist.includes(product?.id) ? [0, 15, -15, 0] : 0
+                        }}
+                        transition={{ duration: 0.4 }}
+                    >
+                        <Heart
+                            size={24}
+                            className={`transition-colors ${wishlist.includes(product?.id) ? 'fill-[#ef4444] text-[#ef4444]' : 'text-gray-400'}`}
+                        />
+                    </motion.div>
+                </motion.button>
 
                 {/* Swipeable Image Carousel */}
                 <div className="relative w-full bg-white overflow-hidden">

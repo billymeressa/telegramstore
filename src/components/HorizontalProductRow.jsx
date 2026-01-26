@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const HorizontalProductRow = ({ title, products }) => {
     const navigate = useNavigate();
@@ -25,12 +26,21 @@ const HorizontalProductRow = ({ title, products }) => {
                 </button>
             </div>
 
-            <div className="flex gap-3 overflow-x-auto no-scrollbar px-4 pb-2 snap-x">
-                {products.map(product => (
-                    <div
+            <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="flex gap-3 overflow-x-auto no-scrollbar px-4 pb-2 snap-x"
+            >
+                {products.map((product, idx) => (
+                    <motion.div
                         key={product.id}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: idx * 0.1 }}
+                        whileTap={{ scale: 0.95 }}
                         onClick={() => navigate(`/product/${product.id}`)}
-                        className="min-w-[140px] w-[140px] snap-start flex flex-col gap-1.5 cursor-pointer active:opacity-80 transition-opacity"
+                        className="min-w-[140px] w-[140px] snap-start flex flex-col gap-1.5 cursor-pointer"
                     >
                         <div className="w-full aspect-[4/5] bg-[var(--tg-theme-bg-color)] rounded-lg overflow-hidden border border-[var(--tg-theme-section-separator-color)] relative">
                             {product.images && product.images.length > 0 ? (
@@ -43,9 +53,9 @@ const HorizontalProductRow = ({ title, products }) => {
                             <h4 className="text-[var(--tg-theme-text-color)] text-sm font-bold line-clamp-1">{product.title}</h4>
                             <p className="text-[var(--tg-theme-button-color)] text-sm font-bold">{Math.floor(product.price)} ETB</p>
                         </div>
-                    </div>
+                    </motion.div>
                 ))}
-            </div>
+            </motion.div>
         </div>
     );
 };

@@ -1,15 +1,42 @@
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1
+        }
+    }
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { type: 'spring', stiffness: 300, damping: 24 }
+    }
+};
 
 function ProductList({ products }) {
     const navigate = useNavigate();
 
     return (
-        <div className="grid grid-cols-2 gap-2 p-2 pb-24">
+        <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-2 gap-2 p-2 pb-24"
+        >
             {products.map((product) => (
-                <div
+                <motion.div
                     key={product.id}
+                    variants={itemVariants}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => navigate(`/product/${product.id}`)}
-                    className="bg-[var(--tg-theme-bg-color)] rounded-xl overflow-hidden cursor-pointer active:scale-95 transition-all shadow-sm border border-[var(--tg-theme-section-separator-color)] hover:shadow-md"
+                    className="bg-[var(--tg-theme-bg-color)] rounded-xl overflow-hidden cursor-pointer transition-shadow shadow-sm border border-[var(--tg-theme-section-separator-color)] hover:shadow-md"
                 >
                     <div className="relative w-full aspect-[4/5] bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center overflow-hidden">
                         {product.images && product.images.length > 0 ? (
@@ -17,6 +44,7 @@ function ProductList({ products }) {
                         ) : (
                             <span className="text-4xl opacity-20 grayscale">📦</span>
                         )}
+                        {/* New Tag or Discount Tag Logic could go here */}
                     </div>
 
                     <div className="p-2.5 flex flex-col gap-1 text-left">
@@ -48,10 +76,11 @@ function ProductList({ products }) {
 
                         </div>
                     </div>
-                </div>
+                </motion.div>
             ))}
-        </div>
+        </motion.div>
     );
 }
 
 export default ProductList;
+
