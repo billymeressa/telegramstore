@@ -469,7 +469,7 @@ app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), a
                 { id: parseInt(id) },
                 {
                     title,
-                    price: parseFloat(price),
+                    price: isNaN(parseFloat(price)) ? 0 : parseFloat(price),
                     description,
                     category,
                     department: department || 'Men',
@@ -491,7 +491,7 @@ app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), a
             const newProduct = new Product({
                 id: Date.now(),
                 title,
-                price: parseFloat(price),
+                price: isNaN(parseFloat(price)) ? 0 : parseFloat(price),
                 description: description || '',
                 category: category || 'General',
                 department: department || 'Men',

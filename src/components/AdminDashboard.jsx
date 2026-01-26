@@ -132,7 +132,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             }
         } catch (err) {
             console.error("FULL ERROR OBJECT:", err);
-            const sysError = `Error saving product: ${err.message || 'Unknown network error'}.\nTarget: ${API_URL}\nCheck console for details.`;
+            const sysError = `Error saving product: ${err.message || 'Unknown network error'}. Check console for details.`;
             tele ? tele.showAlert(sysError) : alert(sysError);
         } finally {
             setIsSubmitting(false);

@@ -115,7 +115,8 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
             const formData = new FormData();
             formData.append('id', product.id);
             formData.append('title', editFormData.title);
-            formData.append('price', editFormData.price);
+            // Ensure price is a valid number, default to 0 if empty
+            formData.append('price', editFormData.price === '' ? '0' : editFormData.price);
             formData.append('description', editFormData.description);
             formData.append('category', editFormData.category);
             formData.append('department', editFormData.department);
@@ -159,7 +160,7 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
             }
         } catch (error) {
             console.error('Error updating product:', error);
-            alert(`Error updating product: ${error.message}\nTarget: ${API_URL}`);
+            alert(`Error updating product: ${error.message}`);
         } finally {
             setIsSaving(false);
         }
