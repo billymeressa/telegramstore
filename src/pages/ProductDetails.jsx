@@ -616,7 +616,7 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
                         <div className="space-y-4">
                             <div>
                                 <h3 className="text-sm font-medium text-[var(--tg-theme-hint-color)] uppercase tracking-wide mb-1.5">Description</h3>
-                                <p className="text-[var(--tg-theme-text-color)] leading-relaxed text-sm opacity-90">
+                                <p className="text-[var(--tg-theme-text-color)] leading-relaxed text-sm opacity-90 whitespace-pre-wrap">
                                     {product.description || "No description available."}
                                 </p>
                             </div>
