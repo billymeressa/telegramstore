@@ -36,7 +36,9 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
         category: '',
         department: '',
         variations: [],
-        variationType: ''
+        variationType: '',
+        existingImages: [],  // URLs of existing images
+        newImages: []        // File objects for new uploads
     });
     const [isSaving, setIsSaving] = useState(false);
 
@@ -83,7 +85,9 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
             category: product.category || '',
             department: product.department || '',
             variations: product.variations || [],
-            variationType: product.variations && product.variations.length > 0 ? 'Variation' : ''
+            variationType: product.variations && product.variations.length > 0 ? 'Variation' : '',
+            existingImages: product.images || [],
+            newImages: []
         });
         setIsEditMode(true);
     };
@@ -98,7 +102,9 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
             category: '',
             department: '',
             variations: [],
-            variationType: ''
+            variationType: '',
+            existingImages: [],
+            newImages: []
         });
     };
 
@@ -106,21 +112,24 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
     const handleSaveEdit = async () => {
         setIsSaving(true);
         try {
+            const formData = new FormData();
+            formData.append('id', product.id);
+            formData.append('title', editFormData.title);
+            formData.append('price', editFormData.price);
+            formData.append('description', editFormData.description);
+            formData.append('category', editFormData.category);
+            formData.append('department', editFormData.department);
+            formData.append('variations', JSON.stringify(editFormData.variations));
+            formData.append('existingImages', JSON.stringify(editFormData.existingImages));
+
+            // Append new image files
+            editFormData.newImages.forEach((file) => {
+                formData.append('images', file);
+            });
+
             const response = await fetch(`${API_URL}/api/products`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    id: product.id,
-                    title: editFormData.title,
-                    price: editFormData.price,
-                    description: editFormData.description,
-                    category: editFormData.category,
-                    department: editFormData.department,
-                    variations: editFormData.variations,
-                    existingImages: product.images || []
-                })
+                body: formData
             });
 
             if (response.ok) {
@@ -291,6 +300,79 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
                                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
                             />
                         </div>
+
+                        {/* Image Management */}
+                        <div className="border border-gray-200 rounded-lg p-3">
+                            <label className="block text-sm font-medium text-[var(--tg-theme-text-color)] mb-2">Product Images</label>
+
+                            {/* Existing Images */}
+                            {editFormData.existingImages.length > 0 && (
+                                <div className="mb-3">
+                                    <p className="text-xs text-[var(--tg-theme-hint-color)] mb-2">Current Images:</p>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {editFormData.existingImages.map((img, index) => (
+                                            <div key={index} className="relative group">
+                                                <img
+                                                    src={img}
+                                                    alt={`Product ${index + 1}`}
+                                                    className="w-full h-24 object-cover rounded-lg border border-gray-300"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const newImages = editFormData.existingImages.filter((_, i) => i !== index);
+                                                        setEditFormData({ ...editFormData, existingImages: newImages });
+                                                    }}
+                                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    ✕
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* New Image Upload */}
+                            <div>
+                                <p className="text-xs text-[var(--tg-theme-hint-color)] mb-2">Add New Images:</p>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    multiple
+                                    onChange={(e) => {
+                                        const files = Array.from(e.target.files);
+                                        setEditFormData({ ...editFormData, newImages: [...editFormData.newImages, ...files] });
+                                    }}
+                                    className="w-full text-sm text-[var(--tg-theme-text-color)] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[var(--tg-theme-button-color)] file:text-white hover:file:opacity-80"
+                                />
+                                {editFormData.newImages.length > 0 && (
+                                    <div className="mt-2">
+                                        <p className="text-xs text-green-600 mb-1">{editFormData.newImages.length} new image(s) selected</p>
+                                        <div className="flex flex-wrap gap-1">
+                                            {editFormData.newImages.map((file, index) => (
+                                                <div key={index} className="relative">
+                                                    <div className="px-2 py-1 bg-gray-100 rounded text-xs flex items-center gap-1">
+                                                        <span className="truncate max-w-[100px]">{file.name}</span>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                const newFiles = editFormData.newImages.filter((_, i) => i !== index);
+                                                                setEditFormData({ ...editFormData, newImages: newFiles });
+                                                            }}
+                                                            className="text-red-500 font-bold"
+                                                        >
+                                                            ✕
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
 
                         {/* Price Input */}
                         <div>
