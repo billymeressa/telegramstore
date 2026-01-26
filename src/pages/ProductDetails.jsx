@@ -137,7 +137,7 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
             const response = await fetch(`${API_URL}/api/products`, {
                 method: 'POST',
                 headers: {
-                    'X-Telegram-Init-Data': initData
+                    'Authorization': initData
                 },
                 body: formData
             });
