@@ -261,63 +261,65 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
             {/* How to Buy Modal */}
             {
                 showHelp && (
-                    <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200 overflow-y-auto">
-                        <div className="bg-[var(--tg-theme-bg-color)] w-full max-w-sm rounded-2xl p-6 relative shadow-2xl animate-in zoom-in-95 duration-200 my-8">
-                            <button
-                                onClick={handleCloseHelp}
-                                className="absolute top-4 right-4 text-[var(--tg-theme-hint-color)]"
-                            >
-                                <X size={24} />
-                            </button>
+                    <div className="fixed inset-0 bg-black/60 z-[100] overflow-y-auto animate-in fade-in duration-200">
+                        <div className="min-h-full flex items-center justify-center p-4">
+                            <div className="bg-[var(--tg-theme-bg-color)] w-full max-w-sm rounded-2xl p-6 relative shadow-2xl animate-in zoom-in-95 duration-200">
+                                <button
+                                    onClick={handleCloseHelp}
+                                    className="absolute top-4 right-4 text-[var(--tg-theme-hint-color)]"
+                                >
+                                    <X size={24} />
+                                </button>
 
-                            <h3 className="text-xl font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center gap-2">
-                                <HelpCircle className="text-[var(--tg-theme-button-color)]" size={24} />
-                                How to Buy
-                            </h3>
+                                <h3 className="text-xl font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center gap-2">
+                                    <HelpCircle className="text-[var(--tg-theme-button-color)]" size={24} />
+                                    How to Buy
+                                </h3>
 
-                            <div className="space-y-8">
-                                <div className="flex flex-col gap-3">
-                                    <h4 className="font-bold text-[var(--tg-theme-text-color)] flex items-center gap-2">
-                                        <div className="w-6 h-6 rounded-full bg-[var(--tg-theme-button-color)] flex items-center justify-center text-white text-sm font-bold">1</div>
-                                        Add to Cart
-                                    </h4>
-                                    <div className="bg-[var(--tg-theme-secondary-bg-color)] rounded-xl overflow-hidden shadow-sm border border-[var(--tg-theme-section-separator-color)]">
-                                        <img src="/guides/add_to_cart.png" alt="Add to Cart Guide" className="w-full h-auto object-cover" />
+                                <div className="space-y-8">
+                                    <div className="flex flex-col gap-3">
+                                        <h4 className="font-bold text-[var(--tg-theme-text-color)] flex items-center gap-2">
+                                            <div className="w-6 h-6 rounded-full bg-[var(--tg-theme-button-color)] flex items-center justify-center text-white text-sm font-bold">1</div>
+                                            Add to Cart
+                                        </h4>
+                                        <div className="bg-[var(--tg-theme-secondary-bg-color)] rounded-xl overflow-hidden shadow-sm border border-[var(--tg-theme-section-separator-color)]">
+                                            <img src="/guides/add_to_cart.png" alt="Add to Cart Guide" className="w-full h-auto object-cover" />
+                                        </div>
+                                        <p className="text-sm text-[var(--tg-theme-hint-color)]">Browse items and tap "Add to Cart" for things you love.</p>
                                     </div>
-                                    <p className="text-sm text-[var(--tg-theme-hint-color)]">Browse items and tap "Add to Cart" for things you love.</p>
+
+                                    <div className="flex flex-col gap-3">
+                                        <h4 className="font-bold text-[var(--tg-theme-text-color)] flex items-center gap-2">
+                                            <div className="w-6 h-6 rounded-full bg-[var(--tg-theme-button-color)] flex items-center justify-center text-white text-sm font-bold">2</div>
+                                            Checkout
+                                        </h4>
+                                        <div className="bg-[var(--tg-theme-secondary-bg-color)] rounded-xl overflow-hidden shadow-sm border border-[var(--tg-theme-section-separator-color)]">
+                                            <img src="/guides/checkout.png" alt="Checkout Guide" className="w-full h-auto object-cover" />
+                                        </div>
+                                        <p className="text-sm text-[var(--tg-theme-hint-color)]">Go to your cart and tap "Checkout" to place your order.</p>
+                                    </div>
+
+                                    <div className="flex flex-col gap-3">
+                                        <h4 className="font-bold text-[var(--tg-theme-text-color)] flex items-center gap-2">
+                                            <div className="w-6 h-6 rounded-full bg-[var(--tg-theme-button-color)] flex items-center justify-center text-white text-sm font-bold">3</div>
+                                            Contact Seller
+                                        </h4>
+                                        <div className="bg-[var(--tg-theme-secondary-bg-color)] rounded-xl overflow-hidden shadow-sm border border-[var(--tg-theme-section-separator-color)]">
+                                            <img src="/guides/contact.png" alt="Contact Guide" className="w-full h-auto object-cover" />
+                                        </div>
+                                        <p className="text-sm text-[var(--tg-theme-hint-color)]">
+                                            Arranging payment & delivery is easy! Contact us directly to finish the sale.
+                                        </p>
+                                    </div>
                                 </div>
 
-                                <div className="flex flex-col gap-3">
-                                    <h4 className="font-bold text-[var(--tg-theme-text-color)] flex items-center gap-2">
-                                        <div className="w-6 h-6 rounded-full bg-[var(--tg-theme-button-color)] flex items-center justify-center text-white text-sm font-bold">2</div>
-                                        Checkout
-                                    </h4>
-                                    <div className="bg-[var(--tg-theme-secondary-bg-color)] rounded-xl overflow-hidden shadow-sm border border-[var(--tg-theme-section-separator-color)]">
-                                        <img src="/guides/checkout.png" alt="Checkout Guide" className="w-full h-auto object-cover" />
-                                    </div>
-                                    <p className="text-sm text-[var(--tg-theme-hint-color)]">Go to your cart and tap "Checkout" to place your order.</p>
-                                </div>
-
-                                <div className="flex flex-col gap-3">
-                                    <h4 className="font-bold text-[var(--tg-theme-text-color)] flex items-center gap-2">
-                                        <div className="w-6 h-6 rounded-full bg-[var(--tg-theme-button-color)] flex items-center justify-center text-white text-sm font-bold">3</div>
-                                        Contact Seller
-                                    </h4>
-                                    <div className="bg-[var(--tg-theme-secondary-bg-color)] rounded-xl overflow-hidden shadow-sm border border-[var(--tg-theme-section-separator-color)]">
-                                        <img src="/guides/contact.png" alt="Contact Guide" className="w-full h-auto object-cover" />
-                                    </div>
-                                    <p className="text-sm text-[var(--tg-theme-hint-color)]">
-                                        Arranging payment & delivery is easy! Contact us directly to finish the sale.
-                                    </p>
-                                </div>
+                                <button
+                                    onClick={handleCloseHelp}
+                                    className="w-full bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] font-bold py-3 rounded-xl mt-6 shadow active:opacity-80"
+                                >
+                                    Got it!
+                                </button>
                             </div>
-
-                            <button
-                                onClick={handleCloseHelp}
-                                className="w-full bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] font-bold py-3 rounded-xl mt-6 shadow active:opacity-80"
-                            >
-                                Got it!
-                            </button>
                         </div>
                     </div>
                 )
