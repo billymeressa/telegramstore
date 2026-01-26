@@ -514,19 +514,61 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
 
 
                         {/* Action Buttons */}
-                        <div className="flex gap-3 pt-4">
+                        <div className="flex flex-col gap-3 pt-4">
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={handleCancelEdit}
+                                    className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold active:opacity-80"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleSaveEdit}
+                                    disabled={isSaving}
+                                    className="flex-1 bg-[var(--tg-theme-button-color)] text-white py-3 rounded-xl font-semibold active:opacity-80 disabled:opacity-50"
+                                >
+                                    {isSaving ? 'Saving...' : 'Save Changes'}
+                                </button>
+                            </div>
+
                             <button
-                                onClick={handleCancelEdit}
-                                className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold active:opacity-80"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleSaveEdit}
+                                onClick={async () => {
+                                    if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+                                        setIsSaving(true);
+                                        try {
+                                            const crypto = window.crypto || window.msCrypto;
+                                            // Simple random fallback if crypto not available or for simpler ID
+                                            const randomId = Math.floor(Math.random() * 1000000000);
+
+                                            // Get Telegram WebApp initData for authentication
+                                            const initData = window.Telegram?.WebApp?.initData || '';
+
+                                            const response = await fetch(`${API_URL}/api/products/${product.id}`, {
+                                                method: 'DELETE',
+                                                headers: {
+                                                    'Authorization': initData
+                                                }
+                                            });
+
+                                            if (response.ok) {
+                                                alert('Product deleted successfully');
+                                                navigate('/');
+                                            } else {
+                                                const text = await response.text();
+                                                alert(`Failed to delete: ${text}`);
+                                            }
+                                        } catch (error) {
+                                            console.error('Error deleting product:', error);
+                                            alert(`Error deleting product: ${error.message}`);
+                                        } finally {
+                                            setIsSaving(false);
+                                        }
+                                    }
+                                }}
                                 disabled={isSaving}
-                                className="flex-1 bg-[var(--tg-theme-button-color)] text-white py-3 rounded-xl font-semibold active:opacity-80 disabled:opacity-50"
+                                className="w-full bg-red-100 text-red-600 py-3 rounded-xl font-semibold active:opacity-80 border border-red-200"
                             >
-                                {isSaving ? 'Saving...' : 'Save Changes'}
+                                Delete Product
                             </button>
                         </div>
                     </div>
