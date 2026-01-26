@@ -4,6 +4,19 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ShoppingBag, Heart, Edit2 } from 'lucide-react';
 import { trackEvent } from '../utils/track';
 
+const SUBCATEGORIES = {
+    'Men': ['Shirts', 'T-Shirts', 'Pants', 'Jeans', 'Shoes', 'Suits', 'Accessories', 'Activewear', 'Other'],
+    'Women': ['Dresses', 'Tops', 'Skirts', 'Pants', 'Jeans', 'Shoes', 'Bags', 'Jewelry', 'Accessories', 'Other'],
+    'Kids': ['Boys Clothing', 'Girls Clothing', 'Baby', 'Shoes', 'Toys', 'School', 'Other'],
+    'Electronics': ['Phones', 'Laptops', 'Audio', 'Storage', 'Computer Accessories', 'Gaming', 'Networking', 'Smart Home', 'Other'],
+    'Home': ['Decor', 'Kitchen', 'Bedding', 'Furniture', 'Lighting', 'Tools', 'Other'],
+    'Beauty': ['Skincare', 'Makeup', 'Fragrance', 'Haircare', 'Personal Care', 'Other'],
+    'Sports': ['Gym Equipment', 'Team Sports', 'Outdoor', 'Running', 'Nutrition', 'Other'],
+    'Books': ['Fiction', 'Non-Fiction', 'Educational', 'Self-Help', 'Children', 'Other'],
+    'Vehicles': ['Cars', 'Motorcycles', 'Bicycles', 'Parts & Accessories', 'Tires & Wheels', 'Car Electronics', 'Tools & Equipment', 'Other']
+};
+
+
 const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], isAdmin = false }) => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -301,15 +314,35 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
                             />
                         </div>
 
-                        {/* Category Input */}
+                        {/* Department Select */}
+                        <div>
+                            <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">Department</label>
+                            <select
+                                value={editFormData.department}
+                                onChange={(e) => setEditFormData({ ...editFormData, department: e.target.value, category: '' })}
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                            >
+                                <option value="">Select Department</option>
+                                {Object.keys(SUBCATEGORIES).map(dept => (
+                                    <option key={dept} value={dept}>{dept}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Category Select */}
                         <div>
                             <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">Category</label>
-                            <input
-                                type="text"
+                            <select
                                 value={editFormData.category}
                                 onChange={(e) => setEditFormData({ ...editFormData, category: e.target.value })}
                                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
-                            />
+                                disabled={!editFormData.department}
+                            >
+                                <option value="">Select Category</option>
+                                {editFormData.department && SUBCATEGORIES[editFormData.department]?.map(cat => (
+                                    <option key={cat} value={cat}>{cat}</option>
+                                ))}
+                            </select>
                         </div>
 
                         {/* Variations Section */}
