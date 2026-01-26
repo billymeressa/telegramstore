@@ -159,7 +159,7 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
             }
         } catch (error) {
             console.error('Error updating product:', error);
-            alert(`Error updating product: ${error.message}`);
+            alert(`Error updating product: ${error.message}\nTarget: ${API_URL}`);
         } finally {
             setIsSaving(false);
         }

@@ -5,3 +5,7 @@ if (!API_URL) {
 }
 
 export default API_URL;
+
+console.log('--- CONFIG LOADED ---');
+console.log('API_URL:', API_URL);
+
