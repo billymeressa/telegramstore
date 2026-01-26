@@ -3,9 +3,10 @@ import ProductList from '../components/ProductList';
 import HorizontalProductRow from '../components/HorizontalProductRow';
 import CategoryColumnRow from '../components/CategoryColumnRow';
 import { smartSearch } from '../utils/smartSearch';
-import { Search } from 'lucide-react';
+import { Search, HelpCircle, X, ShoppingBag } from 'lucide-react';
 
 const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, isFetching }) => {
+    const [showHelp, setShowHelp] = useState(false);
 
     const DEPARTMENTS = ["All", "Electronics", "Men", "Women", "Kids", "Home", "Beauty", "Sports", "Books", "Vehicles"];
 
@@ -103,8 +104,8 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
     return (
         <div className="pb-4 pt-14 min-h-screen bg-[var(--tg-theme-secondary-bg-color)]">
             {/* Fixed Header (Search Only) */}
-            <div className="fixed top-0 left-0 right-0 z-50 bg-[var(--tg-theme-bg-color)] pt-2 pb-2 px-3 border-b border-[var(--tg-theme-section-separator-color)]">
-                <div className="relative">
+            <div className="fixed top-0 left-0 right-0 z-50 bg-[var(--tg-theme-bg-color)] pt-2 pb-2 px-3 border-b border-[var(--tg-theme-section-separator-color)] flex gap-2 items-center">
+                <div className="relative flex-1">
                     <input
                         type="text"
                         placeholder="Search products..."
@@ -114,6 +115,12 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                     />
                     <Search className="absolute left-3 top-2.5 text-[var(--tg-theme-hint-color)]" size={18} />
                 </div>
+                <button
+                    onClick={() => setShowHelp(true)}
+                    className="p-2 text-[var(--tg-theme-hint-color)] hover:text-[var(--tg-theme-text-color)]"
+                >
+                    <HelpCircle size={24} />
+                </button>
             </div>
 
             {/* Main Scrollable Content */}
@@ -184,6 +191,63 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                 </div>
             </div>
         </div>
+
+            {/* How to Buy Modal */ }
+    {
+        showHelp && (
+            <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
+                <div className="bg-[var(--tg-theme-bg-color)] w-full max-w-sm rounded-2xl p-6 relative shadow-2xl animate-in zoom-in-95 duration-200">
+                    <button
+                        onClick={() => setShowHelp(false)}
+                        className="absolute top-4 right-4 text-[var(--tg-theme-hint-color)]"
+                    >
+                        <X size={24} />
+                    </button>
+
+                    <h3 className="text-xl font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center gap-2">
+                        <HelpCircle className="text-[var(--tg-theme-button-color)]" size={24} />
+                        How to Buy
+                    </h3>
+
+                    <div className="space-y-6">
+                        <div className="flex gap-4">
+                            <div className="w-10 h-10 rounded-full bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center flex-shrink-0 text-[var(--tg-theme-button-color)] font-bold text-lg">1</div>
+                            <div>
+                                <h4 className="font-bold text-[var(--tg-theme-text-color)]">Add to Cart</h4>
+                                <p className="text-sm text-[var(--tg-theme-hint-color)] leading-tight">Browse items and tap "Add to Cart" for things you love.</p>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-4">
+                            <div className="w-10 h-10 rounded-full bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center flex-shrink-0 text-[var(--tg-theme-button-color)] font-bold text-lg">2</div>
+                            <div>
+                                <h4 className="font-bold text-[var(--tg-theme-text-color)]">Checkout</h4>
+                                <p className="text-sm text-[var(--tg-theme-hint-color)] leading-tight">Go to your cart and tap "Checkout" to place your order.</p>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-4">
+                            <div className="w-10 h-10 rounded-full bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center flex-shrink-0 text-[var(--tg-theme-button-color)] font-bold text-lg">3</div>
+                            <div>
+                                <h4 className="font-bold text-[var(--tg-theme-text-color)]">Contact Seller</h4>
+                                <p className="text-sm text-[var(--tg-theme-hint-color)] leading-tight">
+                                    Arranging payment & delivery is easy! Contact us directly to finish the sale.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={() => setShowHelp(false)}
+                        className="w-full bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] font-bold py-3 rounded-xl mt-6 shadow active:opacity-80"
+                    >
+                        Got it!
+                    </button>
+                </div>
+            </div>
+        )
+    }
+        </div >
     );
 };
 
