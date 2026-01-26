@@ -8,7 +8,7 @@ import { Search, HelpCircle, X, ShoppingBag } from 'lucide-react';
 const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, isFetching }) => {
     const [showHelp, setShowHelp] = useState(false);
 
-    const DEPARTMENTS = ["All", "Electronics", "Men", "Women", "Kids", "Home", "Beauty", "Sports", "Books", "Vehicles"];
+    const POPULAR_CATEGORIES = ["All", "Phones", "Shoes", "Watches", "Laptops", "Dresses", "Gaming", "Bags", "T-Shirts", "Jeans"];
 
     // Sub-category mapping (simplified version of what's in AdminDashboard)
     // In a real app, this might come from the backend or a shared constant file
@@ -83,9 +83,22 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
         return filtered;
     }, [products, selectedDepartment, selectedCategory, searchQuery]);
 
-    const handleDepartmentChange = (dept) => {
-        setSelectedDepartment(dept);
-        setSelectedCategory("All"); // Reset sub-category when department changes
+    const handleTabChange = (category) => {
+        if (category === "All") {
+            setSelectedDepartment("All");
+            setSelectedCategory("All");
+        } else {
+            // Find which department this category belongs to (optional, but good for data consistency)
+            let foundDept = "All";
+            for (const [dept, subCats] of Object.entries(SUBCATEGORIES)) {
+                if (subCats.includes(category)) {
+                    foundDept = dept;
+                    break;
+                }
+            }
+            setSelectedDepartment(foundDept); // Or keep "All" if you want broader search, but finding dept is safer
+            setSelectedCategory(category);
+        }
     };
 
     const handleCategoryChange = (cat) => {
@@ -167,19 +180,19 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
             {/* Main Scrollable Content */}
             <div className="space-y-2">
-                {/* Department Tabs */}
+                {/* Category Tabs (formerly Departments) */}
                 <div className="bg-[var(--tg-theme-bg-color)] py-2 sticky top-14 z-40 border-b border-[var(--tg-theme-section-separator-color)] shadow-sm">
                     <div className="flex gap-2 overflow-x-auto px-4 no-scrollbar">
-                        {DEPARTMENTS.map((dept) => (
+                        {POPULAR_CATEGORIES.map((cat) => (
                             <button
-                                key={dept}
-                                onClick={() => handleDepartmentChange(dept)}
-                                className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${selectedDepartment === dept
+                                key={cat}
+                                onClick={() => handleTabChange(cat)}
+                                className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${(selectedCategory === cat || (cat === "All" && selectedCategory === "All" && selectedDepartment === "All"))
                                     ? 'bg-[var(--tg-theme-button-color)] text-white shadow-md'
                                     : 'bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)]'
                                     }`}
                             >
-                                {dept}
+                                {cat}
                             </button>
                         ))}
                     </div>
@@ -233,7 +246,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                             <p className="text-sm">Try using different filters</p>
                             <button
                                 onClick={() => {
-                                    handleDepartmentChange("All");
+                                    handleTabChange("All");
                                     setSearchQuery("");
                                 }}
                                 className="mt-4 text-[var(--tg-theme-link-color)]"
