@@ -99,13 +99,16 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-        // Check for onboarding status
+    }, [hasMore, isFetching, loadMore]);
+
+    // Check for onboarding status
+    useEffect(() => {
         const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
         if (!hasSeenOnboarding) {
             // Short delay to ensure animations are smooth
             setTimeout(() => setShowHelp(true), 500);
         }
-    }, [hasMore, isFetching, loadMore]);
+    }, []);
 
     const handleCloseHelp = () => {
         setShowHelp(false);
@@ -135,7 +138,97 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
             </div>
 
             {/* Main Scrollable Content */}
-            {/* ... content ... */}
+            <div className="space-y-2">
+                {/* Department Tabs */}
+                <div className="bg-[var(--tg-theme-bg-color)] py-2 sticky top-14 z-40 border-b border-[var(--tg-theme-section-separator-color)] shadow-sm">
+                    <div className="flex gap-2 overflow-x-auto px-4 no-scrollbar">
+                        {DEPARTMENTS.map((dept) => (
+                            <button
+                                key={dept}
+                                onClick={() => handleDepartmentChange(dept)}
+                                className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${selectedDepartment === dept
+                                    ? 'bg-[var(--tg-theme-button-color)] text-white shadow-md'
+                                    : 'bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)]'
+                                    }`}
+                            >
+                                {dept}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Visual Category Columns (Only on "All" or if mapped) */}
+                {/* Only show if we have products to categorize, and for top level exploration */}
+                {selectedDepartment === 'All' && !searchQuery && (
+                    <CategoryColumnRow
+                        categories={['Electronics', 'Men', 'Women', 'Home', 'Beauty', 'Sports']}
+                        onSelect={handleDepartmentChange}
+                    />
+                )}
+
+                {/* Sub-Category Pills (If Department Selected or Smart Categories Available) */}
+                {(selectedDepartment !== 'All' || availableCategories.length > 0) && (
+                    <div className="flex gap-2 overflow-x-auto px-4 py-2 no-scrollbar bg-[var(--tg-theme-bg-color)] border-b border-[var(--tg-theme-section-separator-color)]">
+                        {availableCategories.map((cat) => (
+                            <button
+                                key={cat}
+                                onClick={() => handleCategoryChange(cat)}
+                                className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-colors border ${selectedCategory === cat
+                                    ? 'border-[var(--tg-theme-button-color)] bg-[var(--tg-theme-button-color)] text-white'
+                                    : 'border-[var(--tg-theme-hint-color)] text-[var(--tg-theme-hint-color)]'
+                                    }`}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
+                )}
+
+
+                {/* Brand/Featured Rows (Only on "All" tab & no search) */}
+                {selectedDepartment === 'All' && !searchQuery && (
+                    <>
+                        <HorizontalProductRow title="Trending Now 🔥" products={trendingProducts} />
+                        <HorizontalProductRow title="New Arrivals 🚀" products={newArrivals} />
+                    </>
+                )}
+
+
+                {/* Main Product Grid */}
+                <div data-product-grid className="min-h-[50vh]"> {/* For scroll target */}
+                    {filteredProducts.length > 0 ? (
+                        <ProductList products={filteredProducts} />
+                    ) : (
+                        <div className="flex flex-col items-center justify-center py-20 text-[var(--tg-theme-hint-color)]">
+                            <ShoppingBag size={48} className="mb-4 opacity-50" />
+                            <p className="text-lg font-medium">No products found</p>
+                            <p className="text-sm">Try using different filters</p>
+                            <button
+                                onClick={() => {
+                                    handleDepartmentChange("All");
+                                    setSearchQuery("");
+                                }}
+                                className="mt-4 text-[var(--tg-theme-link-color)]"
+                            >
+                                Clear Filters
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                {/* Loading Indicator for Infinite Scroll */}
+                {isFetching && (
+                    <div className="flex justify-center py-4">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--tg-theme-button-color)]"></div>
+                    </div>
+                )}
+
+                {!hasMore && filteredProducts.length > 0 && (
+                    <div className="text-center py-8 text-[var(--tg-theme-hint-color)] text-sm">
+                        You've reached the end! 🎉
+                    </div>
+                )}
+            </div>
 
             {/* How to Buy Modal */}
             {
