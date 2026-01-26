@@ -4,7 +4,8 @@ import API_URL from './config';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
-import Toast from './components/Toast'; // New Import
+import Toast from './components/Toast';
+import ContactModal from './components/ContactModal'; // New Import
 import { trackEvent, startSession, endSession } from './utils/track';
 
 // Lazy Load Pages for Code Splitting
@@ -15,13 +16,11 @@ const ProductDetails = lazy(() => import('./pages/ProductDetails'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 const AnalyticsDashboard = lazy(() => import('./pages/AnalyticsDashboard'));
 
-// Removed top-level tele
-const ADMIN_ID = 748823605; // Make sure this matches your .env ADMIN_ID
+const ADMIN_ID = 748823605;
 
 function App() {
-  const tele = window.Telegram?.WebApp; // Moved inside component
+  const tele = window.Telegram?.WebApp;
   const [products, setProducts] = useState(() => {
-    // Initial State from Cache (Fast Load)
     try {
       const cached = localStorage.getItem('cached_products');
       return cached ? JSON.parse(cached) : [];
@@ -47,8 +46,13 @@ function App() {
       return [];
     }
   });
-  const [toast, setToast] = useState(null); // Toast State
-  const [loading, setLoading] = useState(products.length === 0); // Only load if cache is empty
+  const [toast, setToast] = useState(null);
+  const [loading, setLoading] = useState(products.length === 0);
+
+  // Checkout / Contact Modal State
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [sellerUsername, setSellerUsername] = useState('AddisStoreSupport');
+  const [orderMessage, setOrderMessage] = useState('');
 
   useEffect(() => {
     const tele = window.Telegram?.WebApp;
@@ -75,12 +79,8 @@ function App() {
         });
         if (res.ok) {
           const data = await res.json();
-          if (data.isAdmin) {
-            setIsAdmin(true);
-          }
-          if (data.isSuperAdmin) {
-            setIsSuperAdmin(true);
-          }
+          if (data.isAdmin) setIsAdmin(true);
+          if (data.isSuperAdmin) setIsSuperAdmin(true);
         } else {
           setIsAdmin(false);
           setIsSuperAdmin(false);
@@ -94,18 +94,12 @@ function App() {
 
     const validateUser = (webAppUser) => {
       if (!webAppUser) return false;
-
       setUser(webAppUser);
-
-      // Check with backend if this user is an admin
       checkAdminStatus();
-
       return true;
     };
 
-    // Force light mode - Override Telegram's theme
     if (tele) {
-      // Set theme parameters to light mode
       document.documentElement.style.setProperty('--tg-theme-bg-color', '#ffffff');
       document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', '#f4f4f5');
       document.documentElement.style.setProperty('--tg-theme-text-color', '#000000');
@@ -114,20 +108,14 @@ function App() {
       document.documentElement.style.setProperty('--tg-theme-button-color', '#3390ec');
       document.documentElement.style.setProperty('--tg-theme-button-text-color', '#ffffff');
       document.documentElement.style.setProperty('--tg-theme-section-separator-color', '#e3e3e4');
-
-      // Also set background color on body
       document.body.style.backgroundColor = '#ffffff';
     }
 
-
-    // 1. Try getting user immediately
     let currentUser = tele?.initDataUnsafe?.user;
-    let intervalId; // Declare intervalId here
+    let intervalId;
 
     if (validateUser(currentUser)) {
-      // Found immediately
     } else {
-      // 2. Retry polling for up to 2 seconds (fix for race conditions)
       let attempts = 0;
       intervalId = setInterval(() => {
         attempts++;
@@ -138,18 +126,11 @@ function App() {
         }
       }, 100);
 
-      // Cleanup interval on unmount
-      // This return statement will be the cleanup for the useEffect
-      // and will clear the interval if it was set.
       return () => {
-        if (intervalId) {
-          clearInterval(intervalId);
-        }
+        if (intervalId) clearInterval(intervalId);
       };
     }
 
-    // Mock User for Dev Environment (Browser Only)
-    // This runs if tele is undefined (i.e., not in Telegram context)
     if (!tele && import.meta.env.DEV) {
       console.log("Dev Mode: Mocking Telegram User (Browser Only)");
       setUser({
@@ -166,15 +147,20 @@ function App() {
 
     fetchProductData(1);
 
-    // Track app open and start session
-    // Capture Referral Source
     const startParam = tele?.initDataUnsafe?.start_param;
     const metadata = startParam ? { source: startParam } : {};
 
     trackEvent('app_open', metadata);
     startSession(metadata);
 
-    // End session when app closes/unmounts
+    // Fetch Seller Info for Contact Modal
+    fetch(`${API_URL}/api/seller-info`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.username) setSellerUsername(data.username);
+      })
+      .catch(console.error);
+
     return () => {
       endSession();
     };
@@ -184,9 +170,6 @@ function App() {
     if (!API_URL) return;
 
     setIsFetching(true);
-
-    // If page 1, we might want to show global loading, or just fetching state
-    // But ONLY if we don't have cached data to show already
     if (pageNum === 1 && products.length === 0) setLoading(true);
 
     fetch(`${API_URL}/api/products?page=${pageNum}&limit=20`)
@@ -195,13 +178,10 @@ function App() {
         return res.json();
       })
       .then(data => {
-        // Backend now returns { products: [], ... }
-        // Determine if it's the old format (array) or new format (object)
         let newProducts = [];
         let more = false;
 
         if (Array.isArray(data)) {
-          // Fallback for old API
           newProducts = data;
         } else {
           newProducts = data.products || [];
@@ -210,12 +190,10 @@ function App() {
 
         if (pageNum === 1) {
           setProducts(newProducts);
-          // Update Cache
           localStorage.setItem('cached_products', JSON.stringify(newProducts));
         } else {
           setProducts(prev => {
             const updated = [...prev, ...newProducts];
-            // Optional: Cache deeper pages, but usually page 1 is enough for "instant load" feel
             return updated;
           });
         }
@@ -225,7 +203,6 @@ function App() {
       })
       .catch(err => {
         console.error("Failed to fetch products", err);
-        // Silent fail if we have cache, otherwise show error
         if (products.length === 0) {
           const msg = `Connection Failed: Could not load products. (${err.message}). Is the backend running?`;
           tele ? tele.showAlert(msg) : alert(msg);
@@ -242,8 +219,6 @@ function App() {
       fetchProductData(page + 1);
     }
   };
-
-
 
   const onAdd = (product) => {
     const exist = cart.find((x) => x.id === product.id);
@@ -263,9 +238,7 @@ function App() {
       tele.HapticFeedback.impactOccurred('light');
     }
 
-    setToast(`Added ${product.title} to cart`); // Trigger Toast
-
-    // Track add to cart
+    setToast(`Added ${product.title} to cart`);
     trackEvent('add_to_cart', { productId: product.id, productTitle: product.title, price: product.price });
   };
 
@@ -311,7 +284,6 @@ function App() {
         : [...prev, productId];
 
       localStorage.setItem('wishlist', JSON.stringify(newWishlist));
-
       setToast(exists ? "Removed from wishlist" : "Added to wishlist");
 
       if (window.Telegram?.WebApp?.HapticFeedback) {
@@ -332,13 +304,23 @@ function App() {
   const onCheckout = useCallback(async (itemsToCheckout = cart) => {
     if (!user && !tele) return;
 
-    // Send order to backend
     const orderData = {
       items: itemsToCheckout,
       total_price: itemsToCheckout.reduce((sum, item) => sum + item.price * item.quantity, 0),
       userId: user?.id,
       userInfo: user
     };
+
+    // Generate Telegram Message for the Modal
+    const totalPrice = orderData.total_price;
+    let msg = `Hi! I just placed an order.\n\n`;
+    itemsToCheckout.forEach(item => {
+      const itemPrice = item.selectedVariation ? item.selectedVariation.price : item.price;
+      const variationText = item.selectedVariation ? ` - ${item.selectedVariation.name}` : '';
+      msg += `- ${item.title}${variationText} (x${item.quantity}) - ${Math.floor(itemPrice * item.quantity)} Birr\n`;
+    });
+    msg += `\nTotal: ${Math.floor(totalPrice)} Birr`;
+    setOrderMessage(encodeURIComponent(msg));
 
     try {
       const res = await fetch(`${API_URL}/api/orders`, {
@@ -349,8 +331,10 @@ function App() {
       const data = await res.json();
 
       if (data.success) {
-        tele.showAlert('Order placed successfully!');
-        // Only clear cart if we checked out the cart
+        // Show Contact Modal instead of just alert
+        setShowContactModal(true);
+
+        // Only clear cart if we checked out the MAIN cart
         if (itemsToCheckout === cart) {
           setCart([]);
         }
@@ -402,6 +386,12 @@ function App() {
         </Routes>
       </Suspense>
       {toast && <Toast message={toast} onClose={() => setToast(null)} />}
+      <ContactModal
+        isOpen={showContactModal}
+        onClose={() => setShowContactModal(false)}
+        sellerUsername={sellerUsername}
+        orderMessage={orderMessage}
+      />
     </BrowserRouter>
   );
 }
