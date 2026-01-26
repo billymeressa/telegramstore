@@ -3,7 +3,8 @@ import ProductList from '../components/ProductList';
 import HorizontalProductRow from '../components/HorizontalProductRow';
 import CategoryColumnRow from '../components/CategoryColumnRow';
 import { smartSearch } from '../utils/smartSearch';
-import { Search, HelpCircle, X, ShoppingBag } from 'lucide-react';
+import { Search, HelpCircle, X, ShoppingBag, Hand, Check, Zap } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, isFetching }) => {
     const [showHelp, setShowHelp] = useState(false);
@@ -154,7 +155,10 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
     const handleCloseHelp = () => {
         setShowHelp(false);
         localStorage.setItem('hasSeenOnboarding', 'true');
+        setTimeout(() => setPracticeStatus('idle'), 500);
     };
+
+    const [practiceStatus, setPracticeStatus] = useState('idle');
 
     return (
         <div className="pb-4 pt-14 min-h-screen bg-[var(--tg-theme-secondary-bg-color)]">
@@ -325,14 +329,91 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                                         </p>
                                     </div>
 
-                                    <div className="bg-[var(--tg-theme-secondary-bg-color)] p-4 rounded-xl border border-[var(--tg-theme-button-color)]/20">
-                                        <h4 className="font-bold text-[var(--tg-theme-text-color)] mb-2 flex items-center gap-2">
-                                            🎯 Practice Exercise
-                                        </h4>
-                                        <p className="text-sm text-[var(--tg-theme-hint-color)]">
-                                            Go ahead and try buying something now! <br />
-                                            <span className="font-semibold text-[var(--tg-theme-button-color)]">Don't worry</span> — clicking "Buy" or "Checkout" will not charge you anything. It just starts a chat!
-                                        </p>
+                                    <div className="bg-[var(--tg-theme-secondary-bg-color)] p-5 rounded-xl border border-[var(--tg-theme-button-color)]/20 relative overflow-hidden">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div>
+                                                <h4 className="font-bold text-[var(--tg-theme-text-color)] flex items-center gap-2">
+                                                    🎯 Practice Mode
+                                                </h4>
+                                                <p className="text-xs text-[var(--tg-theme-hint-color)] mt-1">
+                                                    Try it now! It's safe.
+                                                </p>
+                                            </div>
+                                            {practiceStatus === 'success' && (
+                                                <motion.div
+                                                    initial={{ scale: 0 }}
+                                                    animate={{ scale: 1 }}
+                                                    className="bg-green-100 text-green-600 px-2 py-1 rounded text-xs font-bold"
+                                                >
+                                                    Success!
+                                                </motion.div>
+                                            )}
+                                        </div>
+
+                                        {/* Fake Product Card */}
+                                        <div className="bg-[var(--tg-theme-bg-color)] rounded-lg p-3 shadow-sm border border-[var(--tg-theme-section-separator-color)] flex items-center justify-between gap-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center text-xl">👟</div>
+                                                <div>
+                                                    <div className="text-sm font-bold text-[var(--tg-theme-text-color)]">Cool Sneakers</div>
+                                                    <div className="text-xs text-[var(--tg-theme-hint-color)]">1,200 Birr</div>
+                                                </div>
+                                            </div>
+
+                                            <div className="relative">
+                                                <motion.button
+                                                    whileTap={{ scale: 0.9 }}
+                                                    onClick={() => setPracticeStatus('success')}
+                                                    className={`px-4 py-2 rounded-lg font-bold text-sm transition-colors ${practiceStatus === 'success'
+                                                        ? 'bg-green-500 text-white'
+                                                        : 'bg-[var(--tg-theme-button-color)] text-white shadow-lg shadow-blue-500/30'
+                                                        }`}
+                                                >
+                                                    {practiceStatus === 'success' ? (
+                                                        <span className="flex items-center gap-1"><Check size={14} /> Done</span>
+                                                    ) : (
+                                                        <span className="flex items-center gap-1"><Zap size={14} fill="currentColor" /> Buy</span>
+                                                    )}
+                                                </motion.button>
+
+                                                {/* Animated Hand Hint */}
+                                                {practiceStatus === 'idle' && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: 10, x: 10 }}
+                                                        animate={{
+                                                            opacity: 1,
+                                                            y: [0, -5, 0],
+                                                            x: [0, -5, 0]
+                                                        }}
+                                                        transition={{
+                                                            duration: 1.5,
+                                                            repeat: Infinity,
+                                                            repeatType: "loop",
+                                                            delay: 0.5
+                                                        }}
+                                                        className="absolute top-8 left-6 pointer-events-none drop-shadow-md z-10"
+                                                    >
+                                                        <Hand size={32} className="text-black rotate-[-30deg] fill-white/80" />
+                                                    </motion.div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {practiceStatus === 'success' && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className="mt-4 text-center"
+                                            >
+                                                <p className="text-sm text-[var(--tg-theme-text-color)] mb-2">See? No charge! Just a chat. 🎉</p>
+                                                <button
+                                                    onClick={handleCloseHelp}
+                                                    className="text-[var(--tg-theme-link-color)] font-semibold text-sm hover:underline"
+                                                >
+                                                    Start Shopping Now &rarr;
+                                                </button>
+                                            </motion.div>
+                                        )}
                                     </div>
                                 </div>
 
