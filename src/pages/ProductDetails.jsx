@@ -131,8 +131,14 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
             console.log('Existing images:', editFormData.existingImages);
             console.log('New images:', editFormData.newImages.length);
 
+            // Get Telegram WebApp initData for authentication
+            const initData = window.Telegram?.WebApp?.initData || '';
+
             const response = await fetch(`${API_URL}/api/products`, {
                 method: 'POST',
+                headers: {
+                    'X-Telegram-Init-Data': initData
+                },
                 body: formData
             });
 
