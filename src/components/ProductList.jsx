@@ -40,7 +40,13 @@ function ProductList({ products }) {
                 >
                     <div className="relative w-full aspect-[4/5] bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center overflow-hidden">
                         {product.images && product.images.length > 0 ? (
-                            <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
+                            <img
+                                src={product.images[0]}
+                                alt={product.title}
+                                className="w-full h-full object-cover"
+                                loading="lazy"
+                                decoding="async"
+                            />
                         ) : (
                             <span className="text-4xl opacity-20 grayscale">📦</span>
                         )}

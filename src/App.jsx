@@ -1,24 +1,35 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import LoadingScreen from './components/LoadingScreen';
 import API_URL from './config';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
-import CartPage from './pages/CartPage';
-import Profile from './pages/Profile';
-import WishlistPage from './pages/WishlistPage';
-import ProductDetails from './pages/ProductDetails';
-import AdminDashboard from './components/AdminDashboard';
-import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import Toast from './components/Toast'; // New Import
 import { trackEvent, startSession, endSession } from './utils/track';
+
+// Lazy Load Pages for Code Splitting
+const CartPage = lazy(() => import('./pages/CartPage'));
+const Profile = lazy(() => import('./pages/Profile'));
+const WishlistPage = lazy(() => import('./pages/WishlistPage'));
+const ProductDetails = lazy(() => import('./pages/ProductDetails'));
+const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
+const AnalyticsDashboard = lazy(() => import('./pages/AnalyticsDashboard'));
 
 // Removed top-level tele
 const ADMIN_ID = 748823605; // Make sure this matches your .env ADMIN_ID
 
 function App() {
   const tele = window.Telegram?.WebApp; // Moved inside component
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState(() => {
+    // Initial State from Cache (Fast Load)
+    try {
+      const cached = localStorage.getItem('cached_products');
+      return cached ? JSON.parse(cached) : [];
+    } catch {
+      return [];
+    }
+  });
+
   const [cart, setCart] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
@@ -37,7 +48,7 @@ function App() {
     }
   });
   const [toast, setToast] = useState(null); // Toast State
-  const [loading, setLoading] = useState(true); // Loading State
+  const [loading, setLoading] = useState(products.length === 0); // Only load if cache is empty
 
   useEffect(() => {
     const tele = window.Telegram?.WebApp;
@@ -171,7 +182,8 @@ function App() {
     setIsFetching(true);
 
     // If page 1, we might want to show global loading, or just fetching state
-    if (pageNum === 1) setLoading(true);
+    // But ONLY if we don't have cached data to show already
+    if (pageNum === 1 && products.length === 0) setLoading(true);
 
     fetch(`${API_URL}/api/products?page=${pageNum}&limit=20`)
       .then(res => {
@@ -194,8 +206,14 @@ function App() {
 
         if (pageNum === 1) {
           setProducts(newProducts);
+          // Update Cache
+          localStorage.setItem('cached_products', JSON.stringify(newProducts));
         } else {
-          setProducts(prev => [...prev, ...newProducts]);
+          setProducts(prev => {
+            const updated = [...prev, ...newProducts];
+            // Optional: Cache deeper pages, but usually page 1 is enough for "instant load" feel
+            return updated;
+          });
         }
 
         setHasMore(more);
@@ -203,8 +221,11 @@ function App() {
       })
       .catch(err => {
         console.error("Failed to fetch products", err);
-        const msg = `Connection Failed: Could not load products. (${err.message}). Is the backend running?`;
-        tele ? tele.showAlert(msg) : alert(msg);
+        // Silent fail if we have cache, otherwise show error
+        if (products.length === 0) {
+          const msg = `Connection Failed: Could not load products. (${err.message}). Is the backend running?`;
+          tele ? tele.showAlert(msg) : alert(msg);
+        }
       })
       .finally(() => {
         setLoading(false);
@@ -341,35 +362,37 @@ function App() {
   return (
     <BrowserRouter>
       {loading && <LoadingScreen />}
-      <Routes>
-        <Route element={<Layout cartCount={cart.reduce((a, c) => a + c.quantity, 0)} isAdmin={isAdmin} isSuperAdmin={isSuperAdmin} user={user} />}>
-          <Route path="/" element={
-            <Home
-              products={products}
-              onAdd={onAdd}
-              wishlist={wishlist}
-              toggleWishlist={toggleWishlist}
-              hasMore={hasMore}
-              loadMore={loadMore}
-              isFetching={isFetching}
-            />
-          } />
-          <Route path="/cart" element={
-            <CartPage
-              cart={cart}
-              onIncrease={onIncrease}
-              onDecrease={onDecrease}
-              onRemove={onRemove}
-              onCheckout={onCheckout}
-            />
-          } />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/wishlist" element={<WishlistPage products={products} wishlist={wishlist} toggleWishlist={toggleWishlist} />} />
-          <Route path="/product/:id" element={<ProductDetails onAdd={onAdd} wishlist={wishlist} toggleWishlist={toggleWishlist} products={products} isAdmin={isAdmin} />} />
-          <Route path="/admin" element={isAdmin ? <AdminDashboard products={products} onProductUpdate={setProducts} /> : <Navigate to="/" />} />
-          <Route path="/analytics" element={isSuperAdmin ? <AnalyticsDashboard /> : <Navigate to="/" />} />
-        </Route>
-      </Routes>
+      <Suspense fallback={<LoadingScreen />}>
+        <Routes>
+          <Route element={<Layout cartCount={cart.reduce((a, c) => a + c.quantity, 0)} isAdmin={isAdmin} isSuperAdmin={isSuperAdmin} user={user} />}>
+            <Route path="/" element={
+              <Home
+                products={products}
+                onAdd={onAdd}
+                wishlist={wishlist}
+                toggleWishlist={toggleWishlist}
+                hasMore={hasMore}
+                loadMore={loadMore}
+                isFetching={isFetching}
+              />
+            } />
+            <Route path="/cart" element={
+              <CartPage
+                cart={cart}
+                onIncrease={onIncrease}
+                onDecrease={onDecrease}
+                onRemove={onRemove}
+                onCheckout={onCheckout}
+              />
+            } />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/wishlist" element={<WishlistPage products={products} wishlist={wishlist} toggleWishlist={toggleWishlist} />} />
+            <Route path="/product/:id" element={<ProductDetails onAdd={onAdd} wishlist={wishlist} toggleWishlist={toggleWishlist} products={products} isAdmin={isAdmin} />} />
+            <Route path="/admin" element={isAdmin ? <AdminDashboard products={products} onProductUpdate={setProducts} /> : <Navigate to="/" />} />
+            <Route path="/analytics" element={isSuperAdmin ? <AnalyticsDashboard /> : <Navigate to="/" />} />
+          </Route>
+        </Routes>
+      </Suspense>
       {toast && <Toast message={toast} onClose={() => setToast(null)} />}
     </BrowserRouter>
   );

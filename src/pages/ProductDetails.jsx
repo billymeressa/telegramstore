@@ -673,7 +673,13 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
                             >
                                 <div className="w-full h-40 bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center">
                                     {rel.images?.[0] ? (
-                                        <img src={rel.images[0]} alt={rel.title} className="max-w-full max-h-full object-contain" />
+                                        <img
+                                            src={rel.images[0]}
+                                            alt={rel.title}
+                                            className="max-w-full max-h-full object-contain"
+                                            loading="lazy"
+                                            decoding="async"
+                                        />
                                     ) : (
                                         <span className="text-4xl opacity-20 grayscale">📦</span>
                                     )}

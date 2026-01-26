@@ -44,7 +44,13 @@ const HorizontalProductRow = ({ title, products }) => {
                     >
                         <div className="w-full aspect-[4/5] bg-[var(--tg-theme-bg-color)] rounded-lg overflow-hidden border border-[var(--tg-theme-section-separator-color)] relative">
                             {product.images && product.images.length > 0 ? (
-                                <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
+                                <img
+                                    src={product.images[0]}
+                                    alt={product.title}
+                                    className="w-full h-full object-cover"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center text-2xl bg-[var(--tg-theme-secondary-bg-color)]">📦</div>
                             )}
