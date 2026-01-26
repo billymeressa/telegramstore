@@ -167,8 +167,12 @@ function App() {
     fetchProductData(1);
 
     // Track app open and start session
-    trackEvent('app_open');
-    startSession();
+    // Capture Referral Source
+    const startParam = tele?.initDataUnsafe?.start_param;
+    const metadata = startParam ? { source: startParam } : {};
+
+    trackEvent('app_open', metadata);
+    startSession(metadata);
 
     // End session when app closes/unmounts
     return () => {
@@ -325,13 +329,13 @@ function App() {
     }
   };
 
-  const onCheckout = useCallback(async () => {
+  const onCheckout = useCallback(async (itemsToCheckout = cart) => {
     if (!user && !tele) return;
 
     // Send order to backend
     const orderData = {
-      items: cart,
-      total_price: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+      items: itemsToCheckout,
+      total_price: itemsToCheckout.reduce((sum, item) => sum + item.price * item.quantity, 0),
       userId: user?.id,
       userInfo: user
     };
@@ -345,11 +349,11 @@ function App() {
       const data = await res.json();
 
       if (data.success) {
-        // tele.showAlert('Order placed successfully!');
-        // Send legacy data back to bot just in case (optional)
-        // tele.sendData(JSON.stringify(orderData)); 
-
-        setCart([]); // Clear cart
+        tele.showAlert('Order placed successfully! 🚀');
+        // Only clear cart if we checked out the cart
+        if (itemsToCheckout === cart) {
+          setCart([]);
+        }
       } else {
         tele.showAlert('Failed to place order.');
       }
@@ -357,7 +361,11 @@ function App() {
       console.error(e);
       tele.showAlert('Error processing order.');
     }
-  }, [cart]);
+  }, [cart, user, tele]);
+
+  const onBuyNow = useCallback((product) => {
+    onCheckout([{ ...product, quantity: 1 }]);
+  }, [onCheckout]);
 
   return (
     <BrowserRouter>
@@ -387,7 +395,7 @@ function App() {
             } />
             <Route path="/profile" element={<Profile />} />
             <Route path="/wishlist" element={<WishlistPage products={products} wishlist={wishlist} toggleWishlist={toggleWishlist} />} />
-            <Route path="/product/:id" element={<ProductDetails onAdd={onAdd} wishlist={wishlist} toggleWishlist={toggleWishlist} products={products} isAdmin={isAdmin} />} />
+            <Route path="/product/:id" element={<ProductDetails onAdd={onAdd} onBuyNow={onBuyNow} wishlist={wishlist} toggleWishlist={toggleWishlist} products={products} isAdmin={isAdmin} />} />
             <Route path="/admin" element={isAdmin ? <AdminDashboard products={products} onProductUpdate={setProducts} /> : <Navigate to="/" />} />
             <Route path="/analytics" element={isSuperAdmin ? <AnalyticsDashboard /> : <Navigate to="/" />} />
           </Route>

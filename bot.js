@@ -307,6 +307,34 @@ app.get('/api/analytics/stats', async (req, res) => {
         const productViews = await AnalyticsEvent.countDocuments({ eventType: 'view_product' });
         const addToCarts = await AnalyticsEvent.countDocuments({ eventType: 'add_to_cart' });
 
+        // Revenue Metrics (From Orders)
+        const revenueStats = await Order.aggregate([
+            { $match: { status: { $ne: 'cancelled' } } },
+            {
+                $group: {
+                    _id: null,
+                    totalRevenue: { $sum: '$total_price' },
+                    totalOrders: { $sum: 1 }
+                }
+            }
+        ]);
+
+        const totalRevenue = revenueStats.length > 0 ? revenueStats[0].totalRevenue : 0;
+        const totalOrders = revenueStats.length > 0 ? revenueStats[0].totalOrders : 0;
+
+        // Acquisition Sources
+        const userSources = await AnalyticsEvent.aggregate([
+            { $match: { eventType: 'app_open', 'metadata.source': { $exists: true, $ne: null } } },
+            {
+                $group: {
+                    _id: '$metadata.source',
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { count: -1 } },
+            { $project: { source: '$_id', count: 1, _id: 0 } }
+        ]);
+
         // Top viewed products
         const topProducts = await AnalyticsEvent.aggregate([
             { $match: { eventType: 'view_product' } },
@@ -370,6 +398,9 @@ app.get('/api/analytics/stats', async (req, res) => {
             appOpens,
             productViews,
             addToCarts,
+            totalRevenue, // New
+            totalOrders, // New
+            userSources, // New
             topProducts,
             timeSeriesData,
             sessionMetrics: {

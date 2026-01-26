@@ -33,8 +33,9 @@ export const trackEvent = async (eventType, metadata = {}) => {
 
 /**
  * Starts a new session for the user
+ * @param {object} metadata - Optional additional data (e.g., { source: 'instagram_ad' })
  */
-export const startSession = async () => {
+export const startSession = async (metadata = {}) => {
     const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
     if (!user) return;
 
@@ -45,7 +46,8 @@ export const startSession = async () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                userId: user.id.toString()
+                userId: user.id.toString(),
+                metadata
             })
         });
     } catch (e) {
