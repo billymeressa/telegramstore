@@ -349,7 +349,7 @@ function App() {
       const data = await res.json();
 
       if (data.success) {
-        tele.showAlert('Order placed successfully! 🚀');
+        tele.showAlert('Order placed successfully!');
         // Only clear cart if we checked out the cart
         if (itemsToCheckout === cart) {
           setCart([]);

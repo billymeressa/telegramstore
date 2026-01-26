@@ -321,7 +321,7 @@ return (
                     </>
                 ) : (
                     <div className="w-full flex items-center justify-center py-10">
-                        <span className="text-9xl select-none opacity-20 grayscale">📦</span>
+                        <span className="text-9xl select-none opacity-20 grayscale">No Image</span>
                     </div>
                 )}
             </div>

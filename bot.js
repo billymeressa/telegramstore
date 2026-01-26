@@ -62,13 +62,15 @@ bot.command('start', async (ctx) => {
         await ctx.reply('Loading store...', { reply_markup: { remove_keyboard: true } });
 
         await ctx.reply(
-            `👋 *Welcome to the Store, ${ctx.from.first_name}!*\n\n` +
-            `We are excited to have you here. Click the button below to browse our collection and shop now! 🛍️\n\n` +
+            `Welcome to the Store, ${ctx.from.first_name}!\n\n` +
+            `We are excited to have you here. Click the button below to browse our collection and shop now!\n\n` +
             `_Have questions or feedback? Feel free to contact our admin: @${adminUsername}_`,
             {
                 parse_mode: 'Markdown',
                 reply_markup: {
-                    inline_keyboard: [[{ text: "🛍️ Open Store", web_app: { url: process.env.WEB_APP_URL } }]]
+                    reply_markup: {
+                        inline_keyboard: [[{ text: "Open Store", web_app: { url: process.env.WEB_APP_URL } }]]
+                    }
                 }
             }
         );
@@ -79,19 +81,19 @@ bot.command('start', async (ctx) => {
 
 bot.command('about', async (ctx) => {
     await ctx.reply(
-        `🌟 *About Our Store* 🌟\n\n` +
+        `About Our Store\n\n` +
         `Welcome to your one-stop shop for premium Electronics, Fashion, and more! We are dedicated to providing:\n` +
-        `✅ Top-quality products\n` +
-        `✅ Best market prices\n` +
-        `✅ Fast and reliable delivery\n` +
-        `✅ Excellent customer support\n\n` +
-        `📍 *Location:* Addis Ababa, Ethiopia\n` +
-        `📞 *Contact:* [${adminUsername}](tg://user?id=${process.env.ADMIN_ID})\n\n` +
-        `Thank you for choosing us! 🚀`,
+        `Top-quality products\n` +
+        `Best market prices\n` +
+        `Fast and reliable delivery\n` +
+        `Excellent customer support\n\n` +
+        `Location: Addis Ababa, Ethiopia\n` +
+        `Contact: [${adminUsername}](tg://user?id=${process.env.ADMIN_ID})\n\n` +
+        `Thank you for choosing us!`,
         {
             parse_mode: 'Markdown',
             reply_markup: {
-                inline_keyboard: [[{ text: "🛍️ Shop Now", web_app: { url: process.env.WEB_APP_URL } }]]
+                inline_keyboard: [[{ text: "Shop Now", web_app: { url: process.env.WEB_APP_URL } }]]
             }
         }
     );
@@ -103,7 +105,7 @@ bot.on('web_app_data', (ctx) => {
         const order = JSON.parse(data);
         const { items, total_price } = order;
 
-        let message = `✅ *Order Received!*\n\n`;
+        let message = `Order Received!\n\n`;
         message += `Total: ${total_price.toFixed(2)} ETB\n\n`;
         message += `*Items:*\n`;
 
@@ -126,7 +128,7 @@ bot.on('web_app_data', (ctx) => {
         const uniqueAdminIds = [...new Set(adminIds)];
 
         uniqueAdminIds.forEach(adminId => {
-            bot.telegram.sendMessage(adminId, `🔔 *New Order!*\nUser: ${ctx.from.first_name} (@${ctx.from.username})\n\n` + message, { parse_mode: 'Markdown' }).catch(err => console.error(`Failed to notify admin ${adminId}:`, err));
+            bot.telegram.sendMessage(adminId, `New Order!\nUser: ${ctx.from.first_name} (@${ctx.from.username})\n\n` + message, { parse_mode: 'Markdown' }).catch(err => console.error(`Failed to notify admin ${adminId}:`, err));
         });
     } catch (e) {
         console.error(e);
@@ -137,14 +139,14 @@ bot.on('web_app_data', (ctx) => {
 bot.on('text', async (ctx) => {
     try {
         await ctx.reply(
-            `👋 *Hi there, ${ctx.from.first_name}!*\n\n` +
-            `I'm your shopping assistant. 🛍️\n\n` +
+            `Hi there, ${ctx.from.first_name}!\n\n` +
+            `I'm your shopping assistant.\n\n` +
             `Looking for something stylish? Tap the button below to browse our full collection and place an order!\n\n` +
             `_Need help or have any feedback? We'd love to hear from you! Contact the admin directly: [${adminUsername}](tg://user?id=${process.env.ADMIN_ID})_`,
             {
                 parse_mode: 'Markdown',
                 reply_markup: {
-                    inline_keyboard: [[{ text: "🛍️ Open Store", web_app: { url: process.env.WEB_APP_URL } }]]
+                    inline_keyboard: [[{ text: "Open Store", web_app: { url: process.env.WEB_APP_URL } }]]
                 }
             }
         );
@@ -533,17 +535,17 @@ app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), a
 
             // Broadcast to all users
             const users = await User.find({});
-            const productMessage = `🆕 *New Product Alert!*\n\n` +
+            const productMessage = `New Product Alert!\n\n` +
                 `*${newProduct.title}*\n` +
                 `${newProduct.description ? newProduct.description.substring(0, 100) + (newProduct.description.length > 100 ? '...' : '') + '\n' : ''}` +
                 `Price: *${newProduct.price} ETB*\n\n` +
-                `Check it out now! 👇`;
+                `Check it out now!`;
 
             users.forEach(user => {
                 bot.telegram.sendMessage(user.userId, productMessage, {
                     parse_mode: 'Markdown',
                     reply_markup: {
-                        inline_keyboard: [[{ text: "🛍️ View Product", web_app: { url: `${process.env.WEB_APP_URL}/product/${newProduct.id}` } }]]
+                        inline_keyboard: [[{ text: "View Product", web_app: { url: `${process.env.WEB_APP_URL}/product/${newProduct.id}` } }]]
                     }
                 }).catch(err => {
                     // console.error(`Failed to broadcast to ${user.userId}:`, err.message);
@@ -615,7 +617,7 @@ app.post('/api/orders', async (req, res) => {
         const uniqueAdminIds = [...new Set(adminIds)];
 
         uniqueAdminIds.forEach(adminId => {
-            let message = `🔔 *New Order!* (ID: ${newOrder.id})\nStatus: Pending\nUser: ${userInfo?.first_name} (@${userInfo?.username})\n\n`;
+            let message = `New Order! (ID: ${newOrder.id})\nStatus: Pending\nUser: ${userInfo?.first_name} (@${userInfo?.username})\n\n`;
             items.forEach(item => {
                 message += `- ${item.title} (x${item.quantity})\n`;
             });
@@ -650,7 +652,7 @@ app.patch('/api/orders/:id', verifyTelegramWebAppData, async (req, res) => {
 
         // Notify User if they have a userId
         if (order.userId) {
-            bot.telegram.sendMessage(order.userId, `📦 *Order Update*\nYour order #${order.id} status is now: *${status.toUpperCase()}*`, { parse_mode: 'Markdown' }).catch(console.error);
+            bot.telegram.sendMessage(order.userId, `Order Update\nYour order #${order.id} status is now: *${status.toUpperCase()}*`, { parse_mode: 'Markdown' }).catch(console.error);
         }
 
         res.json({ success: true, orders });
@@ -693,13 +695,13 @@ const checkInactiveUsers = async () => {
                 try {
                     await bot.telegram.sendMessage(
                         user.userId,
-                        `👋 *We miss you, ${user.firstName || 'there'}!*\n\n` +
+                        `We miss you, ${user.firstName || 'there'}!\n\n` +
                         `It's been a while since you visited. We've added lots of new exciting products since then!\n\n` +
-                        `Come take a look at what's new. 👇`,
+                        `Come take a look at what's new.`,
                         {
                             parse_mode: 'Markdown',
                             reply_markup: {
-                                inline_keyboard: [[{ text: "🛍️ Visit Store", web_app: { url: process.env.WEB_APP_URL } }]]
+                                inline_keyboard: [[{ text: "Visit Store", web_app: { url: process.env.WEB_APP_URL } }]]
                             }
                         }
                     );
