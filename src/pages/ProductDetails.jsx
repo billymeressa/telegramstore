@@ -127,6 +127,10 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
                 formData.append('images', file);
             });
 
+            console.log('Sending update for product:', product.id);
+            console.log('Existing images:', editFormData.existingImages);
+            console.log('New images:', editFormData.newImages.length);
+
             const response = await fetch(`${API_URL}/api/products`, {
                 method: 'POST',
                 body: formData
@@ -134,6 +138,7 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
 
             if (response.ok) {
                 const data = await response.json();
+                console.log('Update successful:', data);
                 // Update local product state
                 const updatedProduct = data.products.find(p => p.id === product.id);
                 if (updatedProduct) {
@@ -142,11 +147,13 @@ const ProductDetails = ({ onAdd, wishlist = [], toggleWishlist, products = [], i
                 setIsEditMode(false);
                 alert('Product updated successfully!');
             } else {
-                alert('Failed to update product');
+                const errorText = await response.text();
+                console.error('Server error:', response.status, errorText);
+                alert(`Failed to update product: ${response.status} - ${errorText}`);
             }
         } catch (error) {
             console.error('Error updating product:', error);
-            alert('Error updating product');
+            alert(`Error updating product: ${error.message}`);
         } finally {
             setIsSaving(false);
         }
