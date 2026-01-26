@@ -99,7 +99,18 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
+        // Check for onboarding status
+        const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
+        if (!hasSeenOnboarding) {
+            // Short delay to ensure animations are smooth
+            setTimeout(() => setShowHelp(true), 500);
+        }
     }, [hasMore, isFetching, loadMore]);
+
+    const handleCloseHelp = () => {
+        setShowHelp(false);
+        localStorage.setItem('hasSeenOnboarding', 'true');
+    };
 
     return (
         <div className="pb-4 pt-14 min-h-screen bg-[var(--tg-theme-secondary-bg-color)]">
@@ -124,129 +135,63 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
             </div>
 
             {/* Main Scrollable Content */}
-            <div className="flex flex-col gap-4">
-                {/* Horizontal Scroll Rows (Only show on Home / No Search) */}
-                {!searchQuery && selectedDepartment === "All" && selectedCategory === "All" && (
-                    <div className="flex flex-col gap-2 mb-2">
-                        {/* Show dynamic sub-categories visually */}
-                        <CategoryColumnRow categories={availableCategories} onSelect={handleCategoryChange} />
+            {/* ... content ... */}
 
-                        <HorizontalProductRow title="New Arrivals" products={newArrivals} />
-                    </div>
-                )}
-
-                {/* Sticky Navigation for Filters */}
-                <div className="sticky top-[56px] z-40 bg-[var(--tg-theme-bg-color)] border-b border-[var(--tg-theme-section-separator-color)] shadow-sm">
-                    {/* Level 1: Departments */}
-                    <div className="flex gap-2 overflow-x-auto no-scrollbar items-center px-4 py-2">
-                        {availableCategories.map(cat => (
+            {/* How to Buy Modal */}
+            {
+                showHelp && (
+                    <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
+                        <div className="bg-[var(--tg-theme-bg-color)] w-full max-w-sm rounded-2xl p-6 relative shadow-2xl animate-in zoom-in-95 duration-200">
                             <button
-                                key={cat}
-                                onClick={() => handleCategoryChange(cat)}
-                                className={`whitespace-nowrap text-sm px-3 py-1 rounded-md transition-all font-bold ${selectedCategory === cat
-                                    ? 'text-[var(--tg-theme-button-color)] bg-[var(--tg-theme-secondary-bg-color)]'
-                                    : 'text-[var(--tg-theme-hint-color)] hover:text-[var(--tg-theme-text-color)]'
-                                    }`}
+                                onClick={handleCloseHelp}
+                                className="absolute top-4 right-4 text-[var(--tg-theme-hint-color)]"
                             >
-                                {cat}
+                                <X size={24} />
                             </button>
-                        ))}
-                    </div>
-                </div>
 
-                {/* Product Section */}
-                <div className="px-2">
-                    <div className="flex items-center justify-between px-2 mb-2">
-                        <h3 className="text-lg font-bold text-[var(--tg-theme-text-color)] flex items-center gap-2">
-                            {searchQuery ? 'Search Results' : (selectedCategory !== 'All' ? selectedCategory : 'Featured Products')}
-                            {!searchQuery && <span className="text-xs font-normal text-[var(--tg-theme-hint-color)] bg-[var(--tg-theme-section-separator-color)] px-2 py-0.5 rounded-full">{filteredProducts.length} items</span>}
-                        </h3>
+                            <h3 className="text-xl font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center gap-2">
+                                <HelpCircle className="text-[var(--tg-theme-button-color)]" size={24} />
+                                How to Buy
+                            </h3>
 
-                        {/* Clear Filter Button if a sub-category is selected */}
-                        {selectedCategory !== 'All' && (
+                            <div className="space-y-6">
+                                <div className="flex gap-4">
+                                    <div className="w-10 h-10 rounded-full bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center flex-shrink-0 text-[var(--tg-theme-button-color)] font-bold text-lg">1</div>
+                                    <div>
+                                        <h4 className="font-bold text-[var(--tg-theme-text-color)]">Add to Cart</h4>
+                                        <p className="text-sm text-[var(--tg-theme-hint-color)] leading-tight">Browse items and tap "Add to Cart" for things you love.</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4">
+                                    <div className="w-10 h-10 rounded-full bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center flex-shrink-0 text-[var(--tg-theme-button-color)] font-bold text-lg">2</div>
+                                    <div>
+                                        <h4 className="font-bold text-[var(--tg-theme-text-color)]">Checkout</h4>
+                                        <p className="text-sm text-[var(--tg-theme-hint-color)] leading-tight">Go to your cart and tap "Checkout" to place your order.</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4">
+                                    <div className="w-10 h-10 rounded-full bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center flex-shrink-0 text-[var(--tg-theme-button-color)] font-bold text-lg">3</div>
+                                    <div>
+                                        <h4 className="font-bold text-[var(--tg-theme-text-color)]">Contact Seller</h4>
+                                        <p className="text-sm text-[var(--tg-theme-hint-color)] leading-tight">
+                                            Arranging payment & delivery is easy! Contact us directly to finish the sale.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
                             <button
-                                onClick={() => setSelectedCategory('All')}
-                                className="text-xs font-medium text-red-500 bg-red-50 px-2 py-1 rounded-full flex items-center"
+                                onClick={handleCloseHelp}
+                                className="w-full bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] font-bold py-3 rounded-xl mt-6 shadow active:opacity-80"
                             >
-                                Clear Filter ✕
+                                Got it!
                             </button>
-                        )}
-                    </div>
-
-                    <div data-product-grid>
-                        <ProductList products={filteredProducts} />
-                    </div>
-
-                    {isFetching && (
-                        <div className="py-8 flex justify-center">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--tg-theme-button-color)]"></div>
-                        </div>
-                    )}
-
-                    {!hasMore && products.length > 0 && (
-                        <div className="py-8 text-center text-[var(--tg-theme-hint-color)] text-sm">
-                            You've seen all the products! 🎉
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
-
-            {/* How to Buy Modal */ }
-    {
-        showHelp && (
-            <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
-                <div className="bg-[var(--tg-theme-bg-color)] w-full max-w-sm rounded-2xl p-6 relative shadow-2xl animate-in zoom-in-95 duration-200">
-                    <button
-                        onClick={() => setShowHelp(false)}
-                        className="absolute top-4 right-4 text-[var(--tg-theme-hint-color)]"
-                    >
-                        <X size={24} />
-                    </button>
-
-                    <h3 className="text-xl font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center gap-2">
-                        <HelpCircle className="text-[var(--tg-theme-button-color)]" size={24} />
-                        How to Buy
-                    </h3>
-
-                    <div className="space-y-6">
-                        <div className="flex gap-4">
-                            <div className="w-10 h-10 rounded-full bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center flex-shrink-0 text-[var(--tg-theme-button-color)] font-bold text-lg">1</div>
-                            <div>
-                                <h4 className="font-bold text-[var(--tg-theme-text-color)]">Add to Cart</h4>
-                                <p className="text-sm text-[var(--tg-theme-hint-color)] leading-tight">Browse items and tap "Add to Cart" for things you love.</p>
-                            </div>
-                        </div>
-
-                        <div className="flex gap-4">
-                            <div className="w-10 h-10 rounded-full bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center flex-shrink-0 text-[var(--tg-theme-button-color)] font-bold text-lg">2</div>
-                            <div>
-                                <h4 className="font-bold text-[var(--tg-theme-text-color)]">Checkout</h4>
-                                <p className="text-sm text-[var(--tg-theme-hint-color)] leading-tight">Go to your cart and tap "Checkout" to place your order.</p>
-                            </div>
-                        </div>
-
-                        <div className="flex gap-4">
-                            <div className="w-10 h-10 rounded-full bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center flex-shrink-0 text-[var(--tg-theme-button-color)] font-bold text-lg">3</div>
-                            <div>
-                                <h4 className="font-bold text-[var(--tg-theme-text-color)]">Contact Seller</h4>
-                                <p className="text-sm text-[var(--tg-theme-hint-color)] leading-tight">
-                                    Arranging payment & delivery is easy! Contact us directly to finish the sale.
-                                </p>
-                            </div>
                         </div>
                     </div>
-
-                    <button
-                        onClick={() => setShowHelp(false)}
-                        className="w-full bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] font-bold py-3 rounded-xl mt-6 shadow active:opacity-80"
-                    >
-                        Got it!
-                    </button>
-                </div>
-            </div>
-        )
-    }
+                )
+            }
         </div >
     );
 };
