@@ -164,7 +164,7 @@ const app = express();
 app.use(cors({
     origin: '*',
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Telegram-Init-Data']
 }));
 // app.options('*', cors()); // REMOVED: Incompatible with Express 5 syntax
 app.use(express.json());
