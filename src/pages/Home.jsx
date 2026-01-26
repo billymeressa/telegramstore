@@ -24,6 +24,11 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
         'Vehicles': ['Cars', 'Motorcycles', 'Bicycles', 'Parts & Accessories', 'Tires & Wheels', 'Car Electronics', 'Tools & Equipment', 'Other']
     };
 
+    // Featured Subcategories for Home Page Visual Navigation
+    const FEATURED_SUBCATEGORIES = [
+        'Phones', 'Shoes', 'Watches', 'Laptops', 'Dresses', 'Gaming', 'Bags', 'Audio'
+    ];
+
     const [selectedDepartment, setSelectedDepartment] = useState("All");
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
@@ -85,6 +90,29 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
     const handleCategoryChange = (cat) => {
         setSelectedCategory(cat);
+    };
+
+    // Handle clicking on a Visual Subcategory Icon
+    const handleVisualCategorySelect = (subCat) => {
+        // Find which department this subcategory belongs to
+        let foundDept = "All";
+        for (const [dept, subCats] of Object.entries(SUBCATEGORIES)) {
+            if (subCats.includes(subCat)) {
+                foundDept = dept;
+                break;
+            }
+        }
+
+        setSelectedDepartment(foundDept);
+        setSelectedCategory(subCat);
+
+        // Scroll to product grid
+        const grid = document.querySelector('[data-product-grid]');
+        if (grid) {
+            setTimeout(() => {
+                grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
     };
 
     // Infinite Scroll Listener
@@ -161,8 +189,8 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                 {/* Only show if we have products to categorize, and for top level exploration */}
                 {selectedDepartment === 'All' && !searchQuery && (
                     <CategoryColumnRow
-                        categories={['Electronics', 'Men', 'Women', 'Home', 'Beauty', 'Sports']}
-                        onSelect={handleDepartmentChange}
+                        categories={FEATURED_SUBCATEGORIES}
+                        onSelect={handleVisualCategorySelect}
                     />
                 )}
 
@@ -233,8 +261,8 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
             {/* How to Buy Modal */}
             {
                 showHelp && (
-                    <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
-                        <div className="bg-[var(--tg-theme-bg-color)] w-full max-w-sm rounded-2xl p-6 relative shadow-2xl animate-in zoom-in-95 duration-200">
+                    <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200 overflow-y-auto">
+                        <div className="bg-[var(--tg-theme-bg-color)] w-full max-w-sm rounded-2xl p-6 relative shadow-2xl animate-in zoom-in-95 duration-200 my-8">
                             <button
                                 onClick={handleCloseHelp}
                                 className="absolute top-4 right-4 text-[var(--tg-theme-hint-color)]"
@@ -247,31 +275,40 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                                 How to Buy
                             </h3>
 
-                            <div className="space-y-6">
-                                <div className="flex gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center flex-shrink-0 text-[var(--tg-theme-button-color)] font-bold text-lg">1</div>
-                                    <div>
-                                        <h4 className="font-bold text-[var(--tg-theme-text-color)]">Add to Cart</h4>
-                                        <p className="text-sm text-[var(--tg-theme-hint-color)] leading-tight">Browse items and tap "Add to Cart" for things you love.</p>
+                            <div className="space-y-8">
+                                <div className="flex flex-col gap-3">
+                                    <h4 className="font-bold text-[var(--tg-theme-text-color)] flex items-center gap-2">
+                                        <div className="w-6 h-6 rounded-full bg-[var(--tg-theme-button-color)] flex items-center justify-center text-white text-sm font-bold">1</div>
+                                        Add to Cart
+                                    </h4>
+                                    <div className="bg-[var(--tg-theme-secondary-bg-color)] rounded-xl overflow-hidden shadow-sm border border-[var(--tg-theme-section-separator-color)]">
+                                        <img src="/guides/add_to_cart.png" alt="Add to Cart Guide" className="w-full h-auto object-cover" />
                                     </div>
+                                    <p className="text-sm text-[var(--tg-theme-hint-color)]">Browse items and tap "Add to Cart" for things you love.</p>
                                 </div>
 
-                                <div className="flex gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center flex-shrink-0 text-[var(--tg-theme-button-color)] font-bold text-lg">2</div>
-                                    <div>
-                                        <h4 className="font-bold text-[var(--tg-theme-text-color)]">Checkout</h4>
-                                        <p className="text-sm text-[var(--tg-theme-hint-color)] leading-tight">Go to your cart and tap "Checkout" to place your order.</p>
+                                <div className="flex flex-col gap-3">
+                                    <h4 className="font-bold text-[var(--tg-theme-text-color)] flex items-center gap-2">
+                                        <div className="w-6 h-6 rounded-full bg-[var(--tg-theme-button-color)] flex items-center justify-center text-white text-sm font-bold">2</div>
+                                        Checkout
+                                    </h4>
+                                    <div className="bg-[var(--tg-theme-secondary-bg-color)] rounded-xl overflow-hidden shadow-sm border border-[var(--tg-theme-section-separator-color)]">
+                                        <img src="/guides/checkout.png" alt="Checkout Guide" className="w-full h-auto object-cover" />
                                     </div>
+                                    <p className="text-sm text-[var(--tg-theme-hint-color)]">Go to your cart and tap "Checkout" to place your order.</p>
                                 </div>
 
-                                <div className="flex gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center flex-shrink-0 text-[var(--tg-theme-button-color)] font-bold text-lg">3</div>
-                                    <div>
-                                        <h4 className="font-bold text-[var(--tg-theme-text-color)]">Contact Seller</h4>
-                                        <p className="text-sm text-[var(--tg-theme-hint-color)] leading-tight">
-                                            Arranging payment & delivery is easy! Contact us directly to finish the sale.
-                                        </p>
+                                <div className="flex flex-col gap-3">
+                                    <h4 className="font-bold text-[var(--tg-theme-text-color)] flex items-center gap-2">
+                                        <div className="w-6 h-6 rounded-full bg-[var(--tg-theme-button-color)] flex items-center justify-center text-white text-sm font-bold">3</div>
+                                        Contact Seller
+                                    </h4>
+                                    <div className="bg-[var(--tg-theme-secondary-bg-color)] rounded-xl overflow-hidden shadow-sm border border-[var(--tg-theme-section-separator-color)]">
+                                        <img src="/guides/contact.png" alt="Contact Guide" className="w-full h-auto object-cover" />
                                     </div>
+                                    <p className="text-sm text-[var(--tg-theme-hint-color)]">
+                                        Arranging payment & delivery is easy! Contact us directly to finish the sale.
+                                    </p>
                                 </div>
                             </div>
 

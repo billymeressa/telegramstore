@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shirt, ShoppingBag, Baby, Smartphone, Home, Sparkles, Dumbbell, Book, Package, Laptop, Headphones, HardDrive, Keyboard, Gamepad2, Wifi, Zap, Mouse, Plug } from 'lucide-react';
+import { Shirt, ShoppingBag, Baby, Smartphone, Home, Sparkles, Dumbbell, Book, Package, Laptop, Headphones, HardDrive, Keyboard, Gamepad2, Wifi, Zap, Mouse, Plug, Watch, Footprints, Glasses, Activity } from 'lucide-react';
 
 const CATEGORY_ICONS = {
     'Men': Shirt,
@@ -24,6 +24,16 @@ const CATEGORY_ICONS = {
     'Networking': Wifi,
     'Smart Home': Zap,
     'Cables & Adapters': Plug,
+    'Shoes': Footprints,
+    'Dresses': ShoppingBag,
+    'Tops': Shirt,
+    'Pants': Activity, // Placeholder if no better icon
+    'Jeans': Activity,
+    'Watches': Watch,
+    'Accessories': Glasses,
+    'Jewelry': Sparkles,
+    'Bags': ShoppingBag,
+    'Activewear': Activity,
 };
 
 const COLORS = [
