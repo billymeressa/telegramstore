@@ -324,6 +324,16 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                                             Arranging payment & delivery is easy! Contact us directly to finish the sale.
                                         </p>
                                     </div>
+
+                                    <div className="bg-[var(--tg-theme-secondary-bg-color)] p-4 rounded-xl border border-[var(--tg-theme-button-color)]/20">
+                                        <h4 className="font-bold text-[var(--tg-theme-text-color)] mb-2 flex items-center gap-2">
+                                            🎯 Practice Exercise
+                                        </h4>
+                                        <p className="text-sm text-[var(--tg-theme-hint-color)]">
+                                            Go ahead and try buying something now! <br />
+                                            <span className="font-semibold text-[var(--tg-theme-button-color)]">Don't worry</span> — clicking "Buy" or "Checkout" will not charge you anything. It just starts a chat!
+                                        </p>
+                                    </div>
                                 </div>
 
                                 <button
