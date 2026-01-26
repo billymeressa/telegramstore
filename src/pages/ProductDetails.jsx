@@ -644,9 +644,21 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                             href={`tel:${product.seller_phone}`}
                             className="flex-1 bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] py-3 rounded-xl font-semibold text-base shadow border border-[var(--tg-theme-button-color)] flex items-center justify-center active:opacity-80 transition-opacity"
                         >
-                            Call Merchant
+                            Call
                         </a>
                     )}
+                    <button
+                        onClick={() => {
+                            if (onBuyNow) {
+                                if (confirm(`Buy ${product.title} for ${selectedVariation ? Math.floor(selectedVariation.price) : Math.floor(product.price)} Birr?`)) {
+                                    onBuyNow({ ...product, selectedVariation, price: selectedVariation ? selectedVariation.price : product.price });
+                                }
+                            }
+                        }}
+                        className="flex-1 bg-green-500 text-white py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity flex items-center justify-center gap-1"
+                    >
+                        <span>⚡</span> Buy
+                    </button>
                     <motion.button
                         whileTap={{ scale: 0.95 }}
                         animate={{
