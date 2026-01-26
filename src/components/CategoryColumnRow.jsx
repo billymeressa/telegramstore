@@ -48,21 +48,90 @@ const COLORS = [
 ];
 
 const CategoryColumnRow = ({ categories, onSelect }) => {
+    // Infinite Scroll Logic
+    const scrollRef = React.useRef(null);
+
+    // Create 3 sets for seamless looping
+    const loopedCategories = React.useMemo(() => {
+        if (!categories || categories.length === 0) return [];
+        // Only loop if we have enough items to necessitate scrolling
+        if (categories.length < 5) return categories;
+        return [...categories, ...categories, ...categories, ...categories]; // 4x to be safe
+    }, [categories]);
+
+    // Handle Scroll Loop
+    const handleScroll = (e) => {
+        const container = e.target;
+        const scrollWidth = container.scrollWidth;
+        const clientWidth = container.clientWidth;
+        const scrollLeft = container.scrollLeft;
+
+        // If simply repeating list 4 times, single set is 1/4
+        const singleSetWidth = scrollWidth / 4;
+
+        // If near start, jump to middle
+        if (scrollLeft < 50) {
+            container.scrollLeft += singleSetWidth * 2;
+        }
+        // If near end, jump back to middle
+        else if (scrollLeft + clientWidth > scrollWidth - 50) {
+            container.scrollLeft -= singleSetWidth * 2;
+        }
+    };
+
+    // Initialize Scroll Position and Auto-Spin Animation
+    React.useLayoutEffect(() => {
+        if (scrollRef.current && loopedCategories.length > categories.length) {
+            const container = scrollRef.current;
+            const singleSetWidth = container.scrollWidth / 4;
+            // Start at the second set
+            container.scrollLeft = singleSetWidth;
+
+            // Auto-spin animation on load
+            const start = container.scrollLeft;
+            const target = start + singleSetWidth; // Spin one full set
+            const duration = 2000; // 2 seconds
+            const startTime = performance.now();
+
+            const animateScroll = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Ease out cubic
+                const ease = 1 - Math.pow(1 - progress, 3);
+
+                container.scrollLeft = start + (singleSetWidth * ease);
+
+                if (progress < 1) {
+                    requestAnimationFrame(animateScroll);
+                }
+            };
+
+            // Small delay to let layout settle
+            setTimeout(() => requestAnimationFrame(animateScroll), 500);
+        }
+    }, [loopedCategories, categories.length]);
+
     return (
         <div className="py-4">
             <h3 className="px-4 mb-3 text-lg font-bold text-[var(--tg-theme-text-color)]">Shop by Category</h3>
-            <div className="flex gap-4 overflow-x-auto no-scrollbar px-4 snap-x">
-                {categories.map((cat, index) => {
-                    if (cat === 'All') return null; // Skip 'All' for visual columns
+            <div
+                ref={scrollRef}
+                onScroll={loopedCategories.length > categories.length ? handleScroll : undefined}
+                className="flex gap-4 overflow-x-auto no-scrollbar px-4 snap-x"
+            >
+                {loopedCategories.map((cat, index) => {
+                    if (cat === 'All') return null;
 
                     const Icon = CATEGORY_ICONS[cat] || Package;
                     const gradient = COLORS[index % COLORS.length];
 
+                    // Use index in key to ensure uniqueness in loop
                     return (
                         <div
-                            key={cat}
+                            key={`${cat}-${index}`}
                             onClick={() => onSelect(cat)}
-                            className="flex flex-col items-center gap-2 min-w-[80px] cursor-pointer snap-start active:opacity-80 transition-opacity"
+                            className="flex flex-col items-center gap-2 min-w-[80px] cursor-pointer snap-start active:opacity-80 transition-opacity flex-shrink-0"
                         >
                             <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white shadow-md shadow-gray-200/50`}>
                                 <Icon size={28} strokeWidth={2} />
