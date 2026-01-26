@@ -2,30 +2,10 @@ import { useState, useMemo, useEffect } from 'react';
 import ProductList from '../components/ProductList';
 import HorizontalProductRow from '../components/HorizontalProductRow';
 import CategoryColumnRow from '../components/CategoryColumnRow';
-import SpinWheel from '../components/SpinWheel';
-import FlashSale from '../components/FlashSale';
 import { smartSearch } from '../utils/smartSearch';
 import { Search } from 'lucide-react';
 
 const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, isFetching }) => {
-    const [showSpinWheel, setShowSpinWheel] = useState(false);
-
-    useEffect(() => {
-        // Check if user has spun in last 24h
-        const lastSpin = localStorage.getItem('lastSpinTime');
-        if (!lastSpin) {
-            // First time ever? Show it after a small delay
-            const timer = setTimeout(() => setShowSpinWheel(true), 2000);
-            return () => clearTimeout(timer);
-        } else {
-            const hoursPassed = (Date.now() - parseInt(lastSpin)) / (1000 * 60 * 60);
-            if (hoursPassed >= 24) {
-                const timer = setTimeout(() => setShowSpinWheel(true), 2000);
-                return () => clearTimeout(timer);
-            }
-        }
-    }, []);
-
 
     const DEPARTMENTS = ["All", "Electronics", "Men", "Women", "Kids", "Home", "Beauty", "Sports", "Books", "Vehicles"];
 
@@ -107,9 +87,6 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
     return (
         <div className="pb-4 pt-14 min-h-screen bg-[var(--tg-theme-secondary-bg-color)]">
-            {/* Spin Wheel Modal */}
-            {showSpinWheel && <SpinWheel onClose={() => setShowSpinWheel(false)} />}
-
             {/* Fixed Header (Search Only) */}
             <div className="fixed top-0 left-0 right-0 z-50 bg-[var(--tg-theme-bg-color)] pt-2 pb-2 px-3 border-b border-[var(--tg-theme-section-separator-color)]">
                 <div className="relative">
@@ -131,11 +108,6 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                     <div className="flex flex-col gap-2 mb-2">
                         {/* Show dynamic sub-categories visually */}
                         <CategoryColumnRow categories={availableCategories} onSelect={handleCategoryChange} />
-
-                        {/* Flash Sale Section - High urgency! */}
-                        <div className="mt-2">
-                            <FlashSale products={products} />
-                        </div>
 
                         <HorizontalProductRow title="New Arrivals" products={newArrivals} />
                     </div>
