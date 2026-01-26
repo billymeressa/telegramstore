@@ -216,8 +216,8 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                 {/* Brand/Featured Rows (Only on "All" tab & no search) */}
                 {selectedDepartment === 'All' && !searchQuery && (
                     <>
-                        <HorizontalProductRow title="Trending Now 🔥" products={trendingProducts} />
-                        <HorizontalProductRow title="New Arrivals 🚀" products={newArrivals} />
+                        <HorizontalProductRow title="Trending Now" products={trendingProducts} />
+                        <HorizontalProductRow title="New Arrivals" products={newArrivals} />
                     </>
                 )}
 
@@ -253,7 +253,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
                 {!hasMore && filteredProducts.length > 0 && (
                     <div className="text-center py-8 text-[var(--tg-theme-hint-color)] text-sm">
-                        You've reached the end! 🎉
+                        You've reached the end!
                     </div>
                 )}
             </div>

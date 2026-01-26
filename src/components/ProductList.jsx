@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Package } from 'lucide-react';
+
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -48,7 +50,9 @@ function ProductList({ products }) {
                                 decoding="async"
                             />
                         ) : (
-                            <span className="text-4xl opacity-20 grayscale">📦</span>
+                            <div className="flex items-center justify-center h-full w-full text-[var(--tg-theme-hint-color)] bg-[var(--tg-theme-secondary-bg-color)]">
+                                <Package size={32} opacity={0.5} />
+                            </div>
                         )}
                         {/* New Tag or Discount Tag Logic could go here */}
                     </div>

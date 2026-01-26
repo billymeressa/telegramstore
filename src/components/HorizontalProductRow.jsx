@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Package } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const HorizontalProductRow = ({ title, products }) => {
@@ -52,7 +52,9 @@ const HorizontalProductRow = ({ title, products }) => {
                                     decoding="async"
                                 />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center text-2xl bg-[var(--tg-theme-secondary-bg-color)]">📦</div>
+                                <div className="w-full h-full flex items-center justify-center text-[var(--tg-theme-hint-color)] bg-[var(--tg-theme-secondary-bg-color)]">
+                                    <Package size={24} />
+                                </div>
                             )}
                         </div>
                         <div className="flex flex-col">

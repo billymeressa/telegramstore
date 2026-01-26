@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import API_URL from '../config';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShoppingBag, Heart, Edit2, Check } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Heart, Edit2, Check, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { trackEvent } from '../utils/track';
 
@@ -657,7 +657,7 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                         }}
                         className="flex-1 bg-green-500 text-white py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity flex items-center justify-center gap-1"
                     >
-                        <span>⚡</span> Buy
+                        <Zap size={18} fill="currentColor" /> Buy
                     </button>
                     <motion.button
                         whileTap={{ scale: 0.95 }}
