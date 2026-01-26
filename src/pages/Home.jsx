@@ -35,9 +35,14 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
             relevantProducts = products.filter(p => p.department === selectedDepartment);
         }
 
-        const cats = relevantProducts.map(p => p.category).filter(Boolean);
+        const cats = relevantProducts.map(p => p.category || "Other");
         // unique categories
         const uniqueCats = [...new Set(cats)].sort();
+
+        // Ensure "Other" is at the end if it exists
+        if (uniqueCats.includes("Other")) {
+            return ["All", ...uniqueCats.filter(c => c !== "Other"), "Other"];
+        }
 
         return ["All", ...uniqueCats];
     }, [selectedDepartment, products]);
@@ -50,7 +55,17 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
         // First, filter by department and category
         let filtered = products.filter(p => {
             const matchesDepartment = selectedDepartment === "All" || p.department === selectedDepartment;
-            const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
+
+            let matchesCategory = selectedCategory === "All";
+            if (!matchesCategory) {
+                if (selectedCategory === "Other") {
+                    // Match "Other" OR empty/null/undefined
+                    matchesCategory = p.category === "Other" || !p.category;
+                } else {
+                    matchesCategory = p.category === selectedCategory;
+                }
+            }
+
             return matchesDepartment && matchesCategory;
         });
 
