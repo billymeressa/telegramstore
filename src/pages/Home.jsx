@@ -6,6 +6,25 @@ import { smartSearch } from '../utils/smartSearch';
 import { Search, HelpCircle, X, ShoppingBag, Hand, Check, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+// Sub-category mapping (simplified version of what's in AdminDashboard)
+// In a real app, this might come from the backend or a shared constant file
+const SUBCATEGORIES = {
+    'Men': ['Shirts', 'T-Shirts', 'Pants', 'Jeans', 'Shoes', 'Suits', 'Accessories', 'Activewear', 'Other'],
+    'Women': ['Dresses', 'Tops', 'Skirts', 'Pants', 'Jeans', 'Shoes', 'Bags', 'Jewelry', 'Accessories', 'Other'],
+    'Kids': ['Boys Clothing', 'Girls Clothing', 'Baby', 'Shoes', 'Toys', 'School', 'Other'],
+    'Electronics': ['Phones', 'Laptops', 'Audio', 'Storage', 'Computer Accessories', 'Gaming', 'Networking', 'Smart Home', 'Other'],
+    'Home': ['Decor', 'Kitchen', 'Bedding', 'Furniture', 'Lighting', 'Tools', 'Other'],
+    'Beauty': ['Skincare', 'Makeup', 'Fragrance', 'Haircare', 'Personal Care', 'Other'],
+    'Sports': ['Gym Equipment', 'Team Sports', 'Outdoor', 'Running', 'Nutrition', 'Other'],
+    'Books': ['Fiction', 'Non-Fiction', 'Educational', 'Self-Help', 'Children', 'Other'],
+    'Vehicles': ['Cars', 'Motorcycles', 'Bicycles', 'Parts & Accessories', 'Tires & Wheels', 'Car Electronics', 'Tools & Equipment', 'Other']
+};
+
+// Featured Subcategories for Home Page Visual Navigation
+const FEATURED_SUBCATEGORIES = [
+    'Phones', 'Shoes', 'Watches', 'Laptops', 'Dresses', 'Gaming', 'Bags', 'Audio'
+];
+
 const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, isFetching }) => {
     const [showHelp, setShowHelp] = useState(false);
 
@@ -59,25 +78,6 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
             container.scrollLeft = singleSetWidth; // Jump to start of middle set
         }
     }, [popularCategories]);
-
-    // Sub-category mapping (simplified version of what's in AdminDashboard)
-    // In a real app, this might come from the backend or a shared constant file
-    const SUBCATEGORIES = {
-        'Men': ['Shirts', 'T-Shirts', 'Pants', 'Jeans', 'Shoes', 'Suits', 'Accessories', 'Activewear', 'Other'],
-        'Women': ['Dresses', 'Tops', 'Skirts', 'Pants', 'Jeans', 'Shoes', 'Bags', 'Jewelry', 'Accessories', 'Other'],
-        'Kids': ['Boys Clothing', 'Girls Clothing', 'Baby', 'Shoes', 'Toys', 'School', 'Other'],
-        'Electronics': ['Phones', 'Laptops', 'Audio', 'Storage', 'Computer Accessories', 'Gaming', 'Networking', 'Smart Home', 'Other'],
-        'Home': ['Decor', 'Kitchen', 'Bedding', 'Furniture', 'Lighting', 'Tools', 'Other'],
-        'Beauty': ['Skincare', 'Makeup', 'Fragrance', 'Haircare', 'Personal Care', 'Other'],
-        'Sports': ['Gym Equipment', 'Team Sports', 'Outdoor', 'Running', 'Nutrition', 'Other'],
-        'Books': ['Fiction', 'Non-Fiction', 'Educational', 'Self-Help', 'Children', 'Other'],
-        'Vehicles': ['Cars', 'Motorcycles', 'Bicycles', 'Parts & Accessories', 'Tires & Wheels', 'Car Electronics', 'Tools & Equipment', 'Other']
-    };
-
-    // Featured Subcategories for Home Page Visual Navigation
-    const FEATURED_SUBCATEGORIES = [
-        'Phones', 'Shoes', 'Watches', 'Laptops', 'Dresses', 'Gaming', 'Bags', 'Audio'
-    ];
 
     const [selectedDepartment, setSelectedDepartment] = useState("All");
     const [selectedCategory, setSelectedCategory] = useState("All");
@@ -251,8 +251,8 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                                 key={`${cat}-${index}`}
                                 onClick={() => handleTabChange(cat)}
                                 className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${(selectedCategory === cat || (cat === "All" && selectedCategory === "All" && selectedDepartment === "All"))
-                                        ? 'bg-[var(--tg-theme-button-color)] text-white shadow-md'
-                                        : 'bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)]'
+                                    ? 'bg-[var(--tg-theme-button-color)] text-white shadow-md'
+                                    : 'bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)]'
                                     }`}
                             >
                                 {cat}
