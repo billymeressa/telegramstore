@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ShoppingBag, Heart, Edit2, Check, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { trackEvent } from '../utils/track';
+import ProductList from '../components/ProductList';
 
 const SUBCATEGORIES = {
     'Men': ['Shirts', 'T-Shirts', 'Pants', 'Jeans', 'Shoes', 'Suits', 'Accessories', 'Activewear', 'Other'],
@@ -703,7 +704,7 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
 
                             onAdd({ ...product, selectedVariation, price: finalPrice });
                             setIsAdded(true);
-                            setTimeout(() => setIsAdded(false), 2000);
+                            navigate('/cart');
                         }}
                         className="flex-[2] text-[var(--tg-theme-button-text-color)] py-3 rounded-xl font-semibold text-base shadow flex items-center justify-center gap-2 overflow-hidden relative"
                     >
@@ -732,35 +733,8 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
             {relatedProducts.length > 0 && (
                 <div className="p-4 bg-[var(--tg-theme-secondary-bg-color)] mt-4">
                     <h3 className="text-sm font-semibold text-[var(--tg-theme-hint-color)] uppercase tracking-wide mb-3">You might also like</h3>
-                    <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-2">
-                        {relatedProducts.map(rel => (
-                            <div
-                                key={rel.id}
-                                onClick={() => {
-                                    navigate(`/product/${rel.id}`);
-                                    window.scrollTo(0, 0);
-                                }}
-                                className="min-w-[160px] w-[160px] bg-[var(--tg-theme-bg-color)] rounded-xl overflow-hidden shadow-sm cursor-pointer flex-shrink-0 active:scale-95 transition-transform"
-                            >
-                                <div className="w-full h-40 bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center">
-                                    {rel.images?.[0] ? (
-                                        <img
-                                            src={rel.images[0]}
-                                            alt={rel.title}
-                                            className="max-w-full max-h-full object-contain"
-                                            loading="lazy"
-                                            decoding="async"
-                                        />
-                                    ) : (
-                                        <span className="text-4xl opacity-20 grayscale">No Image</span>
-                                    )}
-                                </div>
-                                <div className="p-3">
-                                    <h4 className="text-sm font-bold text-[var(--tg-theme-text-color)] line-clamp-2 h-10 leading-snug mb-1">{rel.title}</h4>
-                                    <p className="text-[var(--tg-theme-button-color)] font-bold text-base">{Math.floor(rel.price)} Birr</p>
-                                </div>
-                            </div>
-                        ))}
+                    <div data-product-grid>
+                        <ProductList products={relatedProducts} />
                     </div>
                 </div>
             )}

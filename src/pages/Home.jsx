@@ -247,33 +247,68 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
         }
     }, [showHelp]);
 
-    return (
-        <div className="pb-4 pt-14 min-h-screen bg-[var(--tg-theme-secondary-bg-color)]">
-            <SpinWheel />
-            {/* Fixed Header (Search Only) */}
-            <div className="fixed top-0 left-0 right-0 z-50 bg-[var(--tg-theme-bg-color)] pt-2 pb-2 px-3 border-b border-[var(--tg-theme-section-separator-color)] flex gap-2 items-center">
-                <div className="relative flex-1">
-                    <input
-                        type="text"
-                        placeholder="Search products..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] pl-9 pr-4 py-1.5 rounded-lg border-none outline-none placeholder:text-[var(--tg-theme-hint-color)] text-sm font-normal caret-[var(--tg-theme-button-color)]"
-                    />
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--tg-theme-hint-color)]" size={16} />
-                </div>
-                <button
-                    onClick={() => setShowHelp(true)}
-                    className="p-2 text-[var(--tg-theme-hint-color)] hover:text-[var(--tg-theme-text-color)]"
-                >
-                    <HelpCircle size={24} />
-                </button>
-            </div>
+    // Scroll Direction Logic
+    const [showHeader, setShowHeader] = useState(true);
+    const lastScrollY = useRef(0);
 
-            {/* Main Scrollable Content */}
-            <div className="space-y-2">
-                {/* Category Tabs (formerly Departments) */}
-                <div className="bg-[var(--tg-theme-bg-color)] py-1.5 sticky top-14 z-40 border-b border-[var(--tg-theme-section-separator-color)] shadow-sm">
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+
+            // Show header if:
+            // 1. We are at the very top (buffer of 10px)
+            // 2. We are scrolling UP
+            if (currentScrollY < 10 || currentScrollY < lastScrollY.current) {
+                setShowHeader(true);
+            } else if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
+                // Hide header if scrolling DOWN and past 50px
+                setShowHeader(false);
+            }
+            lastScrollY.current = currentScrollY;
+
+            // Infinite scroll check (moved here to consolidate listeners if desired, 
+            // but keeping separate is fine too. Existing check remains in separate effect)
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // ... existing infinite scroll effect remains ...
+
+    return (
+        <div className="pb-4 pt-28 min-h-screen bg-[var(--tg-theme-secondary-bg-color)]">
+            <SpinWheel />
+
+            {/* Scroll-Aware Fixed Header Group */}
+            <motion.div
+                className="fixed top-0 left-0 right-0 z-50 flex flex-col bg-[var(--tg-theme-bg-color)] shadow-sm"
+                initial={{ y: 0 }}
+                animate={{ y: showHeader ? 0 : '-100%' }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+            >
+                {/* Search Bar */}
+                <div className="pt-2 pb-2 px-3 border-b border-[var(--tg-theme-section-separator-color)] flex gap-2 items-center">
+                    <div className="relative flex-1">
+                        <input
+                            type="text"
+                            placeholder="Search products..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] pl-9 pr-4 py-1.5 rounded-lg border-none outline-none placeholder:text-[var(--tg-theme-hint-color)] text-sm font-normal caret-[var(--tg-theme-button-color)]"
+                        />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--tg-theme-hint-color)]" size={16} />
+                    </div>
+                    <button
+                        onClick={() => setShowHelp(true)}
+                        className="p-2 text-[var(--tg-theme-hint-color)] hover:text-[var(--tg-theme-text-color)]"
+                    >
+                        <HelpCircle size={24} />
+                    </button>
+                </div>
+
+                {/* Category Tabs */}
+                <div className="py-1.5 border-b border-[var(--tg-theme-section-separator-color)]">
                     <div
                         ref={tabsRef}
                         onScroll={handleTabsScroll}
@@ -293,11 +328,10 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                         ))}
                     </div>
                 </div>
+            </motion.div>
 
-
-
-
-
+            {/* Main Scrollable Content */}
+            <div className="space-y-2">
 
                 {/* Main Product Grid */}
                 <div data-product-grid className="min-h-[50vh]"> {/* For scroll target */}
