@@ -68,7 +68,7 @@ function ProductList({ products }) {
                     </div>
 
                     <div className="p-2.5 flex flex-col gap-1 text-left">
-                        <h3 className="text-[var(--tg-theme-text-color)] text-base leading-tight line-clamp-2 min-h-[2.5em] font-bold">
+                        <h3 className="text-[var(--tg-theme-text-color)] text-base leading-tight line-clamp-2 font-bold">
                             {product.title}
                         </h3>
                         <div className="flex items-center justify-between mt-1">
