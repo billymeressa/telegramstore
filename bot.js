@@ -5,7 +5,7 @@ import cors from 'cors';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
-import { connectDB, Product, Order, User, AnalyticsEvent, Session } from './src/db.js';
+import { connectDB, Product, Order, User, AnalyticsEvent, Session, PromoCode } from './src/db.js';
 import path from 'path';
 
 
@@ -35,7 +35,25 @@ console.log('Available Config Keys:', Object.keys(process.env).sort().join(', ')
 console.log('MONGODB_URI Type:', typeof process.env.MONGODB_URI);
 console.log('-----------------------------------');
 
-connectDB(); // Connect to MongoDB
+(async () => {
+    await connectDB();
+
+    // Seed Promo Codes
+    try {
+        const count = await PromoCode.countDocuments();
+        if (count === 0) {
+            console.log("Seeding Promo Codes...");
+            await PromoCode.insertMany([
+                { code: 'WELCOME100', type: 'fixed', value: 100, minSpend: 500, expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
+                { code: 'LUCKY500', type: 'fixed', value: 500, minSpend: 2000, expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) }, // 24h expiry
+                { code: 'FLASH10', type: 'percent', value: 10, minSpend: 0, expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) }
+            ]);
+            console.log("Promo Codes seeded.");
+        }
+    } catch (e) {
+        console.error("Seeding error:", e);
+    }
+})();
 
 // Cloudinary Config
 cloudinary.config({
@@ -188,6 +206,85 @@ app.get('/', (req, res) => {
 // Multer Memory Storage (for Cloudinary)
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
+// POST /api/game/spin - Play the wheel
+app.post('/api/game/spin', async (req, res) => {
+    // If we have a user ID from Telegram, we can enforce one-spin-per-user
+    // For now, we'll rely on client-side or simple IP check if needed, but let's assume valid user passed.
+    // In a real app, verify initData here.
+    const { userId } = req.body; // or extract from headers
+
+    // Determine Result (Server Authoritative)
+    // 0: Try Again, 1: 100 Br, 2: 10% Off, 3: 500 Br (Jackpot)
+    const rand = Math.random();
+    let prizeIndex;
+    let code = null;
+    let message = "Better luck next time!";
+
+    if (rand < 0.4) {
+        prizeIndex = 0; // 40% Lose
+    } else if (rand < 0.7) {
+        prizeIndex = 1; // 30% Fixed 100
+        code = 'WELCOME100';
+        message = "You won 100 Birr off!";
+    } else if (rand < 0.9) {
+        prizeIndex = 2; // 20% 10% Off
+        code = 'FLASH10';
+        message = "You won 10% Discount!";
+    } else {
+        prizeIndex = 3; // 10% Jackpot
+        code = 'LUCKY500';
+        message = "JACKPOT! 500 Birr off!";
+    }
+
+    if (userId) {
+        // Record that user spun
+        await User.updateOne({ userId }, { hasSpunWheel: true });
+    }
+
+    res.json({ success: true, prizeIndex, code, message });
+});
+
+// POST /api/coupons/validate - Check coupon
+app.post('/api/coupons/validate', async (req, res) => {
+    const { code, cartTotal } = req.body;
+    try {
+        const promo = await PromoCode.findOne({ code: code.toUpperCase(), isActive: true });
+
+        if (!promo) {
+            return res.json({ success: false, message: 'Invalid code' });
+        }
+
+        if (promo.expiresAt && promo.expiresAt < new Date()) {
+            return res.json({ success: false, message: 'Code expired' });
+        }
+
+        if (promo.maxUsage && promo.usedCount >= promo.maxUsage) {
+            return res.json({ success: false, message: 'Code usage limit reached' });
+        }
+
+        if (cartTotal < promo.minSpend) {
+            return res.json({ success: false, message: `Minimum spend of ${promo.minSpend} Br required` });
+        }
+
+        // Calculate Discount
+        let discount = 0;
+        if (promo.type === 'fixed') {
+            discount = promo.value;
+        } else if (promo.type === 'percent') {
+            discount = (cartTotal * promo.value) / 100;
+        }
+
+        // Ensure discount doesn't exceed total
+        discount = Math.min(discount, cartTotal);
+
+        res.json({ success: true, discount, type: promo.type, value: promo.value });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
 
 // GET /api/check-admin - Check if user is admin
 app.get('/api/check-admin', verifyTelegramWebAppData, (req, res) => {

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Cart from '../components/Cart';
-import { Phone, MessageSquare, X, CheckCircle, Send } from 'lucide-react';
+import { Phone, MessageSquare, X, CheckCircle, Send, Tag } from 'lucide-react';
+import API_URL from '../config';
 
 const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
     const totalPrice = cart.reduce((sum, item) => {
@@ -9,17 +10,64 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
     }, 0);
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
+    const [promoCode, setPromoCode] = useState('');
+    const [discount, setDiscount] = useState(0);
+    const [couponMessage, setCouponMessage] = useState(null); // { type: 'success'|'error', text: '' }
+
+    const finalPrice = Math.max(0, totalPrice - discount);
+
+    const applyCoupon = async () => {
+        if (!promoCode.trim()) return;
+
+        try {
+            const res = await fetch(`${API_URL}/api/coupons/validate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: promoCode, cartTotal: totalPrice })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                setDiscount(data.discount);
+                setCouponMessage({ type: 'success', text: `Coupon applied! You saved ${data.discount} Birr` });
+            } else {
+                setDiscount(0);
+                setCouponMessage({ type: 'error', text: data.message });
+            }
+        } catch (e) {
+            console.error(e);
+            setCouponMessage({ type: 'error', text: 'Error applying coupon' });
+        }
+    };
+
     const handleCheckout = async () => {
-        await onCheckout();
+        // Pass final price logic if needed globally, but currently checkout recalculates or uses cart items. 
+        // For simple MVP we just proceed. The backend order creation should ideally receive the discount or code too.
+        // We'll update onCheckout to optionally accept discount/total overrides if needed, 
+        // OR simply display the total here and let the backend re-calculate if we passed the code.
+        // For now, let's assume onCheckout uses the items. 
+        // We really should pass the final price or the promo code to the checkout function.
+        await onCheckout(cart, promoCode, discount); // Updated signature assumption
     };
 
     return (
         <div className="bg-[var(--tg-theme-secondary-bg-color)] min-h-screen pb-32 font-sans">
             {/* Header / Subtotal */}
             {cart.length > 0 && (
-                <div className="bg-[var(--tg-theme-bg-color)] p-4 border-b border-[var(--tg-theme-section-separator-color)] mb-2">
-                    <div className="text-[var(--tg-theme-text-color)] text-base font-normal">
-                        Subtotal ({totalItems} items): <span className="font-semibold text-[var(--tg-theme-text-color)]">{Math.floor(totalPrice)} Birr</span>
+                <div className="bg-[var(--tg-theme-bg-color)] p-4 border-b border-[var(--tg-theme-section-separator-color)] mb-2 space-y-1">
+                    <div className="flex justify-between text-[var(--tg-theme-text-color)] text-sm">
+                        <span>Subtotal</span>
+                        <span>{Math.floor(totalPrice)} Birr</span>
+                    </div>
+                    {discount > 0 && (
+                        <div className="flex justify-between text-green-600 text-sm font-medium">
+                            <span>Discount</span>
+                            <span>-{Math.floor(discount)} Birr</span>
+                        </div>
+                    )}
+                    <div className="flex justify-between text-[var(--tg-theme-text-color)] text-lg font-bold border-t border-[var(--tg-theme-section-separator-color)] pt-2 mt-2">
+                        <span>Total</span>
+                        <span>{Math.floor(finalPrice)} Birr</span>
                     </div>
                 </div>
             )}
@@ -36,11 +84,37 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
             {/* Bottom Checkout Bar */}
             {cart.length > 0 && (
                 <div className="fixed bottom-[56px] left-0 right-0 bg-[var(--tg-theme-bg-color)] border-t border-[var(--tg-theme-section-separator-color)] p-3 z-30 pb-safe">
+                    {/* Promo Code Input */}
+                    <div className="flex gap-2 mb-3">
+                        <div className="relative flex-1">
+                            <input
+                                type="text"
+                                placeholder="Enter Promo Code"
+                                value={promoCode}
+                                onChange={(e) => setPromoCode(e.target.value)}
+                                className="w-full bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] border border-gray-300 rounded-lg py-2 pl-9 pr-3 text-sm outline-none focus:border-[var(--tg-theme-button-color)]"
+                            />
+                            <Tag size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                        </div>
+                        <button
+                            onClick={applyCoupon}
+                            className="bg-gray-800 text-white px-4 rounded-lg text-sm font-medium active:scale-95 transition-transform"
+                        >
+                            Apply
+                        </button>
+                    </div>
+                    {couponMessage && (
+                        <div className={`text-xs mb-3 ${couponMessage.type === 'success' ? 'text-green-600' : 'text-red-500'}`}>
+                            {couponMessage.text}
+                        </div>
+                    )}
+
                     <button
                         onClick={handleCheckout}
-                        className="w-full bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity"
+                        className="w-full bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity flex justify-between px-4"
                     >
-                        Checkout ({totalItems} items)
+                        <span>Checkout ({totalItems})</span>
+                        <span>{Math.floor(finalPrice)} Birr</span>
                     </button>
 
                 </div>

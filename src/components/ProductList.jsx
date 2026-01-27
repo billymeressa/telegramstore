@@ -55,7 +55,7 @@ function ProductList({ products }) {
         >
             {products.map((product, index) => (
                 <motion.div
-                    key={product.id}
+                    key={`${product.id}-${index}`}
                     variants={itemVariants}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => navigate(`/product/${product.id}`)}

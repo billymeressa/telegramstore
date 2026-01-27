@@ -188,6 +188,12 @@ function App() {
           more = data.hasMore;
         }
 
+        // Infinite Scroll: Loop back if we run out of data
+        if ((newProducts.length === 0 || !more) && pageNum > 1 && products.length > 0) {
+          newProducts = products.slice(0, 20); // Re-append first 20 items
+          more = true; // Keep loading forever
+        }
+
         if (pageNum === 1) {
           setProducts(newProducts);
           localStorage.setItem('cached_products', JSON.stringify(newProducts));

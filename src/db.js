@@ -67,7 +67,20 @@ const User = mongoose.model('User', new mongoose.Schema({
     firstName: { type: String },
     joinedAt: { type: Date, default: Date.now },
     lastActiveAt: { type: Date, default: Date.now },
-    lastReengagementAt: { type: Date }
+    lastActiveAt: { type: Date, default: Date.now },
+    lastReengagementAt: { type: Date },
+    hasSpunWheel: { type: Boolean, default: false }
+}));
+
+const PromoCode = mongoose.model('PromoCode', new mongoose.Schema({
+    code: { type: String, required: true, unique: true },
+    type: { type: String, enum: ['fixed', 'percent'], required: true }, // 'fixed' amount or 'percent' off
+    value: { type: Number, required: true },
+    minSpend: { type: Number, default: 0 },
+    maxUsage: { type: Number, default: null }, // null = unlimited
+    usedCount: { type: Number, default: 0 },
+    expiresAt: { type: Date },
+    isActive: { type: Boolean, default: true }
 }));
 
 const AnalyticsEvent = mongoose.model('AnalyticsEvent', new mongoose.Schema({
@@ -86,4 +99,4 @@ const Session = mongoose.model('Session', new mongoose.Schema({
     isActive: { type: Boolean, default: true }
 }));
 
-export { connectDB, Product, Order, User, AnalyticsEvent, Session };
+export { connectDB, Product, Order, User, AnalyticsEvent, Session, PromoCode };
