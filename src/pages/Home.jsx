@@ -241,32 +241,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
         }
     }, [showHelp]);
 
-    // Scroll Direction Logic
-    const [showHeader, setShowHeader] = useState(true);
-    const lastScrollY = useRef(0);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            const currentScrollY = window.scrollY;
-
-            // Show header if:
-            // 1. We are at the very top (buffer of 10px)
-            // 2. We are scrolling UP
-            if (currentScrollY < 10 || currentScrollY < lastScrollY.current) {
-                setShowHeader(true);
-            } else if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
-                // Hide header if scrolling DOWN and past 50px
-                setShowHeader(false);
-            }
-            lastScrollY.current = currentScrollY;
-
-            // Infinite scroll check (moved here to consolidate listeners if desired, 
-            // but keeping separate is fine too. Existing check remains in separate effect)
-        };
-
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     // ... existing infinite scroll effect remains ...
 
@@ -276,7 +251,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
             {/* Scroll-Aware Fixed Header Group */}
             <div
-                className={`fixed top-0 left-0 right-0 z-50 flex flex-col bg-[var(--tg-theme-bg-color)] shadow-sm transition-transform duration-300 ${showHeader ? 'translate-y-0' : '-translate-y-full'}`}
+                className="fixed top-0 left-0 right-0 z-50 flex flex-col bg-[var(--tg-theme-bg-color)] shadow-sm"
             >
                 {/* Search Bar */}
                 <div className="pt-2 pb-2 px-3 border-b border-[var(--tg-theme-section-separator-color)] flex gap-2 items-center">
