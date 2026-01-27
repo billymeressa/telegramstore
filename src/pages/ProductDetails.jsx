@@ -19,7 +19,7 @@ const SUBCATEGORIES = {
 };
 
 
-const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, products = [], isAdmin = false }) => {
+const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, products = [], isAdmin = false, sellerUsername }) => {
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -720,14 +720,20 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                     )}
                     <button
                         onClick={() => {
-                            if (onBuyNow) {
-                                const finalPrice = selectedVariation
-                                    ? selectedVariation.price
-                                    : (product.salePrice > 0 && product.salePrice < product.price ? product.salePrice : product.price);
+                            const finalPrice = selectedVariation
+                                ? selectedVariation.price
+                                : (product.salePrice > 0 && product.salePrice < product.price ? product.salePrice : product.price);
 
-                                if (confirm(`Buy ${product.title} for ${Math.floor(finalPrice)} Birr?`)) {
-                                    onBuyNow({ ...product, selectedVariation, price: finalPrice });
-                                }
+                            const variationText = selectedVariation ? ` - ${selectedVariation.name}` : '';
+                            const message = `Hi, I would like to buy ${product.title}${variationText} for ${Math.floor(finalPrice)} Birr.`;
+                            const url = `https://t.me/${sellerUsername || 'AddisStoreSupport'}?text=${encodeURIComponent(message)}`;
+
+                            // Open Telegram
+                            window.open(url, '_blank');
+
+                            // Optional: Still trigger analytics if needed, but don't blocking navigation
+                            if (onBuyNow) {
+                                // onBuyNow({ ...product, selectedVariation, price: finalPrice }); 
                             }
                         }}
                         className="flex-1 bg-green-500 text-white py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity flex items-center justify-center gap-1"
