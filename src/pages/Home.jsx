@@ -156,13 +156,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
         return [...products].sort((a, b) => b.id - a.id).slice(0, 7);
     }, [products]);
 
-    // Trending: Random selection of premium items (Simulated "Trending")
-    const trendingProducts = useMemo(() => {
-        const premium = products.filter(p => !GENERIC_CATEGORIES.includes(p.category));
-        // Shuffle and pick 5
-        const shuffled = [...premium].sort(() => 0.5 - Math.random());
-        return shuffled.slice(0, 5);
-    }, [products]);
+
 
     const filteredProducts = useMemo(() => {
         // First, filter by department and category
@@ -308,7 +302,6 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                 {/* Brand/Featured Rows (Only on "All" tab & no search) */}
                 {selectedDepartment === 'All' && !searchQuery && (
                     <>
-                        <HorizontalProductRow title="Trending Now" products={trendingProducts} />
                         <HorizontalProductRow title="New Arrivals" products={newArrivals} />
                     </>
                 )}
