@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import API_URL from '../config';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ShoppingBag, Heart, Edit2, Check, Zap } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { trackEvent } from '../utils/track';
 import ProductList from '../components/ProductList';
 
@@ -45,10 +45,45 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
     });
     const [isSaving, setIsSaving] = useState(false);
 
-    // Smart Recommendations Logic
-    const relatedProducts = product ? products
-        .filter(p => p.category === product.category && p.id !== product.id)
-        .slice(0, 6) : [];
+    // Categories to demote (push to bottom)
+    const GENERIC_CATEGORIES = ['Parts & Accessories', 'Tools', 'Tools & Equipment', 'Other', 'Computer Accessories', 'Cables', 'Adapters'];
+
+    // Smart Sort Algorithm
+    const smartSort = (items) => {
+        if (!items || items.length === 0) return [];
+        const premium = items.filter(p => !GENERIC_CATEGORIES.includes(p.category || 'Other'));
+        const generic = items.filter(p => GENERIC_CATEGORIES.includes(p.category || 'Other'));
+
+        // Fisher-Yates Shuffle for premium items
+        const shuffledPremium = [...premium];
+        for (let i = shuffledPremium.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledPremium[i], shuffledPremium[j]] = [shuffledPremium[j], shuffledPremium[i]];
+        }
+        return [...shuffledPremium, ...generic];
+    };
+
+    // Smart Recommendations Logic (Filtered & Sorted)
+    const relatedProducts = product ? smartSort(products
+        .filter(p => p.category === product.category && p.id !== product.id))
+        .slice(0, 10) : [];
+
+    // Sticky Header Logic
+    const [showStickyHeader, setShowStickyHeader] = useState(false);
+    const recommendedRef = useRef(null);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (recommendedRef.current) {
+                const rect = recommendedRef.current.getBoundingClientRect();
+                // Show header when halfway through to the recommendation section 
+                setShowStickyHeader(rect.top <= 120);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     useEffect(() => {
         console.log("Fetching details for Product ID:", id);
@@ -186,6 +221,24 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                     <ArrowLeft size={20} />
                 </button>
             </div>
+
+            {/* Sticky Recommended Header */}
+            <AnimatePresence>
+                {showStickyHeader && (
+                    <motion.div
+                        initial={{ y: -50, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -50, opacity: 0 }}
+                        className="fixed top-0 left-0 right-0 z-40 bg-[var(--tg-theme-bg-color)] border-b border-[var(--tg-theme-section-separator-color)] shadow-sm pt-2 pb-2 px-4 flex items-center"
+                    >
+                        <div className="flex gap-2 overflow-x-auto no-scrollbar items-center w-full">
+                            <button className="px-3.5 py-1 rounded-full text-sm font-medium whitespace-nowrap bg-[var(--tg-theme-button-color)] text-white shadow-md flex-shrink-0">
+                                Recommended
+                            </button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Product Title & Brand */}
             {/* Removed separate title block, moved below image */}
@@ -737,7 +790,10 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
 
             {/* Recommended Products Grid */}
             {relatedProducts.length > 0 && (
-                <div className="p-4 pt-6 bg-[var(--tg-theme-secondary-bg-color)] mt-4 border-t border-[var(--tg-theme-section-separator-color)]">
+                <div
+                    ref={recommendedRef}
+                    className="p-4 pt-6 bg-[var(--tg-theme-secondary-bg-color)] mt-4 border-t border-[var(--tg-theme-section-separator-color)]"
+                >
                     <h3 className="text-lg font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center gap-2">
                         Recommended for You
                     </h3>
