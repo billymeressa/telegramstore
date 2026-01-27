@@ -34,7 +34,25 @@ function ProductList({ products }) {
                             </div>
                         )}
 
-                        {/* Sold out / Low stock badge could go here if needed, but not requested specifically for ProductList yet, keeping it clean */}
+                        {/* Sold Out Badge */}
+                        {!product.isUnique && product.stock === 0 && (!product.variations || product.variations.length === 0) && (
+                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
+                                <span className="text-white font-bold border-2 border-white px-3 py-1 uppercase tracking-widest text-sm transform -rotate-12">Sold Out</span>
+                            </div>
+                        )}
+
+                        {/* Unique / Low Stock Badges */}
+                        {product.isUnique ? (
+                            <div className="absolute top-2 left-2 bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm z-10 border border-purple-200">
+                                {product.stockStatus || 'Unique Find'}
+                            </div>
+                        ) : (
+                            product.stock > 0 && product.stock < 10 && (!product.variations || product.variations.length === 0) && (
+                                <div className="absolute top-2 left-2 bg-red-100 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm z-10 border border-red-200">
+                                    Low Stock
+                                </div>
+                            )
+                        )}
                     </div>
 
                     <div className="p-2.5 flex flex-col gap-1 text-left">

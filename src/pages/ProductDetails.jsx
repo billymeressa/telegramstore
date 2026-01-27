@@ -208,6 +208,15 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
 
     if (loading || !product) return <div className="p-10 text-center">Loading...</div>;
 
+    // Helper to determine stock
+    const currentStock = selectedVariation
+        ? (parseInt(selectedVariation.stock) || 0)
+        : (parseInt(product.stock) || 0);
+
+    // For unique items, we assume stock is managed via isUnique flag mostly, but stock should be 1.
+    // However, if unique item is sold, stock becomes 0.
+    const isOutOfStock = currentStock <= 0;
+
 
 
     return (
@@ -676,6 +685,29 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                                     </div>
                                 )}
                             </div>
+
+                            {/* Stock Status Badge */}
+                            <div className="mt-2">
+                                {product.isUnique ? (
+                                    <span className="inline-block px-2 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded border border-purple-200">
+                                        ✨ {product.stockStatus || 'One of a Kind'}
+                                    </span>
+                                ) : (
+                                    <>
+                                        {isOutOfStock ? (
+                                            <span className="inline-block px-2 py-1 bg-gray-100 text-gray-500 text-xs font-bold rounded border border-gray-200">
+                                                Sold Out
+                                            </span>
+                                        ) : (
+                                            currentStock < 10 && (
+                                                <span className="inline-block px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded border border-red-200">
+                                                    🔥 Only {currentStock} left!
+                                                </span>
+                                            )
+                                        )}
+                                    </>
+                                )}
+                            </div>
                         </div>
 
                         {/* Info */}
@@ -703,6 +735,7 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                     )}
                     <button
                         onClick={() => {
+                            if (isOutOfStock) return;
                             const finalPrice = selectedVariation
                                 ? selectedVariation.price
                                 : product.price;
@@ -721,12 +754,17 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                                 // onBuyNow({ ...product, selectedVariation, price: finalPrice }); 
                             }
                         }}
-                        className="flex-1 bg-green-500 text-white py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity flex items-center justify-center gap-1"
+                        disabled={isOutOfStock}
+                        className={`flex-1 py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity flex items-center justify-center gap-1 ${isOutOfStock
+                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                : 'bg-green-500 text-white'
+                            }`}
                     >
-                        <Zap size={18} fill="currentColor" /> Buy
+                        <Zap size={18} fill="currentColor" /> {isOutOfStock ? 'Sold Out' : 'Buy'}
                     </button>
                     <button
                         onClick={() => {
+                            if (isOutOfStock) return;
                             const finalPrice = selectedVariation
                                 ? selectedVariation.price
                                 : product.price;
@@ -735,21 +773,31 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                             setIsAdded(true);
                             navigate('/cart');
                         }}
-                        className={`flex-[2] text-[var(--tg-theme-button-text-color)] py-3 rounded-xl font-semibold text-base shadow flex items-center justify-center gap-2 overflow-hidden relative transition-colors ${isAdded ? 'bg-green-500' : 'bg-[var(--tg-theme-button-color)]'}`}
+                        disabled={isOutOfStock}
+                        className={`flex-[2] py-3 rounded-xl font-semibold text-base shadow flex items-center justify-center gap-2 overflow-hidden relative transition-colors ${isOutOfStock
+                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                : (isAdded ? 'bg-green-500 text-white' : 'bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)]')
+                            }`}
                     >
-                        <div
-                            className={`absolute transition-all duration-300 ${isAdded ? 'opacity-0 -translate-y-8' : 'opacity-100 translate-y-0'}`}
-                        >
-                            Add to Cart
-                        </div>
-                        <div
-                            className={`absolute flex items-center gap-2 font-bold transition-all duration-300 ${isAdded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                        >
-                            <Check size={20} />
-                            Added
-                        </div>
-                        {/* Invisible spacer to maintain width/height */}
-                        <span className="opacity-0">Add to Cart</span>
+                        {isOutOfStock ? (
+                            <span>Sold Out</span>
+                        ) : (
+                            <>
+                                <div
+                                    className={`absolute transition-all duration-300 ${isAdded ? 'opacity-0 -translate-y-8' : 'opacity-100 translate-y-0'}`}
+                                >
+                                    Add to Cart
+                                </div>
+                                <div
+                                    className={`absolute flex items-center gap-2 font-bold transition-all duration-300 ${isAdded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                                >
+                                    <Check size={20} />
+                                    Added
+                                </div>
+                                {/* Invisible spacer to maintain width/height */}
+                                <span className="opacity-0">Add to Cart</span>
+                            </>
+                        )}
                     </button>
                 </div>
             </div>
