@@ -79,23 +79,7 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
             .finally(() => setLoading(false));
     }, [id, navigate]);
 
-    // Scroll to Home Logic
-    useEffect(() => {
-        const handleScroll = () => {
-            // Check if we are at the bottom of the page
-            // Buffer of 20px to effectively catch the bottom
-            if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 20) {
-                // Haptic feedback to indicate action
-                if (window.Telegram?.WebApp?.HapticFeedback) {
-                    window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-                }
-                navigate('/');
-            }
-        };
 
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [navigate]);
 
     // Handle entering edit mode
     const handleEditClick = () => {
@@ -750,6 +734,16 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
 
 
 
+
+            {/* Recommended Products Grid */}
+            {relatedProducts.length > 0 && (
+                <div className="p-4 pt-6 bg-[var(--tg-theme-secondary-bg-color)] mt-4 border-t border-[var(--tg-theme-section-separator-color)]">
+                    <h3 className="text-lg font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center gap-2">
+                        Recommended for You
+                    </h3>
+                    <ProductList products={relatedProducts} />
+                </div>
+            )}
         </div>
     );
 };
