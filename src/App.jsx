@@ -381,6 +381,7 @@ function App() {
                 onDecrease={onDecrease}
                 onRemove={onRemove}
                 onCheckout={onCheckout}
+                sellerUsername={sellerUsername}
               />
             } />
             <Route path="/profile" element={<Profile />} />
