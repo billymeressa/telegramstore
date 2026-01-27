@@ -22,27 +22,14 @@ const itemVariants = {
     }
 };
 
-const getRandomSold = () => {
-    return (Math.random() * 5 + 0.5).toFixed(1) + 'k+ sold';
-};
-
-const getRandomTime = () => {
-    // Generate random time between 10min and 23 hours
-    const h = Math.floor(Math.random() * 23);
-    const m = Math.floor(Math.random() * 59);
-    const s = Math.floor(Math.random() * 59);
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-};
-
 const Countdown = () => (
     <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold py-1 px-2 flex justify-between items-center z-10">
         <span className="text-orange-300">⚡ Flash Deal</span>
-        <span className="font-mono">{getRandomTime()}</span>
+        <span className="font-mono">04:23:45</span>
     </div>
 );
 
-const StockBar = () => {
-    const percentage = Math.floor(Math.random() * (95 - 70) + 70); // 70-95%
+const StockBar = ({ percentage }) => {
     return (
         <div className="mt-2">
             <div className="flex justify-between items-center text-[10px] text-gray-500 mb-0.5">
@@ -95,12 +82,12 @@ function ProductList({ products }) {
                             </div>
                         )}
                         {/* Temu-style badges */}
-                        {index % 3 === 0 && (
+                        {product.soldCount > 0 && (
                             <div className="absolute top-2 right-2 bg-orange-100 text-orange-700 text-[9px] font-extrabold px-1.5 py-0.5 rounded border border-orange-200 shadow-sm z-10">
-                                {getRandomSold()}
+                                {product.soldCount >= 1000 ? (product.soldCount / 1000).toFixed(1) + 'k' : product.soldCount}+ sold
                             </div>
                         )}
-                        {index % 4 === 0 && <Countdown />}
+                        {product.isFlashSale && <Countdown />}
                     </div>
 
                     <div className="p-2.5 flex flex-col gap-1 text-left">
@@ -141,7 +128,7 @@ function ProductList({ products }) {
                         </div>
 
                         {/* Urgency Stock Bar (Randomly shown) */}
-                        {index % 2 === 0 && <StockBar />}
+                        {product.stockPercentage > 0 && <StockBar percentage={product.stockPercentage} />}
                     </div>
                 </motion.div>
             ))}

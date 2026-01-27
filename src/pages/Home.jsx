@@ -258,9 +258,9 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                         placeholder="Search products..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] pl-9 pr-4 py-2 rounded-xl border-none outline-none placeholder:text-[var(--tg-theme-hint-color)] text-base font-normal caret-[var(--tg-theme-button-color)]"
+                        className="w-full bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] pl-9 pr-4 py-1.5 rounded-lg border-none outline-none placeholder:text-[var(--tg-theme-hint-color)] text-sm font-normal caret-[var(--tg-theme-button-color)]"
                     />
-                    <Search className="absolute left-3 top-2.5 text-[var(--tg-theme-hint-color)]" size={18} />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--tg-theme-hint-color)]" size={16} />
                 </div>
                 <button
                     onClick={() => setShowHelp(true)}
@@ -273,7 +273,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
             {/* Main Scrollable Content */}
             <div className="space-y-2">
                 {/* Category Tabs (formerly Departments) */}
-                <div className="bg-[var(--tg-theme-bg-color)] py-2 sticky top-14 z-40 border-b border-[var(--tg-theme-section-separator-color)] shadow-sm">
+                <div className="bg-[var(--tg-theme-bg-color)] py-1.5 sticky top-14 z-40 border-b border-[var(--tg-theme-section-separator-color)] shadow-sm">
                     <div
                         ref={tabsRef}
                         onScroll={handleTabsScroll}
@@ -283,7 +283,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                             <button
                                 key={`${cat}-${index}`}
                                 onClick={() => handleTabChange(cat)}
-                                className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${(selectedCategory === cat || (cat === "All" && selectedCategory === "All" && selectedDepartment === "All"))
+                                className={`px-3.5 py-1 rounded-full text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${(selectedCategory === cat || (cat === "All" && selectedCategory === "All" && selectedDepartment === "All"))
                                     ? 'bg-[var(--tg-theme-button-color)] text-white shadow-md'
                                     : 'bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)]'
                                     }`}

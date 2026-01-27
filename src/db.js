@@ -30,6 +30,9 @@ const productSchema = new mongoose.Schema({
     description: { type: String },
     category: { type: String, default: 'General' },
     department: { type: String, default: 'Men' },
+    soldCount: { type: Number, default: 0 },
+    isFlashSale: { type: Boolean, default: false },
+    stockPercentage: { type: Number, default: 0 },
     images: [{ type: String }], // Array of image URLs (Cloudinary)
     variations: [{ // Product variations (e.g., different storage sizes)
         name: { type: String, required: true }, // e.g., "16GB", "32GB", "Blue"

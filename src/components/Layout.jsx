@@ -41,42 +41,42 @@ const Layout = ({ cartCount, isAdmin, isSuperAdmin, user }) => {
                 <nav className="fixed bottom-0 left-0 right-0 bg-[var(--tg-theme-secondary-bg-color)] border-t border-[var(--tg-theme-section-separator-color)] pb-safe pt-1 px-2 flex justify-around items-center z-50">
                     <button
                         onClick={() => navigate('/')}
-                        className={`flex flex-col items-center justify-center w-full py-1 gap-0.5 active:opacity-70 transition-opacity ${location.pathname === '/' ? 'text-[var(--tg-theme-button-color)]' : 'text-[var(--tg-theme-hint-color)]'}`}
+                        className={`flex flex-col items-center justify-center w-full py-1.5 gap-0.5 active:opacity-70 transition-opacity ${location.pathname === '/' ? 'text-[var(--tg-theme-button-color)]' : 'text-[var(--tg-theme-hint-color)]'}`}
                     >
-                        {location.pathname === '/' ? <Store size={26} strokeWidth={2.5} /> : <Store size={26} strokeWidth={1.5} />}
-                        <span className="text-[10px] font-medium">Store</span>
+                        {location.pathname === '/' ? <Store size={22} strokeWidth={2.5} /> : <Store size={22} strokeWidth={1.5} />}
+                        <span className="text-[9px] font-medium">Store</span>
                     </button>
 
                     <button
                         onClick={() => navigate('/cart')}
-                        className={`relative flex flex-col items-center justify-center w-full py-1 gap-0.5 active:opacity-70 transition-opacity ${location.pathname === '/cart' ? 'text-[var(--tg-theme-button-color)]' : 'text-[var(--tg-theme-hint-color)]'}`}
+                        className={`relative flex flex-col items-center justify-center w-full py-1.5 gap-0.5 active:opacity-70 transition-opacity ${location.pathname === '/cart' ? 'text-[var(--tg-theme-button-color)]' : 'text-[var(--tg-theme-hint-color)]'}`}
                     >
                         <div className="relative">
-                            {location.pathname === '/cart' ? <ShoppingBag size={26} strokeWidth={2.5} /> : <ShoppingBag size={26} strokeWidth={1.5} />}
+                            {location.pathname === '/cart' ? <ShoppingBag size={22} strokeWidth={2.5} /> : <ShoppingBag size={22} strokeWidth={1.5} />}
                             {cartCount > 0 && (
-                                <span className="absolute -top-1 -right-1.5 bg-[#ef4444] text-white text-[10px] font-bold px-1.5 min-w-[16px] h-[16px] flex items-center justify-center rounded-full border border-white">
+                                <span className="absolute -top-1 -right-1.5 bg-[#ef4444] text-white text-[9px] font-bold px-1 min-w-[14px] h-[14px] flex items-center justify-center rounded-full border border-white">
                                     {cartCount}
                                 </span>
                             )}
                         </div>
-                        <span className="text-[10px] font-medium">Cart</span>
+                        <span className="text-[9px] font-medium">Cart</span>
                     </button>
 
                     <button
                         onClick={() => navigate('/profile')}
-                        className={`flex flex-col items-center justify-center w-full py-1 gap-0.5 active:opacity-70 transition-opacity ${location.pathname === '/profile' ? 'text-[var(--tg-theme-button-color)]' : 'text-[var(--tg-theme-hint-color)]'}`}
+                        className={`flex flex-col items-center justify-center w-full py-1.5 gap-0.5 active:opacity-70 transition-opacity ${location.pathname === '/profile' ? 'text-[var(--tg-theme-button-color)]' : 'text-[var(--tg-theme-hint-color)]'}`}
                     >
-                        {location.pathname === '/profile' ? <User size={26} strokeWidth={2.5} /> : <User size={26} strokeWidth={1.5} />}
-                        <span className="text-[10px] font-medium">Profile</span>
+                        {location.pathname === '/profile' ? <User size={22} strokeWidth={2.5} /> : <User size={22} strokeWidth={1.5} />}
+                        <span className="text-[9px] font-medium">Profile</span>
                     </button>
 
                     {isAdmin && (
                         <button
                             onClick={() => navigate('/admin')}
-                            className={`flex flex-col items-center justify-center w-full py-1 gap-0.5 active:opacity-70 transition-opacity ${location.pathname === '/admin' ? 'text-[var(--tg-theme-button-color)]' : 'text-[var(--tg-theme-hint-color)]'}`}
+                            className={`flex flex-col items-center justify-center w-full py-1.5 gap-0.5 active:opacity-70 transition-opacity ${location.pathname === '/admin' ? 'text-[var(--tg-theme-button-color)]' : 'text-[var(--tg-theme-hint-color)]'}`}
                         >
-                            {location.pathname === '/admin' ? <LayoutDashboard size={26} strokeWidth={2.5} /> : <LayoutDashboard size={26} strokeWidth={1.5} />}
-                            <span className="text-[10px] font-medium">Admin</span>
+                            {location.pathname === '/admin' ? <LayoutDashboard size={22} strokeWidth={2.5} /> : <LayoutDashboard size={22} strokeWidth={1.5} />}
+                            <span className="text-[9px] font-medium">Admin</span>
                         </button>
                     )}
                 </nav>

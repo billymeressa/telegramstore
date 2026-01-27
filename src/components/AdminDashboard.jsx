@@ -17,7 +17,7 @@ const SUBCATEGORIES = {
 const AdminDashboard = ({ products, onProductUpdate }) => {
     const tele = window.Telegram?.WebApp;
     const [activeTab, setActiveTab] = useState('products'); // 'products' | 'orders'
-    const [newProduct, setNewProduct] = useState({ title: '', price: '', salePrice: '', category: '', department: 'Men', description: '', images: [], variations: [] });
+    const [newProduct, setNewProduct] = useState({ title: '', price: '', salePrice: '', soldCount: '', isFlashSale: false, stockPercentage: '', category: '', department: 'Men', description: '', images: [], variations: [] });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [mainImageFile, setMainImageFile] = useState(null);
     const [additionalImageFiles, setAdditionalImageFiles] = useState([]);
@@ -69,6 +69,9 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
         formData.append('title', newProduct.title);
         formData.append('price', newProduct.price);
         formData.append('salePrice', newProduct.salePrice || '0');
+        formData.append('soldCount', newProduct.soldCount || '0');
+        formData.append('isFlashSale', newProduct.isFlashSale);
+        formData.append('stockPercentage', newProduct.stockPercentage || '0');
         formData.append('category', newProduct.category || 'General');
         formData.append('department', newProduct.department || 'Men');
         formData.append('description', newProduct.description || '');
@@ -119,7 +122,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             const data = await res.json();
             if (data.success) {
                 onProductUpdate(data.products);
-                setNewProduct({ title: '', price: '', salePrice: '', category: '', department: 'Men', description: '', images: [], variations: [] });
+                setNewProduct({ title: '', price: '', salePrice: '', soldCount: '', isFlashSale: false, stockPercentage: '', category: '', department: 'Men', description: '', images: [], variations: [] });
                 setMainImageFile(null);
                 setAdditionalImageFiles([]);
                 setEditId(null);
@@ -145,6 +148,9 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             title: product.title,
             price: product.price,
             salePrice: product.salePrice || '',
+            soldCount: product.soldCount || '',
+            isFlashSale: product.isFlashSale || false,
+            stockPercentage: product.stockPercentage || '',
             category: product.category,
             department: product.department || 'Men',
             description: product.description || '',
@@ -156,7 +162,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
     };
 
     const cancelEdit = () => {
-        setNewProduct({ title: '', price: '', salePrice: '', category: '', department: 'Men', description: '', images: [], variations: [] });
+        setNewProduct({ title: '', price: '', salePrice: '', soldCount: '', isFlashSale: false, stockPercentage: '', category: '', department: 'Men', description: '', images: [], variations: [] });
         setMainImageFile(null);
         setAdditionalImageFiles([]);
         setEditId(null);
@@ -279,24 +285,64 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                         placeholder="0.00"
                                     />
                                 </div>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-4">
                                 <div>
-                                    <label className="block text-xs font-bold text-[#0F1111] mb-1">Department</label>
-                                    <select
-                                        value={newProduct.department}
-                                        onChange={e => setNewProduct({ ...newProduct, department: e.target.value })}
-                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white text-[#0F1111]"
-                                    >
-                                        <option value="Men">Men</option>
-                                        <option value="Women">Women</option>
-                                        <option value="Kids">Kids</option>
-                                        <option value="Electronics">Electronics</option>
-                                        <option value="Home">Home</option>
-                                        <option value="Beauty">Beauty</option>
-                                        <option value="Books">Books</option>
-                                        <option value="Sports">Sports</option>
-                                    </select>
+                                    <label className="block text-xs font-bold text-[#0F1111] mb-1">
+                                        Fake Sold Count <span className="text-xs font-normal text-gray-500">(e.g. 500)</span>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={newProduct.soldCount}
+                                        onChange={e => setNewProduct({ ...newProduct, soldCount: e.target.value })}
+                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm outline-none bg-white text-[#0F1111]"
+                                        placeholder="0"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-[#0F1111] mb-1">
+                                        Fake Stock % <span className="text-xs font-normal text-gray-500">(0-100)</span>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={newProduct.stockPercentage}
+                                        onChange={e => setNewProduct({ ...newProduct, stockPercentage: e.target.value })}
+                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm outline-none bg-white text-[#0F1111]"
+                                        placeholder="0 (Hidden)"
+                                    />
+                                </div>
+                                <div className="flex items-center pt-6">
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={newProduct.isFlashSale}
+                                            onChange={e => setNewProduct({ ...newProduct, isFlashSale: e.target.checked })}
+                                            className="w-4 h-4 rounded text-[var(--tg-theme-button-color)]"
+                                        />
+                                        <span className="text-xs font-bold text-[#0F1111]">🔥 Flash Sale?</span>
+                                    </label>
                                 </div>
                             </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-[#0F1111] mb-1">Department</label>
+                                <select
+                                    value={newProduct.department}
+                                    onChange={e => setNewProduct({ ...newProduct, department: e.target.value })}
+                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white text-[#0F1111]"
+                                >
+                                    <option value="Men">Men</option>
+                                    <option value="Women">Women</option>
+                                    <option value="Kids">Kids</option>
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Home">Home</option>
+                                    <option value="Beauty">Beauty</option>
+                                    <option value="Books">Books</option>
+                                    <option value="Sports">Sports</option>
+                                </select>
+                            </div>
+
 
                             <div>
                                 <label className="block text-xs font-bold text-[#0F1111] mb-1">Category</label>
