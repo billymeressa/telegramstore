@@ -619,7 +619,7 @@ app.get('/api/products/:id', async (req, res) => {
 
 // POST /api/products (Add/Edit) - PROTECTED
 app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), async (req, res) => {
-    const { title, price, salePrice, description, category, department, id, variations, soldCount, isFlashSale, flashSaleEndTime, stockPercentage } = req.body;
+    const { title, price, salePrice, description, category, department, id, variations, soldCount, isFlashSale, flashSaleEndTime, stockPercentage, stock, isUnique, stockStatus } = req.body;
 
     // Parse variations if it's a string (from FormData)
     let parsedVariations = [];
@@ -671,6 +671,9 @@ app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), a
                     isFlashSale: isFlashSale === 'true' || isFlashSale === true,
                     flashSaleEndTime: flashSaleEndTime ? new Date(flashSaleEndTime) : null,
                     stockPercentage: isNaN(parseInt(stockPercentage)) ? 0 : parseInt(stockPercentage),
+                    stock: isNaN(parseInt(stock)) ? 0 : parseInt(stock),
+                    isUnique: isUnique === 'true' || isUnique === true,
+                    stockStatus: stockStatus || '',
                     description,
                     category,
                     department: department || 'Men',
@@ -698,6 +701,9 @@ app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), a
                 isFlashSale: isFlashSale === 'true' || isFlashSale === true,
                 flashSaleEndTime: flashSaleEndTime ? new Date(flashSaleEndTime) : null,
                 stockPercentage: isNaN(parseInt(stockPercentage)) ? 0 : parseInt(stockPercentage),
+                stock: isNaN(parseInt(stock)) ? 0 : parseInt(stock),
+                isUnique: isUnique === 'true' || isUnique === true,
+                stockStatus: stockStatus || '',
                 description: description || '',
                 category: category || 'General',
                 department: department || 'Men',
@@ -786,6 +792,62 @@ app.post('/api/orders', async (req, res) => {
             total_price,
             status: 'pending'
         });
+
+        // Deduct Stock
+        for (const item of items) {
+            try {
+                const product = await Product.findOne({ id: item.id });
+                if (product) {
+                    // Check if item has variations and which one was selected
+                    // The item object from frontend usually has `selectedVariations` or we need to match
+                    // Wait, the item in orderSchema structure is { title, quantity, price, id }
+                    // It doesn't explicitly store the selected variation ID clearly in the schema above, 
+                    // but AdminDashboard line 568: `item.selectedVariations` exists in the object even if not in schema def strictly (since it's inside array without robust schema sometimes, or mixed)
+                    // Let's check orderSchema in db.js: items is [{ title, quantity, price, id }] - it's loose.
+                    // But assuming the frontend sends it, we can match by variation name or ID if available. 
+                    // In the current AdminDashboard, it renders `item.selectedVariations`.
+
+                    // If the product has variations, we need to find which one and decrement its stock.
+                    // Since `selectedVariations` is an object { "Size": "M", "Color": "Blue" }, we need to find the matching variation in `product.variations`.
+                    // `product.variations` has `name` (e.g. "16GB"). 
+
+                    // If multiple variation types (e.g. Size AND Color) are used, `product.variations` array structure in `db.js` seems to be flat: `name`, `price`.
+                    // It seems the current variation implementation is simple: just a list of options with prices. 
+                    // So `selectedVariations` might just be a single selection or multiple?
+                    // In AdminDashboard line 35 of `AdminDashboard.jsx`, `SUBCATEGORIES`... 
+                    // line 408 `newProduct.variations` -> `name` and `price`.
+                    // The frontend likely sends `selectedVariations` as keys/values.
+
+                    // If product has variations, and order matches one:
+                    let varietyMatched = false;
+                    if (product.variations && product.variations.length > 0 && item.selectedVariations) {
+                        // Attempt to find matching variation.
+                        // Simple case: The `name` in `variations` matches one of the values in `selectedVariations`.
+                        // E.g. variation name "16GB". selectedVariations: { "Storage": "16GB" }
+
+                        const selectedValues = Object.values(item.selectedVariations);
+
+                        const variationIndex = product.variations.findIndex(v => selectedValues.includes(v.name));
+
+                        if (variationIndex !== -1) {
+                            // Decrement variation stock
+                            const currentStock = product.variations[variationIndex].stock || 0;
+                            product.variations[variationIndex].stock = Math.max(0, currentStock - item.quantity);
+                            varietyMatched = true;
+                        }
+                    }
+
+                    // If no variation matched or product has no variations, decrement main stock
+                    if (!varietyMatched) {
+                        product.stock = Math.max(0, (product.stock || 0) - item.quantity);
+                    }
+
+                    await product.save();
+                }
+            } catch (stockErr) {
+                console.error(`Failed to update stock for product ${item.id}:`, stockErr);
+            }
+        }
 
         // Notify Admin via Telegram
         // Notify All Admins via Telegram

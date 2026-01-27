@@ -33,12 +33,15 @@ const productSchema = new mongoose.Schema({
     soldCount: { type: Number, default: 0 },
     isFlashSale: { type: Boolean, default: false },
     flashSaleEndTime: { type: Date }, // New: Flash sale expiry
-    stockPercentage: { type: Number, default: 0 },
+    stockPercentage: { type: Number, default: 0 }, // Fake stock % for visuals
+    stock: { type: Number, default: 0 }, // Actual stock quantity
+    isUnique: { type: Boolean, default: false }, // "One of a kind"
+    stockStatus: { type: String }, // Custom label for unique items (e.g. "Vintage")
     images: [{ type: String }], // Array of image URLs (Cloudinary)
     variations: [{ // Product variations (e.g., different storage sizes)
         name: { type: String, required: true }, // e.g., "16GB", "32GB", "Blue"
         price: { type: Number, required: true }, // Price for this variation
-        stock: { type: Number, default: 0 }, // Optional: stock for this variation
+        stock: { type: Number, default: 0 }, // Stock for this variation
         sku: { type: String } // Optional: unique SKU
     }]
 }, { timestamps: true });
