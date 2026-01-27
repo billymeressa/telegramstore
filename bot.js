@@ -62,15 +62,21 @@ bot.command('start', async (ctx) => {
         await ctx.reply('Loading store...', { reply_markup: { remove_keyboard: true } });
 
         await ctx.reply(
-            `Welcome to the Store, ${ctx.from.first_name}!\n\n` +
-            `We are excited to have you here. Click the button below to browse our collection and shop now!\n\n` +
-            `_Have questions or feedback? Feel free to contact our admin: @${adminUsername}_`,
+            `👋 Welcome, ${ctx.from.first_name}!\n\n` +
+            `🛍️ *Shop Electronics, Fashion & More*\n` +
+            `✨ Exclusive Telegram-only deals\n` +
+            `🚚 Fast delivery across Addis Ababa\n` +
+            `💳 Secure checkout in just 2 taps\n\n` +
+            `🎁 *FIRST-TIME BUYER BONUS: 15% OFF!*\n` +
+            `Use code: *WELCOME15* at checkout\n\n` +
+            `_Questions? Contact ${adminUsername}_`,
             {
                 parse_mode: 'Markdown',
                 reply_markup: {
-                    reply_markup: {
-                        inline_keyboard: [[{ text: "Open Store", web_app: { url: process.env.WEB_APP_URL } }]]
-                    }
+                    inline_keyboard: [
+                        [{ text: "🛒 Shop Now & Save!", web_app: { url: process.env.WEB_APP_URL } }],
+                        [{ text: "📱 Contact Support", url: `tg://user?id=${process.env.ADMIN_ID}` }]
+                    ]
                 }
             }
         );
