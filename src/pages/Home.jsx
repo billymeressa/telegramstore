@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import ProductList from '../components/ProductList';
-import HorizontalProductRow from '../components/HorizontalProductRow';
+
 
 import { smartSearch } from '../utils/smartSearch';
 import { Search, HelpCircle, X, ShoppingBag, Hand, Check, Zap } from 'lucide-react';
@@ -151,10 +151,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
         return [...shuffledPremium, ...generic];
     };
 
-    // New Arrivals: Always the actual latest added (highest IDs)
-    const newArrivals = useMemo(() => {
-        return [...products].sort((a, b) => b.id - a.id).slice(0, 7);
-    }, [products]);
+
 
 
 
@@ -297,14 +294,6 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
 
 
-
-
-                {/* Brand/Featured Rows (Only on "All" tab & no search) */}
-                {selectedDepartment === 'All' && !searchQuery && (
-                    <>
-                        <HorizontalProductRow title="New Arrivals" products={newArrivals} />
-                    </>
-                )}
 
 
                 {/* Main Product Grid */}
