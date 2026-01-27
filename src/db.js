@@ -29,9 +29,9 @@ const productSchema = new mongoose.Schema({
     description: { type: String },
     category: { type: String, default: 'General' },
     department: { type: String, default: 'Men' },
-    stock: { type: Number, default: 0 }, // Actual stock quantity
-    isUnique: { type: Boolean, default: false }, // "One of a kind"
-    stockStatus: { type: String }, // Custom label for unique items (e.g. "Vintage")
+    stock: { type: Number, default: 1 }, // Default to 1 (Distinct)
+    isUnique: { type: Boolean, default: true }, // Default to True
+    stockStatus: { type: String, default: 'Distinct' }, // Custom label for unique items (e.g. "Vintage")
     images: [{ type: String }], // Array of image URLs (Cloudinary)
     variations: [{ // Product variations (e.g., different storage sizes)
         name: { type: String, required: true }, // e.g., "16GB", "32GB", "Blue"

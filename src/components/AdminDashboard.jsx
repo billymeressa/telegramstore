@@ -17,7 +17,7 @@ const SUBCATEGORIES = {
 const AdminDashboard = ({ products, onProductUpdate }) => {
     const tele = window.Telegram?.WebApp;
     const [activeTab, setActiveTab] = useState('products'); // 'products' | 'orders'
-    const [newProduct, setNewProduct] = useState({ title: '', price: '', stock: '', isUnique: false, stockStatus: '', category: '', department: 'Men', description: '', images: [], variations: [] });
+    const [newProduct, setNewProduct] = useState({ title: '', price: '', stock: 1, isUnique: true, stockStatus: 'Distinct', category: '', department: 'Men', description: '', images: [], variations: [] });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [mainImageFile, setMainImageFile] = useState(null);
     const [additionalImageFiles, setAdditionalImageFiles] = useState([]);
@@ -121,7 +121,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             const data = await res.json();
             if (data.success) {
                 onProductUpdate(data.products);
-                setNewProduct({ title: '', price: '', stock: '', isUnique: false, stockStatus: '', category: '', department: 'Men', description: '', images: [], variations: [] });
+                setNewProduct({ title: '', price: '', stock: 1, isUnique: true, stockStatus: 'Distinct', category: '', department: 'Men', description: '', images: [], variations: [] });
                 setMainImageFile(null);
                 setAdditionalImageFiles([]);
                 setEditId(null);
@@ -160,7 +160,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
     };
 
     const cancelEdit = () => {
-        setNewProduct({ title: '', price: '', stock: '', isUnique: false, stockStatus: '', category: '', department: 'Men', description: '', images: [], variations: [] });
+        setNewProduct({ title: '', price: '', stock: 1, isUnique: true, stockStatus: 'Distinct', category: '', department: 'Men', description: '', images: [], variations: [] });
         setMainImageFile(null);
         setAdditionalImageFiles([]);
         setEditId(null);
