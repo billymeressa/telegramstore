@@ -17,7 +17,7 @@ const SUBCATEGORIES = {
 const AdminDashboard = ({ products, onProductUpdate }) => {
     const tele = window.Telegram?.WebApp;
     const [activeTab, setActiveTab] = useState('products'); // 'products' | 'orders'
-    const [newProduct, setNewProduct] = useState({ title: '', price: '', salePrice: '', soldCount: '', isFlashSale: false, stockPercentage: '', stock: '', isUnique: false, stockStatus: '', category: '', department: 'Men', description: '', images: [], variations: [] });
+    const [newProduct, setNewProduct] = useState({ title: '', price: '', stock: '', isUnique: false, stockStatus: '', category: '', department: 'Men', description: '', images: [], variations: [] });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [mainImageFile, setMainImageFile] = useState(null);
     const [additionalImageFiles, setAdditionalImageFiles] = useState([]);
@@ -68,10 +68,6 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
         const formData = new FormData();
         formData.append('title', newProduct.title);
         formData.append('price', newProduct.price);
-        formData.append('salePrice', newProduct.salePrice || '0');
-        formData.append('soldCount', newProduct.soldCount || '0');
-        formData.append('isFlashSale', newProduct.isFlashSale);
-        formData.append('stockPercentage', newProduct.stockPercentage || '0');
         formData.append('stock', newProduct.stock || '0');
         formData.append('isUnique', newProduct.isUnique);
         formData.append('stockStatus', newProduct.stockStatus || '');
@@ -125,7 +121,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             const data = await res.json();
             if (data.success) {
                 onProductUpdate(data.products);
-                setNewProduct({ title: '', price: '', salePrice: '', soldCount: '', isFlashSale: false, stockPercentage: '', stock: '', isUnique: false, stockStatus: '', category: '', department: 'Men', description: '', images: [], variations: [] });
+                setNewProduct({ title: '', price: '', stock: '', isUnique: false, stockStatus: '', category: '', department: 'Men', description: '', images: [], variations: [] });
                 setMainImageFile(null);
                 setAdditionalImageFiles([]);
                 setEditId(null);
@@ -150,11 +146,6 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
         setNewProduct({
             title: product.title,
             price: product.price,
-            salePrice: product.salePrice || '',
-            soldCount: product.soldCount || '',
-            isFlashSale: product.isFlashSale || false,
-            isFlashSale: product.isFlashSale || false,
-            stockPercentage: product.stockPercentage || '',
             stock: product.stock || '',
             isUnique: product.isUnique || false,
             stockStatus: product.stockStatus || '',
@@ -169,7 +160,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
     };
 
     const cancelEdit = () => {
-        setNewProduct({ title: '', price: '', salePrice: '', soldCount: '', isFlashSale: false, stockPercentage: '', stock: '', isUnique: false, stockStatus: '', category: '', department: 'Men', description: '', images: [], variations: [] });
+        setNewProduct({ title: '', price: '', stock: '', isUnique: false, stockStatus: '', category: '', department: 'Men', description: '', images: [], variations: [] });
         setMainImageFile(null);
         setAdditionalImageFiles([]);
         setEditId(null);
@@ -258,7 +249,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                     placeholder="Product Name"
                                 />
                             </div>
-                            <div className="grid grid-cols-3 gap-4">
+                            <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-xs font-bold text-[#0F1111] mb-1">
                                         Price {newProduct.variations && newProduct.variations.length > 0 && (
@@ -279,58 +270,9 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                         </p>
                                     )}
                                 </div>
-                                <div>
-                                    <label className="block text-xs font-bold text-[#0F1111] mb-1">
-                                        Sale Price <span className="text-xs font-normal text-gray-500">(Optional)</span>
-                                    </label>
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        value={newProduct.salePrice}
-                                        onChange={e => setNewProduct({ ...newProduct, salePrice: e.target.value })}
-                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white text-[#0F1111] placeholder-gray-400"
-                                        placeholder="0.00"
-                                    />
-                                </div>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-4">
-                                <div>
-                                    <label className="block text-xs font-bold text-[#0F1111] mb-1">
-                                        Fake Sold Count <span className="text-xs font-normal text-gray-500">(e.g. 500)</span>
-                                    </label>
-                                    <input
-                                        type="number"
-                                        value={newProduct.soldCount}
-                                        onChange={e => setNewProduct({ ...newProduct, soldCount: e.target.value })}
-                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm outline-none bg-white text-[#0F1111]"
-                                        placeholder="0"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-bold text-[#0F1111] mb-1">
-                                        Fake Stock % <span className="text-xs font-normal text-gray-500">(0-100)</span>
-                                    </label>
-                                    <input
-                                        type="number"
-                                        value={newProduct.stockPercentage}
-                                        onChange={e => setNewProduct({ ...newProduct, stockPercentage: e.target.value })}
-                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm outline-none bg-white text-[#0F1111]"
-                                        placeholder="0 (Hidden)"
-                                    />
-                                </div>
-                                <div className="flex items-center pt-6">
-                                    <label className="flex items-center gap-2 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={newProduct.isFlashSale}
-                                            onChange={e => setNewProduct({ ...newProduct, isFlashSale: e.target.checked })}
-                                            className="w-4 h-4 rounded text-[var(--tg-theme-button-color)]"
-                                        />
-                                        <span className="text-xs font-bold text-[#0F1111]">🔥 Flash Sale?</span>
-                                    </label>
-                                </div>
-                            </div>
+
 
                             <div className="grid grid-cols-3 gap-4 border-t pt-4 border-gray-100 mt-2">
                                 <div className="flex items-center pt-6">

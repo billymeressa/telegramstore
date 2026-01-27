@@ -619,7 +619,7 @@ app.get('/api/products/:id', async (req, res) => {
 
 // POST /api/products (Add/Edit) - PROTECTED
 app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), async (req, res) => {
-    const { title, price, salePrice, description, category, department, id, variations, soldCount, isFlashSale, flashSaleEndTime, stockPercentage, stock, isUnique, stockStatus } = req.body;
+    const { title, price, description, category, department, id, variations, stock, isUnique, stockStatus } = req.body;
 
     // Parse variations if it's a string (from FormData)
     let parsedVariations = [];
@@ -666,11 +666,6 @@ app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), a
                 {
                     title,
                     price: isNaN(parseFloat(price)) ? 0 : parseFloat(price),
-                    salePrice: isNaN(parseFloat(salePrice)) ? 0 : parseFloat(salePrice),
-                    soldCount: isNaN(parseInt(soldCount)) ? 0 : parseInt(soldCount),
-                    isFlashSale: isFlashSale === 'true' || isFlashSale === true,
-                    flashSaleEndTime: flashSaleEndTime ? new Date(flashSaleEndTime) : null,
-                    stockPercentage: isNaN(parseInt(stockPercentage)) ? 0 : parseInt(stockPercentage),
                     stock: isNaN(parseInt(stock)) ? 0 : parseInt(stock),
                     isUnique: isUnique === 'true' || isUnique === true,
                     stockStatus: stockStatus || '',
@@ -696,11 +691,6 @@ app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), a
                 id: Date.now(),
                 title,
                 price: isNaN(parseFloat(price)) ? 0 : parseFloat(price),
-                salePrice: isNaN(parseFloat(salePrice)) ? 0 : parseFloat(salePrice),
-                soldCount: isNaN(parseInt(soldCount)) ? 0 : parseInt(soldCount),
-                isFlashSale: isFlashSale === 'true' || isFlashSale === true,
-                flashSaleEndTime: flashSaleEndTime ? new Date(flashSaleEndTime) : null,
-                stockPercentage: isNaN(parseInt(stockPercentage)) ? 0 : parseInt(stockPercentage),
                 stock: isNaN(parseInt(stock)) ? 0 : parseInt(stock),
                 isUnique: isUnique === 'true' || isUnique === true,
                 stockStatus: stockStatus || '',

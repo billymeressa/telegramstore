@@ -668,29 +668,12 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                                         <span className="text-sm font-medium text-[var(--tg-theme-hint-color)]">Birr</span>
                                     </div>
                                 ) : (
-                                    product.salePrice > 0 && product.salePrice < product.price ? (
-                                        <div className="flex items-baseline gap-2">
-                                            <div className="flex items-baseline gap-1">
-                                                <span className="text-3xl font-bold text-red-600">
-                                                    {Math.floor(product.salePrice)}
-                                                </span>
-                                                <span className="text-sm font-medium text-[var(--tg-theme-hint-color)]">Birr</span>
-                                            </div>
-                                            <span className="text-lg text-[var(--tg-theme-hint-color)] line-through decoration-slate-400">
-                                                {Math.floor(product.price)}
-                                            </span>
-                                            <div className="bg-red-100 text-red-600 px-2 py-0.5 rounded text-xs font-bold">
-                                                SAVE {Math.floor(((product.price - product.salePrice) / product.price) * 100)}%
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="flex items-baseline gap-1">
-                                            <span className="text-3xl font-bold text-[var(--tg-theme-text-color)]">
-                                                {Math.floor(product.price)}
-                                            </span>
-                                            <span className="text-sm font-medium text-[var(--tg-theme-hint-color)]">Birr</span>
-                                        </div>
-                                    )
+                                    <div className="flex items-baseline gap-1">
+                                        <span className="text-3xl font-bold text-[var(--tg-theme-text-color)]">
+                                            {Math.floor(product.price)}
+                                        </span>
+                                        <span className="text-sm font-medium text-[var(--tg-theme-hint-color)]">Birr</span>
+                                    </div>
                                 )}
                             </div>
                         </div>
@@ -722,7 +705,7 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                         onClick={() => {
                             const finalPrice = selectedVariation
                                 ? selectedVariation.price
-                                : (product.salePrice > 0 && product.salePrice < product.price ? product.salePrice : product.price);
+                                : product.price;
 
                             const variationText = selectedVariation ? ` - ${selectedVariation.name}` : '';
                             const message = `Hi, I would like to buy ${product.title}${variationText} for ${Math.floor(finalPrice)} Birr.`;
@@ -746,7 +729,7 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                         onClick={() => {
                             const finalPrice = selectedVariation
                                 ? selectedVariation.price
-                                : (product.salePrice > 0 && product.salePrice < product.price ? product.salePrice : product.price);
+                                : product.price;
 
                             onAdd({ ...product, selectedVariation, price: finalPrice });
                             setIsAdded(true);

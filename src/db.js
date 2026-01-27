@@ -26,14 +26,9 @@ const productSchema = new mongoose.Schema({
     id: { type: Number, required: true, unique: true }, // Keeping numeric ID for compatibility with existing frontend logic if needed, or we can migrate to _id
     title: { type: String, required: true },
     price: { type: Number, required: true },
-    salePrice: { type: Number, default: 0 },
     description: { type: String },
     category: { type: String, default: 'General' },
     department: { type: String, default: 'Men' },
-    soldCount: { type: Number, default: 0 },
-    isFlashSale: { type: Boolean, default: false },
-    flashSaleEndTime: { type: Date }, // New: Flash sale expiry
-    stockPercentage: { type: Number, default: 0 }, // Fake stock % for visuals
     stock: { type: Number, default: 0 }, // Actual stock quantity
     isUnique: { type: Boolean, default: false }, // "One of a kind"
     stockStatus: { type: String }, // Custom label for unique items (e.g. "Vintage")

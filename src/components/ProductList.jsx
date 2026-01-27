@@ -6,54 +6,6 @@ import { useState, useEffect } from 'react';
 
 
 
-const Countdown = ({ endTime }) => {
-    const [timeLeft, setTimeLeft] = useState('');
-
-    useEffect(() => {
-        if (!endTime) return;
-        const end = new Date(endTime).getTime();
-
-        const tick = () => {
-            const now = new Date().getTime();
-            const diff = end - now;
-            if (diff <= 0) {
-                setTimeLeft('Ended');
-                return;
-            }
-            const h = Math.floor((diff / (1000 * 60 * 60))); // Allow > 24h
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
-            setTimeLeft(`${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`);
-        };
-        tick();
-        const interval = setInterval(tick, 1000);
-        return () => clearInterval(interval);
-    }, [endTime]);
-
-    if (!endTime || timeLeft === 'Ended') return null;
-
-    return (
-        <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold py-1 px-2 flex justify-between items-center z-10 w-full">
-            <span className="text-orange-300 whitespace-nowrap mr-1">⚡ Flash Deal</span>
-            <span className="font-mono whitespace-nowrap">{timeLeft}</span>
-        </div>
-    );
-};
-
-const StockBar = ({ percentage }) => {
-    return (
-        <div className="mt-2">
-            <div className="flex justify-between items-center text-[10px] text-gray-500 mb-0.5">
-                <span className="text-orange-600 font-bold">Almost Sold Out</span>
-                <span>{percentage}% claimed</span>
-            </div>
-            <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-orange-500 to-red-500" style={{ width: `${percentage}%` }}></div>
-            </div>
-        </div>
-    );
-};
-
 function ProductList({ products }) {
     const navigate = useNavigate();
 
@@ -81,19 +33,8 @@ function ProductList({ products }) {
                                 <Package size={32} opacity={0.5} />
                             </div>
                         )}
-                        {/* Sale Tag */}
-                        {product.salePrice > 0 && product.salePrice < product.price && (
-                            <div className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm z-10">
-                                SALE
-                            </div>
-                        )}
-                        {/* Temu-style badges */}
-                        {product.soldCount > 0 && (
-                            <div className="absolute top-2 right-2 bg-orange-100 text-orange-700 text-[9px] font-extrabold px-1.5 py-0.5 rounded border border-orange-200 shadow-sm z-10">
-                                {product.soldCount >= 1000 ? (product.soldCount / 1000).toFixed(1) + 'k' : product.soldCount}+ sold
-                            </div>
-                        )}
-                        {product.isFlashSale && product.flashSaleEndTime && <Countdown endTime={product.flashSaleEndTime} />}
+
+                        {/* Sold out / Low stock badge could go here if needed, but not requested specifically for ProductList yet, keeping it clean */}
                     </div>
 
                     <div className="p-2.5 flex flex-col gap-1 text-left">
@@ -116,25 +57,14 @@ function ProductList({ products }) {
                                     </>
                                 ) : (
                                     // Show single price for regular products
-                                    product.salePrice > 0 && product.salePrice < product.price ? (
-                                        <>
-                                            <span className="text-red-600 text-lg font-extrabold">{Math.floor(product.salePrice)}</span>
-                                            <span className="text-[var(--tg-theme-hint-color)] text-xs font-normal line-through ml-1">{Math.floor(product.price)}</span>
-                                            <span className="text-[var(--tg-theme-hint-color)] text-xs font-normal ml-0.5">ETB</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <span className="text-[var(--tg-theme-text-color)] text-lg font-extrabold">{Math.floor(product.price)}</span>
-                                            <span className="text-[var(--tg-theme-hint-color)] text-xs font-normal">ETB</span>
-                                        </>
-                                    )
+                                    <>
+                                        <span className="text-[var(--tg-theme-text-color)] text-lg font-extrabold">{Math.floor(product.price)}</span>
+                                        <span className="text-[var(--tg-theme-hint-color)] text-xs font-normal">ETB</span>
+                                    </>
                                 )}
                             </div>
 
                         </div>
-
-                        {/* Urgency Stock Bar (Randomly shown) */}
-                        {product.stockPercentage > 0 && <StockBar percentage={product.stockPercentage} />}
                     </div>
                 </div>
             ))}
