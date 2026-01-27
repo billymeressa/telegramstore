@@ -18,11 +18,17 @@ const SpinWheel = () => {
     const [rotation, setRotation] = useState(0);
 
     useEffect(() => {
-        // Show popup after 2 seconds on first visit
+        // Show popup after 10 seconds if not spun and cooldown passed
         const hasSpun = localStorage.getItem('hasSpunWheel');
+        const lastSeen = localStorage.getItem('lastSeenWheel');
+        const now = Date.now();
+        const COOLDOWN = 24 * 60 * 60 * 1000; // 24 hours
+
         if (!hasSpun) {
-            const timer = setTimeout(() => setIsOpen(true), 2000);
-            return () => clearTimeout(timer);
+            if (!lastSeen || (now - parseInt(lastSeen) > COOLDOWN)) {
+                const timer = setTimeout(() => setIsOpen(true), 10000);
+                return () => clearTimeout(timer);
+            }
         }
     }, []);
 
@@ -93,9 +99,12 @@ const SpinWheel = () => {
     const handleClose = () => {
         if (isSpinning) return;
         setIsOpen(false);
-        // If they close without spinning, maybe remind them later? 
-        // For now, let's treat closing as "seen" to avoid annoyance, or only if they spun.
-        if (result) localStorage.setItem('hasSpunWheel', 'true');
+        // If they close without spinning, snooze for 24h
+        if (result) {
+            localStorage.setItem('hasSpunWheel', 'true');
+        } else {
+            localStorage.setItem('lastSeenWheel', Date.now().toString());
+        }
     };
 
     const handleCopy = () => {
