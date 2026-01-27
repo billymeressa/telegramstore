@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import ProductList from '../components/ProductList';
 import HorizontalProductRow from '../components/HorizontalProductRow';
-import CategoryColumnRow from '../components/CategoryColumnRow';
+
 import { smartSearch } from '../utils/smartSearch';
 import { Search, HelpCircle, X, ShoppingBag, Hand, Check, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -20,10 +20,7 @@ const SUBCATEGORIES = {
     'Vehicles': ['Cars', 'Motorcycles', 'Bicycles', 'Parts & Accessories', 'Tires & Wheels', 'Car Electronics', 'Tools & Equipment', 'Other']
 };
 
-// Featured Subcategories for Home Page Visual Navigation
-const FEATURED_SUBCATEGORIES = [
-    'Phones', 'Shoes', 'Watches', 'Laptops', 'Dresses', 'Gaming', 'Bags', 'Audio'
-];
+
 
 const TouchHint = ({ text, className = "" }) => (
     <div className={`absolute z-30 pointer-events-none flex flex-col items-center gap-2 ${className}`}>
@@ -218,28 +215,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
         setSelectedCategory(cat);
     };
 
-    // Handle clicking on a Visual Subcategory Icon
-    const handleVisualCategorySelect = (subCat) => {
-        // Find which department this subcategory belongs to
-        let foundDept = "All";
-        for (const [dept, subCats] of Object.entries(SUBCATEGORIES)) {
-            if (subCats.includes(subCat)) {
-                foundDept = dept;
-                break;
-            }
-        }
 
-        setSelectedDepartment(foundDept);
-        setSelectedCategory(subCat);
-
-        // Scroll to product grid
-        const grid = document.querySelector('[data-product-grid]');
-        if (grid) {
-            setTimeout(() => {
-                grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
-        }
-    };
 
     // Infinite Scroll Listener
     useEffect(() => {
@@ -324,14 +300,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                     </div>
                 </div>
 
-                {/* Visual Category Columns (Only on "All" or if mapped) */}
-                {/* Only show if we have products to categorize, and for top level exploration */}
-                {selectedDepartment === 'All' && !searchQuery && (
-                    <CategoryColumnRow
-                        categories={FEATURED_SUBCATEGORIES}
-                        onSelect={handleVisualCategorySelect}
-                    />
-                )}
+
 
 
 
