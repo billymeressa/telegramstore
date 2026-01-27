@@ -3,6 +3,7 @@ import ProductList from '../components/ProductList';
 
 
 import SpinWheel from '../components/SpinWheel';
+import DailyCheckIn from '../components/DailyCheckIn';
 
 import { smartSearch } from '../utils/smartSearch';
 import { Search, HelpCircle, X, ShoppingBag, Hand, Check, Zap } from 'lucide-react';
@@ -298,6 +299,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
             {/* Main Scrollable Content */}
             <div className="space-y-2">
+                <DailyCheckIn />
 
                 {/* Main Product Grid */}
                 <div data-product-grid className="min-h-[50vh]"> {/* For scroll target */}

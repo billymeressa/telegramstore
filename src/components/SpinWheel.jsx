@@ -46,7 +46,14 @@ const SpinWheel = () => {
             });
             const data = await res.json();
 
-            if (!data.success) throw new Error('Failed to spin');
+            if (!data.success) {
+                if (data.message.includes('tomorrow')) {
+                    alert(data.message); // Simple alert for now, or use a toast
+                    setIsOpen(false);
+                    return;
+                }
+                throw new Error('Failed to spin');
+            }
 
             // 2. Animate Wheel
             // Calculate rotation to land on the prize

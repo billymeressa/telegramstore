@@ -32,6 +32,7 @@ const productSchema = new mongoose.Schema({
     department: { type: String, default: 'Men' },
     soldCount: { type: Number, default: 0 },
     isFlashSale: { type: Boolean, default: false },
+    flashSaleEndTime: { type: Date }, // New: Flash sale expiry
     stockPercentage: { type: Number, default: 0 },
     images: [{ type: String }], // Array of image URLs (Cloudinary)
     variations: [{ // Product variations (e.g., different storage sizes)
@@ -67,9 +68,11 @@ const User = mongoose.model('User', new mongoose.Schema({
     firstName: { type: String },
     joinedAt: { type: Date, default: Date.now },
     lastActiveAt: { type: Date, default: Date.now },
-    lastActiveAt: { type: Date, default: Date.now },
     lastReengagementAt: { type: Date },
-    hasSpunWheel: { type: Boolean, default: false }
+    hasSpunWheel: { type: Boolean, default: false }, // Deprecated but kept for compat
+    lastSpinTime: { type: Date }, // New: Track daily spins
+    checkInStreak: { type: Number, default: 0 }, // New: Daily check-in streak
+    lastCheckInTime: { type: Date } // New: Last daily check-in
 }));
 
 const PromoCode = mongoose.model('PromoCode', new mongoose.Schema({

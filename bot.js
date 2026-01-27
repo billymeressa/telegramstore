@@ -179,7 +179,10 @@ bot.on('text', async (ctx) => {
     }
 });
 
-bot.launch();
+bot.launch().catch(err => {
+    console.error("Telegram Launch Error:", err.message);
+    // Continue running API server even if bot fails (e.g. conflict)
+});
 console.log('Bot is running...');
 
 import verifyTelegramWebAppData from './src/middleware/auth.js';
@@ -214,6 +217,18 @@ app.post('/api/game/spin', async (req, res) => {
     // In a real app, verify initData here.
     const { userId } = req.body; // or extract from headers
 
+    if (userId) {
+        const user = await User.findOne({ userId });
+        if (user && user.lastSpinTime) {
+            const lastSpin = new Date(user.lastSpinTime);
+            const now = new Date();
+            // Check if same day (simple check)
+            if (lastSpin.toDateString() === now.toDateString()) {
+                return res.json({ success: false, message: 'Come back tomorrow for another spin!', nextSpin: new Date(now.setHours(24, 0, 0, 0)) });
+            }
+        }
+    }
+
     // Determine Result (Server Authoritative)
     // 0: Try Again, 1: 100 Br, 2: 10% Off, 3: 500 Br (Jackpot)
     const rand = Math.random();
@@ -239,10 +254,55 @@ app.post('/api/game/spin', async (req, res) => {
 
     if (userId) {
         // Record that user spun
-        await User.updateOne({ userId }, { hasSpunWheel: true });
+        await User.updateOne({ userId }, { lastSpinTime: new Date(), hasSpunWheel: true });
     }
 
     res.json({ success: true, prizeIndex, code, message });
+});
+
+// POST /api/daily-checkin - Daily Streak
+app.post('/api/daily-checkin', async (req, res) => {
+    const { userId } = req.body;
+    if (!userId) return res.status(400).json({ error: 'Missing userId' });
+
+    try {
+        const user = await User.findOne({ userId });
+        if (!user) return res.status(404).json({ error: 'User not found' });
+
+        const now = new Date();
+        const lastCheckIn = user.lastCheckInTime ? new Date(user.lastCheckInTime) : null;
+        let streak = user.checkInStreak || 0;
+
+        // Check if already checked in today
+        if (lastCheckIn && lastCheckIn.toDateString() === now.toDateString()) {
+            return res.json({ success: false, message: 'Already checked in today', streak });
+        }
+
+        // Check if consecutive
+        if (lastCheckIn) {
+            const yesterday = new Date(now);
+            yesterday.setDate(yesterday.getDate() - 1); // Mutates yesterday object
+
+            // Allow check-in if last check-in was yesterday OR today (but we already handled today)
+            // If last checkin was BEFORE yesterday, streak breaks.
+            if (lastCheckIn.toDateString() === yesterday.toDateString()) {
+                streak++;
+            } else {
+                streak = 1; // Reset if missed a day
+            }
+        } else {
+            streak = 1;
+        }
+
+        user.lastCheckInTime = now;
+        user.checkInStreak = streak;
+        await user.save();
+
+        res.json({ success: true, streak, message: 'Check-in successful!', points: streak * 10 });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: 'Server error' });
+    }
 });
 
 // POST /api/coupons/validate - Check coupon
@@ -559,7 +619,7 @@ app.get('/api/products/:id', async (req, res) => {
 
 // POST /api/products (Add/Edit) - PROTECTED
 app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), async (req, res) => {
-    const { title, price, salePrice, description, category, department, id, variations, soldCount, isFlashSale, stockPercentage } = req.body;
+    const { title, price, salePrice, description, category, department, id, variations, soldCount, isFlashSale, flashSaleEndTime, stockPercentage } = req.body;
 
     // Parse variations if it's a string (from FormData)
     let parsedVariations = [];
@@ -609,6 +669,7 @@ app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), a
                     salePrice: isNaN(parseFloat(salePrice)) ? 0 : parseFloat(salePrice),
                     soldCount: isNaN(parseInt(soldCount)) ? 0 : parseInt(soldCount),
                     isFlashSale: isFlashSale === 'true' || isFlashSale === true,
+                    flashSaleEndTime: flashSaleEndTime ? new Date(flashSaleEndTime) : null,
                     stockPercentage: isNaN(parseInt(stockPercentage)) ? 0 : parseInt(stockPercentage),
                     description,
                     category,
@@ -635,6 +696,7 @@ app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), a
                 salePrice: isNaN(parseFloat(salePrice)) ? 0 : parseFloat(salePrice),
                 soldCount: isNaN(parseInt(soldCount)) ? 0 : parseInt(soldCount),
                 isFlashSale: isFlashSale === 'true' || isFlashSale === true,
+                flashSaleEndTime: flashSaleEndTime ? new Date(flashSaleEndTime) : null,
                 stockPercentage: isNaN(parseInt(stockPercentage)) ? 0 : parseInt(stockPercentage),
                 description: description || '',
                 category: category || 'General',

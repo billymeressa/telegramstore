@@ -1,15 +1,44 @@
 import { useNavigate } from 'react-router-dom';
 import { Package } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 
 
 
-const Countdown = () => (
-    <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold py-1 px-2 flex justify-between items-center z-10">
-        <span className="text-orange-300">⚡ Flash Deal</span>
-        <span className="font-mono">04:23:45</span>
-    </div>
-);
+
+const Countdown = ({ endTime }) => {
+    const [timeLeft, setTimeLeft] = useState('');
+
+    useEffect(() => {
+        if (!endTime) return;
+        const end = new Date(endTime).getTime();
+
+        const tick = () => {
+            const now = new Date().getTime();
+            const diff = end - now;
+            if (diff <= 0) {
+                setTimeLeft('Ended');
+                return;
+            }
+            const h = Math.floor((diff / (1000 * 60 * 60))); // Allow > 24h
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            setTimeLeft(`${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`);
+        };
+        tick();
+        const interval = setInterval(tick, 1000);
+        return () => clearInterval(interval);
+    }, [endTime]);
+
+    if (!endTime || timeLeft === 'Ended') return null;
+
+    return (
+        <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold py-1 px-2 flex justify-between items-center z-10 w-full">
+            <span className="text-orange-300 whitespace-nowrap mr-1">⚡ Flash Deal</span>
+            <span className="font-mono whitespace-nowrap">{timeLeft}</span>
+        </div>
+    );
+};
 
 const StockBar = ({ percentage }) => {
     return (
@@ -64,7 +93,7 @@ function ProductList({ products }) {
                                 {product.soldCount >= 1000 ? (product.soldCount / 1000).toFixed(1) + 'k' : product.soldCount}+ sold
                             </div>
                         )}
-                        {product.isFlashSale && <Countdown />}
+                        {product.isFlashSale && product.flashSaleEndTime && <Countdown endTime={product.flashSaleEndTime} />}
                     </div>
 
                     <div className="p-2.5 flex flex-col gap-1 text-left">
