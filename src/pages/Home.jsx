@@ -352,33 +352,9 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                                     How to Buy
                                 </h3>
 
-                                <p className="text-sm text-[var(--tg-theme-hint-color)] mb-6">
-                                    Shopping is easy! Just follow these 3 simple steps:
+                                <p className="text-sm text-[var(--tg-theme-hint-color)] mb-4 text-center">
+                                    Try the interactive demo below! 👇
                                 </p>
-
-                                <div className="space-y-4 mb-6">
-                                    <div className="flex items-start gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-[var(--tg-theme-button-color)] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">1</div>
-                                        <div>
-                                            <h4 className="font-bold text-[var(--tg-theme-text-color)] mb-1">Add to Cart</h4>
-                                            <p className="text-sm text-[var(--tg-theme-hint-color)]">Browse items and tap "Add to Cart"</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-start gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-[var(--tg-theme-button-color)] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">2</div>
-                                        <div>
-                                            <h4 className="font-bold text-[var(--tg-theme-text-color)] mb-1">Checkout</h4>
-                                            <p className="text-sm text-[var(--tg-theme-hint-color)]">Review your cart and place your order</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-start gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-[var(--tg-theme-button-color)] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">3</div>
-                                        <div>
-                                            <h4 className="font-bold text-[var(--tg-theme-text-color)] mb-1">Contact Seller</h4>
-                                            <p className="text-sm text-[var(--tg-theme-hint-color)]">Arrange payment & delivery via message</p>
-                                        </div>
-                                    </div>
-                                </div>
 
                                 <div className="mx-auto w-[280px] h-[520px] bg-black rounded-[3rem] p-3 shadow-2xl border-[4px] border-gray-800 relative overflow-hidden ring-4 ring-gray-900/10">
                                     {/* Phone Notch/Speaker */}
