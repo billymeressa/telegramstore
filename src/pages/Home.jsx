@@ -356,18 +356,27 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                                     Try the interactive demo below! 👇
                                 </p>
 
-                                <div className="mx-auto w-[280px] h-[520px] bg-black rounded-[3rem] p-3 shadow-2xl border-[4px] border-gray-800 relative overflow-hidden ring-4 ring-gray-900/10">
-                                    {/* Phone Notch/Speaker */}
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-20"></div>
+                                <div className="mx-auto w-[300px] h-[600px] bg-gray-900 rounded-[3.5rem] p-1.5 shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] border-[6px] border-gray-800 relative overflow-hidden ring-1 ring-white/20">
+                                    {/* Dynamic Island */}
+                                    <div className="absolute top-2 left-1/2 -translate-x-1/2 w-[100px] h-[28px] bg-black rounded-full z-20 flex items-center justify-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-blue-900/30"></div>
+                                    </div>
 
                                     {/* Screen Content */}
-                                    <div className="bg-white w-full h-full rounded-[2.2rem] overflow-hidden relative font-sans flex flex-col">
+                                    <div className="bg-white w-full h-full rounded-[3rem] overflow-hidden relative font-sans flex flex-col border-[3px] border-black">
 
-                                        {/* Fake Status Bar */}
-                                        <div className="h-10 text-[10px] flex justify-between items-end px-5 pb-1 font-semibold text-black z-10 select-none">
+                                        {/* Status Bar */}
+                                        <div className="h-12 text-[12px] flex justify-between items-center px-6 pt-2 font-medium text-black z-10 select-none">
                                             <span>9:41</span>
-                                            <div className="flex gap-1">
-                                                <span>📶</span><span>🔋</span>
+                                            <div className="flex gap-1.5 items-center">
+                                                <div className="flex gap-0.5 items-end h-3">
+                                                    <div className="w-1 h-1 bg-black rounded-sm"></div>
+                                                    <div className="w-1 h-2 bg-black rounded-sm"></div>
+                                                    <div className="w-1 h-3 bg-black rounded-sm"></div>
+                                                </div>
+                                                <div className="w-5 h-2.5 border-[1px] border-black/30 rounded-[3px] relative">
+                                                    <div className="absolute inset-0.5 bg-black rounded-[1px]"></div>
+                                                </div>
                                             </div>
                                         </div>
 
