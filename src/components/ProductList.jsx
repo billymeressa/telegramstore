@@ -41,18 +41,7 @@ function ProductList({ products }) {
                             </div>
                         )}
 
-                        {/* Unique / Low Stock Badges */}
-                        {product.isUnique ? (
-                            <div className="absolute top-2 left-2 bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm z-10 border border-purple-200">
-                                {product.stockStatus || 'Unique Find'}
-                            </div>
-                        ) : (
-                            product.stock > 0 && product.stock < 10 && (!product.variations || product.variations.length === 0) && (
-                                <div className="absolute top-2 left-2 bg-red-100 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm z-10 border border-red-200">
-                                    Low Stock
-                                </div>
-                            )
-                        )}
+
                     </div>
 
                     <div className="p-2.5 flex flex-col gap-1 text-left">
@@ -83,6 +72,19 @@ function ProductList({ products }) {
                             </div>
 
                         </div>
+
+                        {/* Unique / Low Stock Badges */}
+                        {product.isUnique ? (
+                            <div className="mt-2 inline-block bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-0.5 rounded border border-purple-200 self-start">
+                                {product.stockStatus || 'Unique Find'}
+                            </div>
+                        ) : (
+                            product.stock > 0 && product.stock < 10 && (!product.variations || product.variations.length === 0) && (
+                                <div className="mt-2 inline-block bg-red-100 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded border border-red-200 self-start">
+                                    Low Stock
+                                </div>
+                            )
+                        )}
                     </div>
                 </div>
             ))}
