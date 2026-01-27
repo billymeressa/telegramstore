@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const SLIDES = [
     {
@@ -42,43 +41,27 @@ const HeroSlider = ({ onNavigate }) => {
     return (
         <div className="px-3 pt-2 pb-4">
             <div className="relative w-full aspect-[2/1] rounded-2xl overflow-hidden shadow-sm">
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={current}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        transition={{ duration: 0.5 }}
-                        className={`absolute inset-0 flex flex-col justify-center px-6 ${SLIDES[current].bg}`}
+                <div
+                    key={current}
+                    className={`absolute inset-0 flex flex-col justify-center px-6 ${SLIDES[current].bg}`}
+                >
+                    <span
+                        className={`text-xs font-bold uppercase tracking-wider mb-1 ${SLIDES[current].text}`}
                     >
-                        <motion.span
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 0.9, y: 0 }}
-                            transition={{ delay: 0.2 }}
-                            className={`text-xs font-bold uppercase tracking-wider mb-1 ${SLIDES[current].text}`}
-                        >
-                            {SLIDES[current].subtitle}
-                        </motion.span>
-                        <motion.h2
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
-                            className={`text-2xl font-bold mb-3 ${SLIDES[current].text}`}
-                        >
-                            {SLIDES[current].title}
-                        </motion.h2>
-                        <motion.button
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.4 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => onNavigate && onNavigate(SLIDES[current].category)}
-                            className="flex items-center gap-1 text-xs font-bold bg-white text-black px-3 py-1.5 rounded-full w-fit hover:bg-opacity-90 transition-all"
-                        >
-                            Shop Now <ArrowRight size={14} />
-                        </motion.button>
-                    </motion.div>
-                </AnimatePresence>
+                        {SLIDES[current].subtitle}
+                    </span>
+                    <h2
+                        className={`text-2xl font-bold mb-3 ${SLIDES[current].text}`}
+                    >
+                        {SLIDES[current].title}
+                    </h2>
+                    <button
+                        onClick={() => onNavigate && onNavigate(SLIDES[current].category)}
+                        className="flex items-center gap-1 text-xs font-bold bg-white text-black px-3 py-1.5 rounded-full w-fit hover:bg-opacity-90 transition-all active:scale-95"
+                    >
+                        Shop Now <ArrowRight size={14} />
+                    </button>
+                </div>
 
                 {/* Dots */}
                 <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-20">
@@ -91,8 +74,7 @@ const HeroSlider = ({ onNavigate }) => {
                     ))}
                 </div>
             </div>
-        </div>
-    );
-};
 
-export default HeroSlider;
+            );
+};
+            export default HeroSlider;

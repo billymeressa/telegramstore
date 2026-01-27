@@ -1,26 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { Package } from 'lucide-react';
 
 
-const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.1
-        }
-    }
-};
 
-const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { type: 'spring', stiffness: 300, damping: 24 }
-    }
-};
 
 const Countdown = () => (
     <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold py-1 px-2 flex justify-between items-center z-10">
@@ -47,19 +29,14 @@ function ProductList({ products }) {
     const navigate = useNavigate();
 
     return (
-        <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
+        <div
             className="grid grid-cols-2 gap-2 p-2 pb-24"
         >
             {products.map((product, index) => (
-                <motion.div
+                <div
                     key={`${product.id}-${index}`}
-                    variants={itemVariants}
-                    whileTap={{ scale: 0.95 }}
                     onClick={() => navigate(`/product/${product.id}`)}
-                    className="bg-[var(--tg-theme-bg-color)] rounded-xl overflow-hidden cursor-pointer transition-shadow shadow-sm border border-[var(--tg-theme-section-separator-color)] hover:shadow-md"
+                    className="bg-[var(--tg-theme-bg-color)] rounded-xl overflow-hidden cursor-pointer transition-shadow shadow-sm border border-[var(--tg-theme-section-separator-color)] hover:shadow-md active:scale-95 transition-transform"
                 >
                     <div className="relative w-full aspect-[4/5] bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center overflow-hidden">
                         {product.images && product.images.length > 0 ? (
@@ -130,9 +107,9 @@ function ProductList({ products }) {
                         {/* Urgency Stock Bar (Randomly shown) */}
                         {product.stockPercentage > 0 && <StockBar percentage={product.stockPercentage} />}
                     </div>
-                </motion.div>
+                </div>
             ))}
-        </motion.div>
+        </div>
     );
 }
 

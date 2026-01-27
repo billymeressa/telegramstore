@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import { X, Gift, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -41,24 +41,19 @@ const CouponPopup = () => {
         setIsOpen(false);
     };
 
+
     return (
-        <AnimatePresence>
+        <>
             {isOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
                     {/* Backdrop */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                    <div
                         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
                         onClick={handleClose}
                     />
 
                     {/* Popup Card */}
-                    <motion.div
-                        initial={{ scale: 0.5, opacity: 0, rotate: -5 }}
-                        animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                        exit={{ scale: 0.5, opacity: 0 }}
+                    <div
                         className="relative w-full max-w-sm bg-gradient-to-br from-red-600 to-orange-500 rounded-3xl p-1 shadow-2xl"
                     >
                         <button
@@ -72,7 +67,7 @@ const CouponPopup = () => {
                             {/* Decorative Background */}
                             <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-orange-100 to-white -z-10 rounded-t-[1.4rem]"></div>
 
-                            <div className="mb-4 inline-flex items-center justify-center p-3 bg-red-100 rounded-full text-red-600 mb-4 animate-bounce">
+                            <div className="mb-4 inline-flex items-center justify-center p-3 bg-red-100 rounded-full text-red-600 mb-4">
                                 <Gift size={48} strokeWidth={1.5} />
                             </div>
 
@@ -107,10 +102,10 @@ const CouponPopup = () => {
                                 Terms and conditions apply. Limited time offer.
                             </p>
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
             )}
-        </AnimatePresence>
+        </>
     );
 };
 

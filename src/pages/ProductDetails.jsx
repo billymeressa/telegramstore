@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import API_URL from '../config';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ShoppingBag, Heart, Edit2, Check, Zap } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import { trackEvent } from '../utils/track';
 import ProductList from '../components/ProductList';
 
@@ -223,22 +223,17 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
             </div>
 
             {/* Sticky Recommended Header */}
-            <AnimatePresence>
-                {showStickyHeader && (
-                    <motion.div
-                        initial={{ y: -50, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: -50, opacity: 0 }}
-                        className="fixed top-0 left-0 right-0 z-40 bg-[var(--tg-theme-bg-color)] border-b border-[var(--tg-theme-section-separator-color)] shadow-sm pt-2 pb-2 px-4 flex items-center"
-                    >
-                        <div className="flex gap-2 overflow-x-auto no-scrollbar items-center w-full">
-                            <button className="px-3.5 py-1 rounded-full text-sm font-medium whitespace-nowrap bg-[var(--tg-theme-button-color)] text-white shadow-md flex-shrink-0">
-                                Recommended
-                            </button>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {showStickyHeader && (
+                <div
+                    className="fixed top-0 left-0 right-0 z-40 bg-[var(--tg-theme-bg-color)] border-b border-[var(--tg-theme-section-separator-color)] shadow-sm pt-2 pb-2 px-4 flex items-center"
+                >
+                    <div className="flex gap-2 overflow-x-auto no-scrollbar items-center w-full">
+                        <button className="px-3.5 py-1 rounded-full text-sm font-medium whitespace-nowrap bg-[var(--tg-theme-button-color)] text-white shadow-md flex-shrink-0">
+                            Recommended
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Product Title & Brand */}
             {/* Removed separate title block, moved below image */}
@@ -258,27 +253,19 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                 )}
 
                 {/* Wishlist Button */}
-                <motion.button
-                    initial={{ scale: 1 }}
-                    whileTap={{ scale: 0.8 }}
+                <button
                     onClick={() => {
                         if (toggleWishlist && product) toggleWishlist(product.id);
                     }}
-                    className="absolute top-4 right-4 p-3 bg-[var(--tg-theme-bg-color)] rounded-full shadow-md z-10 hover:bg-[var(--tg-theme-secondary-bg-color)] active:scale-95"
+                    className="absolute top-4 right-4 p-3 bg-[var(--tg-theme-bg-color)] rounded-full shadow-md z-10 hover:bg-[var(--tg-theme-secondary-bg-color)] active:scale-95 transition-transform"
                 >
-                    <motion.div
-                        animate={{
-                            scale: wishlist.includes(product?.id) ? [1, 1.5, 1] : 1,
-                            rotate: wishlist.includes(product?.id) ? [0, 15, -15, 0] : 0
-                        }}
-                        transition={{ duration: 0.4 }}
-                    >
+                    <div>
                         <Heart
                             size={24}
                             className={`transition-colors ${wishlist.includes(product?.id) ? 'fill-[#ef4444] text-[#ef4444]' : 'text-gray-400'}`}
                         />
-                    </motion.div>
-                </motion.button>
+                    </div>
+                </button>
 
                 {/* Swipeable Image Carousel */}
                 <div className="relative w-full bg-white overflow-hidden">
@@ -747,11 +734,7 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                     >
                         <Zap size={18} fill="currentColor" /> Buy
                     </button>
-                    <motion.button
-                        whileTap={{ scale: 0.95 }}
-                        animate={{
-                            backgroundColor: isAdded ? '#22c55e' : 'var(--tg-theme-button-color)',
-                        }}
+                    <button
                         onClick={() => {
                             const finalPrice = selectedVariation
                                 ? selectedVariation.price
@@ -761,26 +744,22 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                             setIsAdded(true);
                             navigate('/cart');
                         }}
-                        className="flex-[2] text-[var(--tg-theme-button-text-color)] py-3 rounded-xl font-semibold text-base shadow flex items-center justify-center gap-2 overflow-hidden relative"
+                        className={`flex-[2] text-[var(--tg-theme-button-text-color)] py-3 rounded-xl font-semibold text-base shadow flex items-center justify-center gap-2 overflow-hidden relative transition-colors ${isAdded ? 'bg-green-500' : 'bg-[var(--tg-theme-button-color)]'}`}
                     >
-                        <motion.div
-                            initial={false}
-                            animate={{ y: isAdded ? -30 : 0, opacity: isAdded ? 0 : 1 }}
-                            className="absolute"
+                        <div
+                            className={`absolute transition-all duration-300 ${isAdded ? 'opacity-0 -translate-y-8' : 'opacity-100 translate-y-0'}`}
                         >
                             Add to Cart
-                        </motion.div>
-                        <motion.div
-                            initial={false}
-                            animate={{ y: isAdded ? 0 : 30, opacity: isAdded ? 1 : 0 }}
-                            className="absolute flex items-center gap-2 font-bold"
+                        </div>
+                        <div
+                            className={`absolute flex items-center gap-2 font-bold transition-all duration-300 ${isAdded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
                         >
                             <Check size={20} />
                             Added
-                        </motion.div>
+                        </div>
                         {/* Invisible spacer to maintain width/height */}
                         <span className="opacity-0">Add to Cart</span>
-                    </motion.button>
+                    </button>
                 </div>
             </div>
 

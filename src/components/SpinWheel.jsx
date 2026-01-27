@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import { X, Gift, Sparkles, Loader2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import API_URL from '../config';
@@ -116,21 +116,15 @@ const SpinWheel = () => {
     };
 
     return (
-        <AnimatePresence>
+        <>
             {isOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 overflow-hidden">
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                    <div
                         className="absolute inset-0 bg-black/80 backdrop-blur-sm"
                         onClick={handleClose}
                     />
 
-                    <motion.div
-                        initial={{ scale: 0.5, opacity: 0, rotate: -10 }}
-                        animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                        exit={{ scale: 0.5, opacity: 0 }}
+                    <div
                         className="relative w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl flex flex-col items-center"
                     >
                         {!result ? (
@@ -146,10 +140,12 @@ const SpinWheel = () => {
                                     </div>
 
                                     {/* WHEEL */}
-                                    <motion.div
+                                    <div
                                         className="w-full h-full rounded-full border-[8px] border-gray-900 shadow-xl overflow-hidden relative bg-white"
-                                        animate={{ rotate: rotation }}
-                                        transition={{ duration: 5, ease: "circOut" }}
+                                        style={{
+                                            transform: `rotate(${rotation}deg)`,
+                                            transition: 'transform 5s cubic-bezier(0.075, 0.82, 0.165, 1)'
+                                        }}
                                     >
                                         {SEGMENTS.map((seg, i) => (
                                             <div
@@ -189,7 +185,7 @@ const SpinWheel = () => {
                                                 </span>
                                             </div>
                                         ))}
-                                    </motion.div>
+                                    </div>
 
                                     {/* CENTER CAP */}
                                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow border-4 border-gray-200 z-10 flex items-center justify-center">
@@ -246,10 +242,10 @@ const SpinWheel = () => {
                                 <X size={24} />
                             </button>
                         )}
-                    </motion.div>
+                    </div>
                 </div>
             )}
-        </AnimatePresence>
+        </>
     );
 };
 
