@@ -67,7 +67,10 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout, sellerUs
         }
 
         const url = `https://t.me/${sellerUsername || 'AddisStoreSupport'}?text=${encodeURIComponent(msg)}`;
-        window.open(url, '_blank');
+
+        if (window.confirm("Open Telegram to place this order?")) {
+            window.open(url, '_blank');
+        }
 
         // Optional: Call original checkout to save order to DB/Clear Cart if desired
         // For now, we just open the link as requested. 

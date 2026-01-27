@@ -728,8 +728,10 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                             const message = `Hi, I would like to buy ${product.title}${variationText} for ${Math.floor(finalPrice)} Birr.`;
                             const url = `https://t.me/${sellerUsername || 'AddisStoreSupport'}?text=${encodeURIComponent(message)}`;
 
-                            // Open Telegram
-                            window.open(url, '_blank');
+                            // Confirm before opening
+                            if (window.confirm("Open Telegram to place this order?")) {
+                                window.open(url, '_blank');
+                            }
 
                             // Optional: Still trigger analytics if needed, but don't blocking navigation
                             if (onBuyNow) {
