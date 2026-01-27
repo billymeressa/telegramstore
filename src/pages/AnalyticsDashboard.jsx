@@ -143,18 +143,35 @@ const AnalyticsDashboard = () => {
         }
     });
     const [loading, setLoading] = useState(true);
+    const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        fetch(`${API_URL}/api/analytics/stats`)
-            .then(res => res.json())
-            .then(data => {
-                setStats(data);
-                setLoading(false);
-            })
-            .catch(err => {
+        const fetchData = async () => {
+            try {
+                const [statsRes, usersRes] = await Promise.all([
+                    fetch(`${API_URL}/api/analytics/stats`),
+                    fetch(`${API_URL}/api/users`, {
+                        headers: {
+                            'Authorization': window.Telegram?.WebApp?.initData || ''
+                        }
+                    })
+                ]);
+
+                const statsData = await statsRes.json();
+                setStats(statsData);
+
+                if (usersRes.ok) {
+                    const usersData = await usersRes.json();
+                    setUsers(usersData);
+                }
+            } catch (err) {
                 console.error('Failed to load analytics:', err);
+            } finally {
                 setLoading(false);
-            });
+            }
+        };
+
+        fetchData();
     }, []);
 
     if (loading) {
@@ -313,6 +330,48 @@ const AnalyticsDashboard = () => {
                             <p className="text-sm text-[var(--tg-theme-hint-color)]">No referral data yet.</p>
                             <p className="text-xs text-[var(--tg-theme-link-color)] mt-1">Try using links like: t.me/bot?startapp=promo</p>
                         </div>
+                    )}
+                </div>
+
+                {/* Recent Users List */}
+                <div className="bg-[var(--tg-theme-bg-color)] rounded-xl p-4 border border-[var(--tg-theme-section-separator-color)] mb-6">
+                    <h2 className="text-lg font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center justify-between">
+                        <span>Recent Users</span>
+                        <span className="text-sm font-normal text-[var(--tg-theme-hint-color)]">{users.length} users</span>
+                    </h2>
+
+                    {users.length > 0 ? (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm text-left">
+                                <thead className="text-xs text-[var(--tg-theme-hint-color)] uppercase bg-[var(--tg-theme-secondary-bg-color)]">
+                                    <tr>
+                                        <th className="px-3 py-2 rounded-l-lg">User</th>
+                                        <th className="px-3 py-2">Joined</th>
+                                        <th className="px-3 py-2 rounded-r-lg">Last Active</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {users.map((user, idx) => (
+                                        <tr key={user.userId || idx} className="border-b border-[var(--tg-theme-section-separator-color)] last:border-0 hover:bg-[var(--tg-theme-secondary-bg-color)] transition-colors">
+                                            <td className="px-3 py-3 font-medium text-[var(--tg-theme-text-color)]">
+                                                <div className="flex flex-col">
+                                                    <span>{user.firstName}</span>
+                                                    {user.username && <span className="text-xs text-[var(--tg-theme-link-color)]">@{user.username}</span>}
+                                                </div>
+                                            </td>
+                                            <td className="px-3 py-3 text-[var(--tg-theme-hint-color)]">
+                                                {new Date(user.joinedAt).toLocaleDateString()}
+                                            </td>
+                                            <td className="px-3 py-3 text-[var(--tg-theme-hint-color)]">
+                                                {user.lastActiveAt ? new Date(user.lastActiveAt).toLocaleDateString() : '-'}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <p className="text-center text-[var(--tg-theme-hint-color)] py-4">No users found.</p>
                     )}
                 </div>
 

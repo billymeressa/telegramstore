@@ -596,6 +596,16 @@ app.get('/api/orders', async (req, res) => {
     }
 });
 
+// GET /api/users - PROTECTED
+app.get('/api/users', verifyTelegramWebAppData, async (req, res) => {
+    try {
+        const users = await User.find({}).sort({ joinedAt: -1 }).limit(50); // Limit to last 50 for now
+        res.json(users);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // POST /api/orders
 app.post('/api/orders', async (req, res) => {
     const { items, total_price, userId, userInfo } = req.body;

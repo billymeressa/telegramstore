@@ -103,9 +103,40 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
         return ["All", ...uniqueCats];
     }, [selectedDepartment, products]);
 
-    // Helper to get random products for demo rows
-    const trendingProducts = useMemo(() => products.slice(0, 5), [products]);
-    const newArrivals = useMemo(() => products.slice(5, 12), [products]);
+    // Categories to demote (push to bottom)
+    const GENERIC_CATEGORIES = ['Parts & Accessories', 'Tools', 'Tools & Equipment', 'Other', 'Computer Accessories', 'Cables', 'Adapters'];
+
+    // Smart Sort Algorithm: Shuffles high-quality items, pushes generics to bottom
+    const smartSort = (items) => {
+        if (!items || items.length === 0) return [];
+
+        // Separete premium and generic
+        const premium = items.filter(p => !GENERIC_CATEGORIES.includes(p.category || 'Other'));
+        const generic = items.filter(p => GENERIC_CATEGORIES.includes(p.category || 'Other'));
+
+        // Fisher-Yates Shuffle for premium items (Freshness)
+        // We use a seed based on hour to keep it stable for a short session, or just random for true freshness on reload
+        const shuffledPremium = [...premium];
+        for (let i = shuffledPremium.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledPremium[i], shuffledPremium[j]] = [shuffledPremium[j], shuffledPremium[i]];
+        }
+
+        return [...shuffledPremium, ...generic];
+    };
+
+    // New Arrivals: Always the actual latest added (highest IDs)
+    const newArrivals = useMemo(() => {
+        return [...products].sort((a, b) => b.id - a.id).slice(0, 7);
+    }, [products]);
+
+    // Trending: Random selection of premium items (Simulated "Trending")
+    const trendingProducts = useMemo(() => {
+        const premium = products.filter(p => !GENERIC_CATEGORIES.includes(p.category));
+        // Shuffle and pick 5
+        const shuffled = [...premium].sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, 5);
+    }, [products]);
 
     const filteredProducts = useMemo(() => {
         // First, filter by department and category
@@ -128,6 +159,9 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
         // Then apply smart search if there's a query
         if (searchQuery && searchQuery.trim() !== '') {
             filtered = smartSearch(filtered, searchQuery);
+        } else if (selectedDepartment === 'All' && selectedCategory === 'All') {
+            // Apply Smart Sort only on the main "All" view for discovery
+            filtered = smartSort(filtered);
         }
 
         return filtered;
@@ -358,7 +392,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
                                 <div className="mx-auto w-[300px] h-[600px] bg-gray-900 rounded-[3.5rem] p-1.5 shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] border-[6px] border-gray-800 relative overflow-hidden ring-1 ring-white/20">
                                     {/* Dynamic Island */}
-                                    <div className="absolute top-2 left-1/2 -translate-x-1/2 w-[100px] h-[28px] bg-black rounded-full z-20 flex items-center justify-center gap-2">
+                                    <div className="absolute top-5 left-1/2 -translate-x-1/2 w-[100px] h-[30px] bg-black rounded-full z-20 flex items-center justify-center gap-2">
                                         <div className="w-1.5 h-1.5 rounded-full bg-blue-900/30"></div>
                                     </div>
 
