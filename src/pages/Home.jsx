@@ -4,7 +4,7 @@ import HorizontalProductRow from '../components/HorizontalProductRow';
 import CategoryColumnRow from '../components/CategoryColumnRow';
 import { smartSearch } from '../utils/smartSearch';
 import { Search, HelpCircle, X, ShoppingBag, Hand, Check, Zap } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Sub-category mapping (simplified version of what's in AdminDashboard)
 // In a real app, this might come from the backend or a shared constant file
@@ -380,156 +380,196 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                                     </div>
                                 </div>
 
-                                <div className="bg-gradient-to-br from-[var(--tg-theme-button-color)]/10 to-transparent p-5 rounded-xl border-2 border-[var(--tg-theme-button-color)]/30 relative overflow-hidden shadow-lg">
-                                    <div className="flex justify-between items-start mb-4">
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <motion.div
-                                                    animate={{ scale: [1, 1.1, 1] }}
-                                                    transition={{ duration: 2, repeat: Infinity }}
-                                                    className="text-2xl"
-                                                >
-                                                    🎯
-                                                </motion.div>
-                                                <h4 className="font-bold text-[var(--tg-theme-text-color)] text-lg">
-                                                    Try it Now!
-                                                </h4>
+                                <div className="mx-auto w-[280px] h-[520px] bg-black rounded-[3rem] p-3 shadow-2xl border-[4px] border-gray-800 relative overflow-hidden ring-4 ring-gray-900/10">
+                                    {/* Phone Notch/Speaker */}
+                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-20"></div>
+
+                                    {/* Screen Content */}
+                                    <div className="bg-white w-full h-full rounded-[2.2rem] overflow-hidden relative font-sans flex flex-col">
+
+                                        {/* Fake Status Bar */}
+                                        <div className="h-10 text-[10px] flex justify-between items-end px-5 pb-1 font-semibold text-black z-10 select-none">
+                                            <span>9:41</span>
+                                            <div className="flex gap-1">
+                                                <span>📶</span><span>🔋</span>
                                             </div>
-                                            <p className="text-sm text-[var(--tg-theme-hint-color)]">
-                                                {practiceStep === 0 && "👇 Tap the button below to practice"}
-                                                {practiceStep === 1 && "✨ Great! Now try checkout"}
-                                                {practiceStep === 2 && "🎉 Almost there! Contact the seller"}
-                                                {practiceStep === 3 && "🎊 Perfect! You're ready to shop"}
-                                            </p>
                                         </div>
-                                        <div className="flex gap-1.5">
-                                            {[0, 1, 2, 3].map(step => (
-                                                <motion.div
-                                                    key={step}
-                                                    initial={{ scale: 0 }}
-                                                    animate={{ scale: step <= practiceStep ? 1 : 0.7 }}
-                                                    className={`w-2.5 h-2.5 rounded-full transition-colors ${step <= practiceStep ? 'bg-[var(--tg-theme-button-color)] shadow-md' : 'bg-gray-300'}`}
-                                                />
-                                            ))}
+
+                                        {/* Interactive Area */}
+                                        <div className="flex-1 relative overflow-hidden">
+                                            <AnimatePresence mode="wait">
+                                                {/* SCREEN 1: PRODUCT LISTING */}
+                                                {practiceStep === 0 && (
+                                                    <motion.div
+                                                        key="step0"
+                                                        initial={{ opacity: 0, x: 100 }}
+                                                        animate={{ opacity: 1, x: 0 }}
+                                                        exit={{ opacity: 0, x: -100 }}
+                                                        transition={{ duration: 0.3 }}
+                                                        className="absolute inset-0 flex flex-col pt-2"
+                                                    >
+                                                        {/* Fake App Header */}
+                                                        <div className="px-4 pb-3 border-b border-gray-100 flex justify-between items-center">
+                                                            <div className="font-bold text-lg text-black">Store</div>
+                                                            <Search size={18} className="text-gray-400" />
+                                                        </div>
+
+                                                        {/* Fake Product */}
+                                                        <div className="p-4">
+                                                            <div className="bg-gray-100 rounded-2xl h-48 mb-3 flex items-center justify-center text-4xl shadow-inner relative">
+                                                                👟
+                                                                <motion.div
+                                                                    className="absolute bottom-2 right-2 bg-white p-1.5 rounded-full shadow-md"
+                                                                    animate={{ y: [0, -4, 0] }}
+                                                                    transition={{ repeat: Infinity, duration: 2 }}
+                                                                >
+                                                                    <Zap size={14} className="text-yellow-500 fill-yellow-500" />
+                                                                </motion.div>
+                                                            </div>
+                                                            <div className="flex justify-between items-start mb-1">
+                                                                <div>
+                                                                    <h3 className="font-bold text-gray-900 text-lg leading-tight">Cool Kicks</h3>
+                                                                    <p className="text-gray-500 text-xs">Premium Comfort</p>
+                                                                </div>
+                                                                <span className="font-bold text-[var(--tg-theme-button-color)]">1,200 Br</span>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Add Button */}
+                                                        <div className="mt-auto px-4 pb-6 pt-2 relative">
+                                                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-1 rounded-full animate-bounce pointer-events-none whitespace-nowrap z-20">
+                                                                Tap "Add to Cart" 👇
+                                                            </div>
+                                                            <button
+                                                                onClick={() => setPracticeStep(1)}
+                                                                className="w-full bg-[var(--tg-theme-button-color)] text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/30 active:scale-95 transition-transform"
+                                                            >
+                                                                Add to Cart
+                                                            </button>
+                                                        </div>
+                                                    </motion.div>
+                                                )}
+
+                                                {/* SCREEN 2: CART / CHECKOUT */}
+                                                {practiceStep === 1 && (
+                                                    <motion.div
+                                                        key="step1"
+                                                        initial={{ opacity: 0, x: 100 }}
+                                                        animate={{ opacity: 1, x: 0 }}
+                                                        exit={{ opacity: 0, x: -100 }}
+                                                        transition={{ duration: 0.3 }}
+                                                        className="absolute inset-0 flex flex-col bg-gray-50"
+                                                    >
+                                                        <div className="px-4 py-3 bg-white shadow-sm flex items-center gap-3 z-10">
+                                                            <div className="text-lg font-bold text-black">My Cart</div>
+                                                        </div>
+
+                                                        <div className="p-4 space-y-3">
+                                                            <div className="bg-white p-3 rounded-xl shadow-sm flex items-center gap-3">
+                                                                <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-2xl">👟</div>
+                                                                <div className="flex-1">
+                                                                    <div className="font-bold text-gray-900 text-sm">Cool Kicks</div>
+                                                                    <div className="text-gray-500 text-xs">x1</div>
+                                                                </div>
+                                                                <div className="font-bold text-gray-900 text-sm">1,200</div>
+                                                            </div>
+
+                                                            <div className="p-3 border-t border-gray-200 mt-4 space-y-1">
+                                                                <div className="flex justify-between text-sm text-gray-500">
+                                                                    <span>Subtotal</span>
+                                                                    <span>1,200 Br</span>
+                                                                </div>
+                                                                <div className="flex justify-between text-base font-bold text-gray-900">
+                                                                    <span>Total</span>
+                                                                    <span>1,200 Br</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="mt-auto px-4 pb-6 relative">
+                                                            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-1 rounded-full animate-bounce pointer-events-none whitespace-nowrap z-20">
+                                                                Tap "Checkout" 👇
+                                                            </div>
+                                                            <button
+                                                                onClick={() => setPracticeStep(2)}
+                                                                className="w-full bg-[var(--tg-theme-button-color)] text-white font-bold py-3.5 rounded-xl shadow-lg active:scale-95 transition-transform flex justify-between px-6"
+                                                            >
+                                                                <span>Checkout</span>
+                                                                <span>➔</span>
+                                                            </button>
+                                                        </div>
+                                                    </motion.div>
+                                                )}
+
+                                                {/* SCREEN 3: CONTACT / SUCCESS */}
+                                                {practiceStep === 2 && (
+                                                    <motion.div
+                                                        key="step2"
+                                                        initial={{ opacity: 0, x: 100 }}
+                                                        animate={{ opacity: 1, x: 0 }}
+                                                        exit={{ opacity: 0, x: -100 }}
+                                                        transition={{ duration: 0.3 }}
+                                                        className="absolute inset-0 flex flex-col bg-white items-center justify-center p-6 text-center"
+                                                    >
+                                                        <motion.div
+                                                            initial={{ scale: 0 }} animate={{ scale: 1 }}
+                                                            className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-green-500 mb-4"
+                                                        >
+                                                            <Check size={40} strokeWidth={4} />
+                                                        </motion.div>
+
+                                                        <h3 className="text-xl font-bold text-gray-900 mb-2">Order Confirmed!</h3>
+                                                        <p className="text-gray-500 text-sm mb-6 leading-relaxed">
+                                                            Complete your purchase by contacting us directly.
+                                                        </p>
+
+                                                        <div className="w-full space-y-3 relative">
+                                                            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-1 rounded-full animate-bounce pointer-events-none whitespace-nowrap z-20">
+                                                                Tap to Message 👇
+                                                            </div>
+                                                            <button
+                                                                onClick={() => setPracticeStep(3)}
+                                                                className="w-full bg-[#0088cc] text-white py-3 rounded-xl font-bold shadow-md active:scale-95 flex items-center justify-center gap-2"
+                                                            >
+                                                                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.06-.14-.09-.21-.09-.09 0-1.51.96-4.27 2.82-.4.27-.76.4-1.08.39-.35-.01-1.03-.2-1.54-.35-.62-.18-1.12-.28-1.07-.59.02-.16.24-.32.65-.48 2.56-1.11 4.26-1.84 5.12-2.2 2.44-1.02 2.94-1.2 3.27-1.2.07 0 .23.01.33.09.09.07.12.17.13.24 0 .04.01.1 0 .16z" /></svg>
+                                                                Message Seller
+                                                            </button>
+                                                            <button className="w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-bold active:scale-95">
+                                                                Call Now
+                                                            </button>
+                                                        </div>
+                                                    </motion.div>
+                                                )}
+
+                                                {/* SCREEN 4: DONE */}
+                                                {practiceStep === 3 && (
+                                                    <motion.div
+                                                        key="step3"
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ opacity: 1 }}
+                                                        className="absolute inset-0 flex flex-col bg-gradient-to-br from-[var(--tg-theme-button-color)] to-blue-600 items-center justify-center p-6 text-center text-white"
+                                                    >
+                                                        <div className="text-6xl mb-4 animate-pulse">🎉</div>
+                                                        <h3 className="text-2xl font-bold mb-2">You're Ready!</h3>
+                                                        <p className="text-white/90 text-sm mb-8 leading-relaxed">
+                                                            That's exactly how easy it is to shop with us. No payments required in the bot.
+                                                        </p>
+                                                        <button
+                                                            onClick={handleCloseHelp}
+                                                            className="bg-white text-[var(--tg-theme-button-color)] px-8 py-3 rounded-full font-bold shadow-xl hover:scale-105 transition-transform"
+                                                        >
+                                                            Start Shopping
+                                                        </button>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+
+                                        {/* Home Indicator */}
+                                        <div className="h-4 flex justify-center items-start pt-1">
+                                            <div className="w-32 h-1 bg-black/20 rounded-full"></div>
                                         </div>
                                     </div>
-
-                                    {/* Step 0: Add to Cart */}
-                                    {practiceStep === 0 && (
-                                        <div className="bg-[var(--tg-theme-bg-color)] rounded-lg p-3 shadow-sm border border-[var(--tg-theme-section-separator-color)] flex items-center justify-between gap-3 animate-in fade-in slide-in-from-right-4 duration-300">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center text-xl">👟</div>
-                                                <div>
-                                                    <div className="text-sm font-bold text-[var(--tg-theme-text-color)]">Cool Sneakers</div>
-                                                    <div className="text-xs text-[var(--tg-theme-hint-color)]">1,200 Birr</div>
-                                                </div>
-                                            </div>
-                                            <div className="relative">
-                                                <motion.button
-                                                    whileTap={{ scale: 0.9 }}
-                                                    onClick={() => setPracticeStep(1)}
-                                                    className="px-4 py-2 rounded-lg font-bold text-sm bg-[var(--tg-theme-button-color)] text-white shadow-lg shadow-blue-500/30 whitespace-nowrap"
-                                                >
-                                                    Add to Cart
-                                                </motion.button>
-                                                <motion.div
-                                                    initial={{ opacity: 0, y: 10, x: 10 }}
-                                                    animate={{ opacity: 1, y: [0, -5, 0], x: [0, -5, 0] }}
-                                                    transition={{ duration: 1.5, repeat: Infinity }}
-                                                    className="absolute top-8 left-6 pointer-events-none drop-shadow-md z-10"
-                                                >
-                                                    <Hand size={32} className="text-black rotate-[-30deg] fill-white/80" />
-                                                </motion.div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Step 1: Checkout */}
-                                    {practiceStep === 1 && (
-                                        <div className="bg-[var(--tg-theme-bg-color)] rounded-lg p-3 shadow-sm border border-[var(--tg-theme-section-separator-color)] animate-in fade-in slide-in-from-right-4 duration-300">
-                                            <div className="flex justify-between items-center mb-3">
-                                                <span className="text-sm font-bold">My Cart</span>
-                                                <span className="text-xs text-[var(--tg-theme-hint-color)]">1 Item</span>
-                                            </div>
-                                            <div className="relative">
-                                                <motion.button
-                                                    whileTap={{ scale: 0.9 }}
-                                                    onClick={() => setPracticeStep(2)}
-                                                    className="w-full py-2 rounded-lg font-bold text-sm bg-[var(--tg-theme-button-color)] text-white shadow-md flex items-center justify-center gap-2"
-                                                >
-                                                    Checkout
-                                                </motion.button>
-                                                <motion.div
-                                                    initial={{ opacity: 0, y: 10, x: 10 }}
-                                                    animate={{ opacity: 1, y: [0, -5, 0], x: [0, -5, 0] }}
-                                                    transition={{ duration: 1.5, repeat: Infinity }}
-                                                    className="absolute top-6 left-1/2 pointer-events-none drop-shadow-md z-10"
-                                                >
-                                                    <Hand size={32} className="text-black rotate-[-30deg] fill-white/80" />
-                                                </motion.div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Step 2: Contact Options */}
-                                    {practiceStep === 2 && (
-                                        <div className="bg-[var(--tg-theme-bg-color)] rounded-lg p-3 shadow-sm border border-[var(--tg-theme-section-separator-color)] animate-in fade-in slide-in-from-right-4 duration-300">
-                                            <div className="text-center mb-3">
-                                                <div className="text-sm font-bold text-[var(--tg-theme-text-color)]">Order Placed!</div>
-                                                <div className="text-xs text-[var(--tg-theme-hint-color)]">Now contact the seller.</div>
-                                            </div>
-                                            <div className="grid grid-cols-2 gap-2 relative">
-                                                <button className="py-2 rounded-lg font-bold text-xs bg-gray-100 text-[var(--tg-theme-button-color)] border border-[var(--tg-theme-button-color)]">
-                                                    Call
-                                                </button>
-                                                <motion.button
-                                                    whileTap={{ scale: 0.9 }}
-                                                    onClick={() => setPracticeStep(3)}
-                                                    className="py-2 rounded-lg font-bold text-xs bg-[#0088cc] text-white"
-                                                >
-                                                    Message
-                                                </motion.button>
-                                                <motion.div
-                                                    initial={{ opacity: 0, y: 10, x: 10 }}
-                                                    animate={{ opacity: 1, y: [0, -5, 0], x: [0, -5, 0] }}
-                                                    transition={{ duration: 1.5, repeat: Infinity }}
-                                                    className="absolute top-6 right-8 pointer-events-none drop-shadow-md z-10"
-                                                >
-                                                    <Hand size={32} className="text-black rotate-[-30deg] fill-white/80" />
-                                                </motion.div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Step 3: Success */}
-                                    {practiceStep === 3 && (
-                                        <motion.div
-                                            initial={{ scale: 0.8, opacity: 0 }}
-                                            animate={{ scale: 1, opacity: 1 }}
-                                            className="text-center py-2"
-                                        >
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                transition={{ type: "spring", stiffness: 200 }}
-                                                className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg"
-                                            >
-                                                <Check size={32} className="text-white" strokeWidth={3} />
-                                            </motion.div>
-                                            <h4 className="font-bold text-[var(--tg-theme-text-color)] text-lg">🎉 You're a Pro!</h4>
-                                            <p className="text-sm text-[var(--tg-theme-hint-color)] mb-4">
-                                                Shopping is that easy - no payment here, just contact us to complete your order!
-                                            </p>
-                                            <motion.button
-                                                whileHover={{ scale: 1.05 }}
-                                                whileTap={{ scale: 0.95 }}
-                                                onClick={handleCloseHelp}
-                                                className="inline-block px-8 py-3 bg-gradient-to-r from-[var(--tg-theme-button-color)] to-blue-600 text-white rounded-full font-bold text-sm shadow-lg active:shadow-md transition-all"
-                                            >
-                                                Start Shopping Now!
-                                            </motion.button>
-                                        </motion.div>
-                                    )}
                                 </div>
 
                                 <button
