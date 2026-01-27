@@ -79,6 +79,24 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
             .finally(() => setLoading(false));
     }, [id, navigate]);
 
+    // Scroll to Home Logic
+    useEffect(() => {
+        const handleScroll = () => {
+            // Check if we are at the bottom of the page
+            // Buffer of 20px to effectively catch the bottom
+            if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 20) {
+                // Haptic feedback to indicate action
+                if (window.Telegram?.WebApp?.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+                }
+                navigate('/');
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [navigate]);
+
     // Handle entering edit mode
     const handleEditClick = () => {
         setEditFormData({
@@ -729,15 +747,7 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                 </div>
             </div>
 
-            {/* Smart Recommendations */}
-            {relatedProducts.length > 0 && (
-                <div className="p-4 bg-[var(--tg-theme-secondary-bg-color)] mt-4">
-                    <h3 className="text-sm font-semibold text-[var(--tg-theme-hint-color)] uppercase tracking-wide mb-3">You might also like</h3>
-                    <div data-product-grid>
-                        <ProductList products={relatedProducts} />
-                    </div>
-                </div>
-            )}
+
 
 
         </div>
