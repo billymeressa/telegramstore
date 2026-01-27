@@ -3,7 +3,7 @@ import Cart from '../components/Cart';
 import { Phone, MessageSquare, X, CheckCircle, Send, Tag } from 'lucide-react';
 import API_URL from '../config';
 
-const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
+const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout, sellerUsername }) => {
     const totalPrice = cart.reduce((sum, item) => {
         const itemPrice = item.selectedVariation ? item.selectedVariation.price : item.price;
         return sum + itemPrice * item.quantity;
@@ -47,7 +47,31 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout }) => {
         // OR simply display the total here and let the backend re-calculate if we passed the code.
         // For now, let's assume onCheckout uses the items. 
         // We really should pass the final price or the promo code to the checkout function.
-        await onCheckout(cart, promoCode, discount); // Updated signature assumption
+        // Generate generic message
+        let msg = `Hi! I would like to place an order:\n\n`;
+        cart.forEach(item => {
+            const itemPrice = item.selectedVariation ? item.selectedVariation.price : item.price;
+            const variationText = item.selectedVariation ? ` - ${item.selectedVariation.name}` : '';
+            msg += `- ${item.title}${variationText} (x${item.quantity}) @ ${Math.floor(itemPrice * item.quantity)}\n`;
+        });
+
+        if (discount > 0) {
+            msg += `\nSubtotal: ${Math.floor(totalPrice)} Birr`;
+            msg += `\nDiscount: -${Math.floor(discount)} Birr`;
+        }
+
+        msg += `\nTotal: ${Math.floor(finalPrice)} Birr`;
+
+        if (promoCode) {
+            msg += `\nPromo Code: ${promoCode}`;
+        }
+
+        const url = `https://t.me/${sellerUsername || 'AddisStoreSupport'}?text=${encodeURIComponent(msg)}`;
+        window.open(url, '_blank');
+
+        // Optional: Call original checkout to save order to DB/Clear Cart if desired
+        // For now, we just open the link as requested. 
+        // await onCheckout(cart, promoCode, discount);
     };
 
     return (
