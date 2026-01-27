@@ -22,6 +22,40 @@ const itemVariants = {
     }
 };
 
+const getRandomSold = () => {
+    return (Math.random() * 5 + 0.5).toFixed(1) + 'k+ sold';
+};
+
+const getRandomTime = () => {
+    // Generate random time between 10min and 23 hours
+    const h = Math.floor(Math.random() * 23);
+    const m = Math.floor(Math.random() * 59);
+    const s = Math.floor(Math.random() * 59);
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+};
+
+const Countdown = () => (
+    <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold py-1 px-2 flex justify-between items-center z-10">
+        <span className="text-orange-300">⚡ Flash Deal</span>
+        <span className="font-mono">{getRandomTime()}</span>
+    </div>
+);
+
+const StockBar = () => {
+    const percentage = Math.floor(Math.random() * (95 - 70) + 70); // 70-95%
+    return (
+        <div className="mt-2">
+            <div className="flex justify-between items-center text-[10px] text-gray-500 mb-0.5">
+                <span className="text-orange-600 font-bold">Almost Sold Out</span>
+                <span>{percentage}% claimed</span>
+            </div>
+            <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-orange-500 to-red-500" style={{ width: `${percentage}%` }}></div>
+            </div>
+        </div>
+    );
+};
+
 function ProductList({ products }) {
     const navigate = useNavigate();
 
@@ -32,7 +66,7 @@ function ProductList({ products }) {
             animate="visible"
             className="grid grid-cols-2 gap-2 p-2 pb-24"
         >
-            {products.map((product) => (
+            {products.map((product, index) => (
                 <motion.div
                     key={product.id}
                     variants={itemVariants}
@@ -60,6 +94,13 @@ function ProductList({ products }) {
                                 SALE
                             </div>
                         )}
+                        {/* Temu-style badges */}
+                        {index % 3 === 0 && (
+                            <div className="absolute top-2 right-2 bg-orange-100 text-orange-700 text-[9px] font-extrabold px-1.5 py-0.5 rounded border border-orange-200 shadow-sm z-10">
+                                {getRandomSold()}
+                            </div>
+                        )}
+                        {index % 4 === 0 && <Countdown />}
                     </div>
 
                     <div className="p-2.5 flex flex-col gap-1 text-left">
@@ -98,6 +139,9 @@ function ProductList({ products }) {
                             </div>
 
                         </div>
+
+                        {/* Urgency Stock Bar (Randomly shown) */}
+                        {index % 2 === 0 && <StockBar />}
                     </div>
                 </motion.div>
             ))}

@@ -2,6 +2,8 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import ProductList from '../components/ProductList';
 
 
+import CouponPopup from '../components/CouponPopup';
+
 import { smartSearch } from '../utils/smartSearch';
 import { Search, HelpCircle, X, ShoppingBag, Hand, Check, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -247,6 +249,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
     return (
         <div className="pb-4 pt-14 min-h-screen bg-[var(--tg-theme-secondary-bg-color)]">
+            <CouponPopup />
             {/* Fixed Header (Search Only) */}
             <div className="fixed top-0 left-0 right-0 z-50 bg-[var(--tg-theme-bg-color)] pt-2 pb-2 px-3 border-b border-[var(--tg-theme-section-separator-color)] flex gap-2 items-center">
                 <div className="relative flex-1">
