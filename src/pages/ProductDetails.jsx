@@ -616,11 +616,39 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                                 </div>
                             )}
 
-                            <div className="flex items-baseline gap-1">
-                                <span className="text-3xl font-bold text-[var(--tg-theme-text-color)]">
-                                    {selectedVariation ? Math.floor(selectedVariation.price) : Math.floor(product.price)}
-                                </span>
-                                <span className="text-sm font-medium text-[var(--tg-theme-hint-color)]">Birr</span>
+                            <div className="flex items-baseline gap-2">
+                                {selectedVariation ? (
+                                    <div className="flex items-baseline gap-1">
+                                        <span className="text-3xl font-bold text-[var(--tg-theme-text-color)]">
+                                            {Math.floor(selectedVariation.price)}
+                                        </span>
+                                        <span className="text-sm font-medium text-[var(--tg-theme-hint-color)]">Birr</span>
+                                    </div>
+                                ) : (
+                                    product.salePrice > 0 && product.salePrice < product.price ? (
+                                        <div className="flex items-baseline gap-2">
+                                            <div className="flex items-baseline gap-1">
+                                                <span className="text-3xl font-bold text-red-600">
+                                                    {Math.floor(product.salePrice)}
+                                                </span>
+                                                <span className="text-sm font-medium text-[var(--tg-theme-hint-color)]">Birr</span>
+                                            </div>
+                                            <span className="text-lg text-[var(--tg-theme-hint-color)] line-through decoration-slate-400">
+                                                {Math.floor(product.price)}
+                                            </span>
+                                            <div className="bg-red-100 text-red-600 px-2 py-0.5 rounded text-xs font-bold">
+                                                SAVE {Math.floor(((product.price - product.salePrice) / product.price) * 100)}%
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-baseline gap-1">
+                                            <span className="text-3xl font-bold text-[var(--tg-theme-text-color)]">
+                                                {Math.floor(product.price)}
+                                            </span>
+                                            <span className="text-sm font-medium text-[var(--tg-theme-hint-color)]">Birr</span>
+                                        </div>
+                                    )
+                                )}
                             </div>
                         </div>
 
@@ -650,8 +678,12 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                     <button
                         onClick={() => {
                             if (onBuyNow) {
-                                if (confirm(`Buy ${product.title} for ${selectedVariation ? Math.floor(selectedVariation.price) : Math.floor(product.price)} Birr?`)) {
-                                    onBuyNow({ ...product, selectedVariation, price: selectedVariation ? selectedVariation.price : product.price });
+                                const finalPrice = selectedVariation
+                                    ? selectedVariation.price
+                                    : (product.salePrice > 0 && product.salePrice < product.price ? product.salePrice : product.price);
+
+                                if (confirm(`Buy ${product.title} for ${Math.floor(finalPrice)} Birr?`)) {
+                                    onBuyNow({ ...product, selectedVariation, price: finalPrice });
                                 }
                             }
                         }}
@@ -665,7 +697,11 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                             backgroundColor: isAdded ? '#22c55e' : 'var(--tg-theme-button-color)',
                         }}
                         onClick={() => {
-                            onAdd({ ...product, selectedVariation });
+                            const finalPrice = selectedVariation
+                                ? selectedVariation.price
+                                : (product.salePrice > 0 && product.salePrice < product.price ? product.salePrice : product.price);
+
+                            onAdd({ ...product, selectedVariation, price: finalPrice });
                             setIsAdded(true);
                             setTimeout(() => setIsAdded(false), 2000);
                         }}

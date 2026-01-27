@@ -17,7 +17,7 @@ const SUBCATEGORIES = {
 const AdminDashboard = ({ products, onProductUpdate }) => {
     const tele = window.Telegram?.WebApp;
     const [activeTab, setActiveTab] = useState('products'); // 'products' | 'orders'
-    const [newProduct, setNewProduct] = useState({ title: '', price: '', category: '', department: 'Men', description: '', images: [], variations: [] });
+    const [newProduct, setNewProduct] = useState({ title: '', price: '', salePrice: '', category: '', department: 'Men', description: '', images: [], variations: [] });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [mainImageFile, setMainImageFile] = useState(null);
     const [additionalImageFiles, setAdditionalImageFiles] = useState([]);
@@ -68,6 +68,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
         const formData = new FormData();
         formData.append('title', newProduct.title);
         formData.append('price', newProduct.price);
+        formData.append('salePrice', newProduct.salePrice || '0');
         formData.append('category', newProduct.category || 'General');
         formData.append('department', newProduct.department || 'Men');
         formData.append('description', newProduct.description || '');
@@ -118,7 +119,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             const data = await res.json();
             if (data.success) {
                 onProductUpdate(data.products);
-                setNewProduct({ title: '', price: '', category: '', department: 'Men', description: '', images: [], variations: [] });
+                setNewProduct({ title: '', price: '', salePrice: '', category: '', department: 'Men', description: '', images: [], variations: [] });
                 setMainImageFile(null);
                 setAdditionalImageFiles([]);
                 setEditId(null);
@@ -143,6 +144,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
         setNewProduct({
             title: product.title,
             price: product.price,
+            salePrice: product.salePrice || '',
             category: product.category,
             department: product.department || 'Men',
             description: product.description || '',
@@ -154,7 +156,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
     };
 
     const cancelEdit = () => {
-        setNewProduct({ title: '', price: '', category: '', department: 'Men', description: '', images: [], variations: [] });
+        setNewProduct({ title: '', price: '', salePrice: '', category: '', department: 'Men', description: '', images: [], variations: [] });
         setMainImageFile(null);
         setAdditionalImageFiles([]);
         setEditId(null);
@@ -243,7 +245,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                     placeholder="Product Name"
                                 />
                             </div>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-3 gap-4">
                                 <div>
                                     <label className="block text-xs font-bold text-[#0F1111] mb-1">
                                         Price {newProduct.variations && newProduct.variations.length > 0 && (
@@ -265,6 +267,19 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                     )}
                                 </div>
                                 <div>
+                                    <label className="block text-xs font-bold text-[#0F1111] mb-1">
+                                        Sale Price <span className="text-xs font-normal text-gray-500">(Optional)</span>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        value={newProduct.salePrice}
+                                        onChange={e => setNewProduct({ ...newProduct, salePrice: e.target.value })}
+                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white text-[#0F1111] placeholder-gray-400"
+                                        placeholder="0.00"
+                                    />
+                                </div>
+                                <div>
                                     <label className="block text-xs font-bold text-[#0F1111] mb-1">Department</label>
                                     <select
                                         value={newProduct.department}
@@ -282,6 +297,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                     </select>
                                 </div>
                             </div>
+
                             <div>
                                 <label className="block text-xs font-bold text-[#0F1111] mb-1">Category</label>
                                 <select
@@ -526,7 +542,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 };
 

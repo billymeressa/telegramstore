@@ -54,7 +54,12 @@ function ProductList({ products }) {
                                 <Package size={32} opacity={0.5} />
                             </div>
                         )}
-                        {/* New Tag or Discount Tag Logic could go here */}
+                        {/* Sale Tag */}
+                        {product.salePrice > 0 && product.salePrice < product.price && (
+                            <div className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm z-10">
+                                SALE
+                            </div>
+                        )}
                     </div>
 
                     <div className="p-2.5 flex flex-col gap-1 text-left">
@@ -77,10 +82,18 @@ function ProductList({ products }) {
                                     </>
                                 ) : (
                                     // Show single price for regular products
-                                    <>
-                                        <span className="text-[var(--tg-theme-text-color)] text-lg font-extrabold">{Math.floor(product.price)}</span>
-                                        <span className="text-[var(--tg-theme-hint-color)] text-xs font-normal">ETB</span>
-                                    </>
+                                    product.salePrice > 0 && product.salePrice < product.price ? (
+                                        <>
+                                            <span className="text-red-600 text-lg font-extrabold">{Math.floor(product.salePrice)}</span>
+                                            <span className="text-[var(--tg-theme-hint-color)] text-xs font-normal line-through ml-1">{Math.floor(product.price)}</span>
+                                            <span className="text-[var(--tg-theme-hint-color)] text-xs font-normal ml-0.5">ETB</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span className="text-[var(--tg-theme-text-color)] text-lg font-extrabold">{Math.floor(product.price)}</span>
+                                            <span className="text-[var(--tg-theme-hint-color)] text-xs font-normal">ETB</span>
+                                        </>
+                                    )
                                 )}
                             </div>
 

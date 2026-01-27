@@ -462,7 +462,7 @@ app.get('/api/products/:id', async (req, res) => {
 
 // POST /api/products (Add/Edit) - PROTECTED
 app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), async (req, res) => {
-    const { title, price, description, category, department, id, variations } = req.body;
+    const { title, price, salePrice, description, category, department, id, variations } = req.body;
 
     // Parse variations if it's a string (from FormData)
     let parsedVariations = [];
@@ -509,6 +509,7 @@ app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), a
                 {
                     title,
                     price: isNaN(parseFloat(price)) ? 0 : parseFloat(price),
+                    salePrice: isNaN(parseFloat(salePrice)) ? 0 : parseFloat(salePrice),
                     description,
                     category,
                     department: department || 'Men',
@@ -531,6 +532,7 @@ app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), a
                 id: Date.now(),
                 title,
                 price: isNaN(parseFloat(price)) ? 0 : parseFloat(price),
+                salePrice: isNaN(parseFloat(salePrice)) ? 0 : parseFloat(salePrice),
                 description: description || '',
                 category: category || 'General',
                 department: department || 'Men',

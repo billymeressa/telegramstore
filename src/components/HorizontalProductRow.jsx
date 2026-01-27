@@ -59,7 +59,14 @@ const HorizontalProductRow = ({ title, products }) => {
                         </div>
                         <div className="flex flex-col">
                             <h4 className="text-[var(--tg-theme-text-color)] text-sm font-bold line-clamp-1">{product.title}</h4>
-                            <p className="text-[var(--tg-theme-button-color)] text-sm font-bold">{Math.floor(product.price)} ETB</p>
+                            {product.salePrice > 0 && product.salePrice < product.price ? (
+                                <div className="flex gap-1.5 items-baseline">
+                                    <span className="text-red-500 text-sm font-bold">{Math.floor(product.salePrice)} ETB</span>
+                                    <span className="text-[var(--tg-theme-hint-color)] text-xs line-through">{Math.floor(product.price)}</span>
+                                </div>
+                            ) : (
+                                <p className="text-[var(--tg-theme-button-color)] text-sm font-bold">{Math.floor(product.price)} ETB</p>
+                            )}
                         </div>
                     </motion.div>
                 ))}

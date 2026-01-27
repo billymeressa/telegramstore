@@ -333,23 +333,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                     />
                 )}
 
-                {/* Sub-Category Pills (If Department Selected or Smart Categories Available) */}
-                {(selectedDepartment !== 'All' || availableCategories.length > 0) && (
-                    <div className="flex gap-2 overflow-x-auto px-4 py-2 no-scrollbar bg-[var(--tg-theme-bg-color)] border-b border-[var(--tg-theme-section-separator-color)]">
-                        {availableCategories.map((cat) => (
-                            <button
-                                key={cat}
-                                onClick={() => handleCategoryChange(cat)}
-                                className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-colors border ${selectedCategory === cat
-                                    ? 'border-[var(--tg-theme-button-color)] bg-[var(--tg-theme-button-color)] text-white'
-                                    : 'border-[var(--tg-theme-hint-color)] text-[var(--tg-theme-hint-color)]'
-                                    }`}
-                            >
-                                {cat}
-                            </button>
-                        ))}
-                    </div>
-                )}
+
 
 
                 {/* Brand/Featured Rows (Only on "All" tab & no search) */}

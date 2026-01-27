@@ -26,6 +26,7 @@ const productSchema = new mongoose.Schema({
     id: { type: Number, required: true, unique: true }, // Keeping numeric ID for compatibility with existing frontend logic if needed, or we can migrate to _id
     title: { type: String, required: true },
     price: { type: Number, required: true },
+    salePrice: { type: Number, default: 0 },
     description: { type: String },
     category: { type: String, default: 'General' },
     department: { type: String, default: 'Men' },
