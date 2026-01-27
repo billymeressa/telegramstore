@@ -734,7 +734,7 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                         </a>
                     )}
                     <button
-                        onClick={() => {
+                        onClick={async () => {
                             if (isOutOfStock) return;
                             const finalPrice = selectedVariation
                                 ? selectedVariation.price
@@ -742,22 +742,34 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
 
                             const variationText = selectedVariation ? ` - ${selectedVariation.name}` : '';
                             const message = `Hi, I would like to buy ${product.title}${variationText} for ${Math.floor(finalPrice)} Birr.`;
-                            const url = `https://t.me/${sellerUsername || 'AddisStoreSupport'}?text=${encodeURIComponent(message)}`;
+                            const telegramUrl = `https://t.me/${sellerUsername || 'AddisStoreSupport'}?text=${encodeURIComponent(message)}`;
 
-                            // Confirm before opening
-                            if (window.confirm("Open Telegram to place this order?")) {
-                                window.open(url, '_blank');
+                            // Notify Seller (Admin) via Bot
+                            try {
+                                const initData = window.Telegram?.WebApp?.initData || '';
+                                const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+
+                                await fetch(`${API_URL}/api/notify-order`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        product: product,
+                                        variation: selectedVariation,
+                                        price: finalPrice,
+                                        userInfo: user
+                                    })
+                                });
+                            } catch (error) {
+                                console.error("Failed to notify seller:", error);
                             }
 
-                            // Optional: Still trigger analytics if needed, but don't blocking navigation
-                            if (onBuyNow) {
-                                // onBuyNow({ ...product, selectedVariation, price: finalPrice }); 
-                            }
+                            // Open Telegram Chat
+                            window.open(telegramUrl, '_blank');
                         }}
                         disabled={isOutOfStock}
                         className={`flex-1 py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity flex items-center justify-center gap-1 ${isOutOfStock
-                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                : 'bg-green-500 text-white'
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-green-500 text-white'
                             }`}
                     >
                         <Zap size={18} fill="currentColor" /> {isOutOfStock ? 'Sold Out' : 'Buy'}
@@ -775,8 +787,8 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                         }}
                         disabled={isOutOfStock}
                         className={`flex-[2] py-3 rounded-xl font-semibold text-base shadow flex items-center justify-center gap-2 overflow-hidden relative transition-colors ${isOutOfStock
-                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                : (isAdded ? 'bg-green-500 text-white' : 'bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)]')
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : (isAdded ? 'bg-green-500 text-white' : 'bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)]')
                             }`}
                     >
                         {isOutOfStock ? (

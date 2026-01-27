@@ -580,6 +580,56 @@ app.get('/api/analytics/stats', async (req, res) => {
     }
 });
 
+// POST /api/notify-order
+app.post('/api/notify-order', async (req, res) => {
+    try {
+        const { product, variation, price, items, total, userInfo } = req.body;
+        // console.log("Received Order Notification:", req.body);
+
+        let message = `🆕 *New Order Request!*\n\n`;
+
+        if (userInfo) {
+            message += `👤 *Customer:* ${userInfo.first_name || 'User'} (@${userInfo.username || 'NoUsername'})\n`;
+        }
+        message += `--------------------------------\n`;
+
+        if (items && items.length > 0) {
+            // Cart Order
+            message += `🛒 *Cart Checkout (${items.length} items)*\n\n`;
+            items.forEach((item, idx) => {
+                const varText = item.selectedVariation ? ` (${item.selectedVariation.name})` : '';
+                message += `${idx + 1}. *${item.title}*${varText}\n`;
+                message += `    Qty: ${item.quantity} x ${item.price} ETB\n`;
+            });
+            message += `\n💰 *Total:* ${total} ETB\n`;
+        } else if (product) {
+            // Single Item Buy
+            const varText = variation ? ` (${variation.name})` : '';
+            message += `🛍️ *Product:* ${product.title}${varText}\n`;
+            message += `💰 *Price:* ${price} ETB\n`;
+            if (product.id) message += `🆔 *ID:* ${product.id}\n`;
+        } else {
+            return res.status(400).json({ error: 'Invalid order data' });
+        }
+
+        message += `\n--------------------------------\n`;
+        message += `⚠️ _Please check stock and reply to customer._`;
+
+        // Send to Admin
+        if (process.env.ADMIN_ID) {
+            await bot.telegram.sendMessage(process.env.ADMIN_ID, message, { parse_mode: 'Markdown' });
+            res.json({ success: true });
+        } else {
+            console.error("ADMIN_ID not set");
+            res.status(500).json({ error: 'Admin ID not configured' });
+        }
+
+    } catch (err) {
+        console.error("Notification Error:", err);
+        res.status(500).json({ error: 'Failed to send notification' });
+    }
+});
+
 // GET /api/products
 app.get('/api/products', async (req, res) => {
     try {

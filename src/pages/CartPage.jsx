@@ -41,12 +41,6 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout, sellerUs
     };
 
     const handleCheckout = async () => {
-        // Pass final price logic if needed globally, but currently checkout recalculates or uses cart items. 
-        // For simple MVP we just proceed. The backend order creation should ideally receive the discount or code too.
-        // We'll update onCheckout to optionally accept discount/total overrides if needed, 
-        // OR simply display the total here and let the backend re-calculate if we passed the code.
-        // For now, let's assume onCheckout uses the items. 
-        // We really should pass the final price or the promo code to the checkout function.
         // Generate generic message
         let msg = `Hi! I would like to place an order:\n\n`;
         cart.forEach(item => {
@@ -66,11 +60,31 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout, sellerUs
             msg += `\nPromo Code: ${promoCode}`;
         }
 
-        const url = `https://t.me/${sellerUsername || 'AddisStoreSupport'}?text=${encodeURIComponent(msg)}`;
+        const telegramUrl = `https://t.me/${sellerUsername || 'AddisStoreSupport'}?text=${encodeURIComponent(msg)}`;
 
-        if (window.confirm("Open Telegram to place this order?")) {
-            window.open(url, '_blank');
+        // Notify Seller (Admin) via Bot
+        try {
+            const initData = window.Telegram?.WebApp?.initData || '';
+            const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+
+            await fetch(`${API_URL}/api/notify-order`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    items: cart.map(i => ({
+                        ...i,
+                        selectedVariation: i.selectedVariation // passing selected variation explicitly
+                    })),
+                    total: Math.floor(finalPrice),
+                    userInfo: user
+                })
+            });
+        } catch (error) {
+            console.error("Failed to notify seller:", error);
         }
+
+        // Open Telegram Chat
+        window.open(telegramUrl, '_blank');
 
         // Optional: Call original checkout to save order to DB/Clear Cart if desired
         // For now, we just open the link as requested. 
