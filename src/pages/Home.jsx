@@ -25,6 +25,35 @@ const FEATURED_SUBCATEGORIES = [
     'Phones', 'Shoes', 'Watches', 'Laptops', 'Dresses', 'Gaming', 'Bags', 'Audio'
 ];
 
+const TouchHint = ({ text, className = "" }) => (
+    <div className={`absolute z-30 pointer-events-none flex flex-col items-center gap-2 ${className}`}>
+        {/* Tooltip */}
+        <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-black/90 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-xl whitespace-nowrap ring-1 ring-white/10"
+        >
+            {text}
+        </motion.div>
+
+        {/* Hand & Ripple */}
+        <div className="relative">
+            <motion.div
+                animate={{ scale: [1, 2], opacity: [0.5, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+                className="absolute inset-0 bg-[var(--tg-theme-button-color)] rounded-full opacity-50"
+            />
+            <motion.div
+                animate={{ y: [0, 8, 0], scale: [1, 0.95, 1] }}
+                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                className="relative z-10 bg-white p-1.5 rounded-full shadow-lg border border-gray-100"
+            >
+                <Hand size={18} className="text-gray-900 rotate-[-15deg]" fill="currentColor" fillOpacity={0.1} />
+            </motion.div>
+        </div>
+    </div>
+);
+
 const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, isFetching }) => {
     const [showHelp, setShowHelp] = useState(false);
 
@@ -456,9 +485,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
                                                         {/* Add Button */}
                                                         <div className="mt-auto px-4 pb-6 pt-2 relative">
-                                                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-1 rounded-full animate-bounce pointer-events-none whitespace-nowrap z-20">
-                                                                Tap "Add to Cart" 👇
-                                                            </div>
+                                                            <TouchHint text="Tap to Add" className="-top-12 left-1/2 -translate-x-1/2" />
                                                             <button
                                                                 onClick={() => setPracticeStep(1)}
                                                                 className="w-full bg-[var(--tg-theme-button-color)] text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/30 active:scale-95 transition-transform"
@@ -506,9 +533,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                                                         </div>
 
                                                         <div className="mt-auto px-4 pb-6 relative">
-                                                            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-1 rounded-full animate-bounce pointer-events-none whitespace-nowrap z-20">
-                                                                Tap "Checkout" 👇
-                                                            </div>
+                                                            <TouchHint text="Tap Checkout" className="-top-12 left-1/2 -translate-x-1/2" />
                                                             <button
                                                                 onClick={() => setPracticeStep(2)}
                                                                 className="w-full bg-[var(--tg-theme-button-color)] text-white font-bold py-3.5 rounded-xl shadow-lg active:scale-95 transition-transform flex justify-between px-6"
@@ -543,9 +568,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                                                         </p>
 
                                                         <div className="w-full space-y-3 relative">
-                                                            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-1 rounded-full animate-bounce pointer-events-none whitespace-nowrap z-20">
-                                                                Tap to Message 👇
-                                                            </div>
+                                                            <TouchHint text="Tap Message" className="-top-12 left-1/2 -translate-x-1/2" />
                                                             <button
                                                                 onClick={() => setPracticeStep(3)}
                                                                 className="w-full bg-[#0088cc] text-white py-3 rounded-xl font-bold shadow-md active:scale-95 flex items-center justify-center gap-2"
