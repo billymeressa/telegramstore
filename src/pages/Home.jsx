@@ -125,32 +125,6 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
         return ["All", ...uniqueCats];
     }, [selectedDepartment, products]);
 
-    // Categories to demote (push to bottom)
-    const GENERIC_CATEGORIES = ['Parts & Accessories', 'Tools', 'Tools & Equipment', 'Other', 'Computer Accessories', 'Cables', 'Adapters'];
-
-    // Smart Sort Algorithm: Shuffles high-quality items, pushes generics to bottom
-    const smartSort = (items) => {
-        if (!items || items.length === 0) return [];
-
-        // Separete premium and generic
-        const premium = items.filter(p => !GENERIC_CATEGORIES.includes(p.category || 'Other'));
-        const generic = items.filter(p => GENERIC_CATEGORIES.includes(p.category || 'Other'));
-
-        // Fisher-Yates Shuffle for premium items (Freshness)
-        // We use a seed based on hour to keep it stable for a short session, or just random for true freshness on reload
-        const shuffledPremium = [...premium];
-        for (let i = shuffledPremium.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffledPremium[i], shuffledPremium[j]] = [shuffledPremium[j], shuffledPremium[i]];
-        }
-
-        return [...shuffledPremium, ...generic];
-    };
-
-
-
-
-
     const filteredProducts = useMemo(() => {
         // First, filter by department and category
         let filtered = products.filter(p => {
@@ -172,9 +146,6 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
         // Then apply smart search if there's a query
         if (searchQuery && searchQuery.trim() !== '') {
             filtered = smartSearch(filtered, searchQuery);
-        } else if (selectedDepartment === 'All' && selectedCategory === 'All') {
-            // Apply Smart Sort only on the main "All" view for discovery
-            filtered = smartSort(filtered);
         }
 
         return filtered;

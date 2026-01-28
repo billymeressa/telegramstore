@@ -16,6 +16,23 @@ const ProductDetails = lazy(() => import('./pages/ProductDetails'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 const AnalyticsDashboard = lazy(() => import('./pages/AnalyticsDashboard'));
 
+// Categories to demote (push to bottom)
+const GENERIC_CATEGORIES = ['Parts & Accessories', 'Tools', 'Tools & Equipment', 'Other', 'Computer Accessories', 'Cables', 'Adapters'];
+
+// Smart Sort Algorithm
+const smartSort = (items) => {
+  if (!items || items.length === 0) return [];
+  const premium = items.filter(p => !GENERIC_CATEGORIES.includes(p.category || 'Other'));
+  const generic = items.filter(p => GENERIC_CATEGORIES.includes(p.category || 'Other'));
+
+  const shuffledPremium = [...premium];
+  for (let i = shuffledPremium.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledPremium[i], shuffledPremium[j]] = [shuffledPremium[j], shuffledPremium[i]];
+  }
+  return [...shuffledPremium, ...generic];
+};
+
 const ADMIN_ID = 748823605;
 
 function App() {
@@ -195,11 +212,15 @@ function App() {
         }
 
         if (pageNum === 1) {
-          setProducts(newProducts);
-          localStorage.setItem('cached_products', JSON.stringify(newProducts));
+          // Shuffle first page for freshness
+          const sorted = smartSort(newProducts);
+          setProducts(sorted);
+          localStorage.setItem('cached_products', JSON.stringify(sorted));
         } else {
+          // Also shuffle subsequent pages so they don't look static, but append them
+          const sorted = smartSort(newProducts);
           setProducts(prev => {
-            const updated = [...prev, ...newProducts];
+            const updated = [...prev, ...sorted];
             return updated;
           });
         }
