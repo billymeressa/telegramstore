@@ -319,8 +319,10 @@ function App() {
       const data = await res.json();
 
       if (data.success) {
-        // Show Contact Modal instead of just alert
-        setShowContactModal(true);
+        // Send data to Bot and Close WebApp
+        if (tele && tele.sendData) {
+          tele.sendData(JSON.stringify(data.order)); // Send the created order object
+        }
 
         // Only clear cart if we checked out the MAIN cart
         if (itemsToCheckout === cart) {
