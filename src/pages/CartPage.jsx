@@ -3,7 +3,7 @@ import Cart from '../components/Cart';
 import { Phone, MessageSquare, X, CheckCircle, Send, Tag } from 'lucide-react';
 import API_URL from '../config';
 
-const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout, sellerUsername }) => {
+const CartPage = ({ cart, onRemove, onCheckout, sellerUsername }) => {
     const totalPrice = cart.reduce((sum, item) => {
         const itemPrice = item.selectedVariation ? item.selectedVariation.price : item.price;
         return sum + itemPrice * item.quantity;
@@ -116,8 +116,6 @@ const CartPage = ({ cart, onIncrease, onDecrease, onRemove, onCheckout, sellerUs
             <div className="md:max-w-4xl mx-auto md:p-4">
                 <Cart
                     cartItems={cart}
-                    onIncrease={onIncrease}
-                    onDecrease={onDecrease}
                     onRemove={onRemove}
                 />
             </div>

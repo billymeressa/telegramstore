@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Cart({ cartItems, onIncrease, onDecrease, onRemove }) {
+function Cart({ cartItems, onRemove }) {
     const totalPrice = cartItems.reduce((sum, item) => {
         const itemPrice = item.selectedVariation ? item.selectedVariation.price : item.price;
         return sum + itemPrice * item.quantity;
@@ -18,7 +18,7 @@ function Cart({ cartItems, onIncrease, onDecrease, onRemove }) {
     return (
         <div className="space-y-2 pb-24 px-2">
             {cartItems.map((item) => (
-                <div key={item.id} className="flex bg-[var(--tg-theme-bg-color)] p-2 rounded-xl shadow-sm gap-3">
+                <div key={item.cartId} className="flex bg-[var(--tg-theme-bg-color)] p-2 rounded-xl shadow-sm gap-3">
                     {/* Item Image */}
                     <div className="w-20 h-20 bg-[var(--tg-theme-secondary-bg-color)] rounded-lg flex items-center justify-center flex-shrink-0">
                         {item.images && item.images.length > 0 ? (
@@ -54,25 +54,7 @@ function Cart({ cartItems, onIncrease, onDecrease, onRemove }) {
                             </div>
                         </div>
 
-                        <div className="flex items-end justify-between mt-2">
-                            <div className="flex items-center bg-[var(--tg-theme-secondary-bg-color)] rounded-lg p-0.5">
-                                <button
-                                    onClick={() => onDecrease(item)}
-                                    className="w-8 h-8 flex items-center justify-center text-[var(--tg-theme-text-color)] active:bg-black/5 rounded-md transition-colors"
-                                >
-                                    {item.quantity === 1 ? '🗑' : '−'}
-                                </button>
-                                <div className="w-8 flex items-center justify-center text-sm font-medium text-[var(--tg-theme-text-color)]">
-                                    {item.quantity}
-                                </div>
-                                <button
-                                    onClick={() => onIncrease(item)}
-                                    className="w-8 h-8 flex items-center justify-center text-[var(--tg-theme-text-color)] active:bg-black/5 rounded-md transition-colors"
-                                >
-                                    +
-                                </button>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             ))}

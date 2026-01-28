@@ -227,18 +227,9 @@ function App() {
   };
 
   const onAdd = (product) => {
-    const exist = cart.find((x) => x.id === product.id);
-    if (exist) {
-      setCart(
-        cart.map((x) =>
-          x.id === product.id
-            ? { ...exist, quantity: exist.quantity + 1 }
-            : x
-        )
-      );
-    } else {
-      setCart([...cart, { ...product, quantity: 1 }]);
-    }
+    // Generate a unique ID for this cart item to support distinct variations/duplicates
+    const cartId = Date.now() + Math.random().toString(36).substr(2, 9);
+    setCart([...cart, { ...product, quantity: 1, cartId }]);
 
     if (tele?.HapticFeedback) {
       tele.HapticFeedback.impactOccurred('light');
@@ -248,39 +239,9 @@ function App() {
     trackEvent('add_to_cart', { productId: product.id, productTitle: product.title, price: product.price });
   };
 
-  const onIncrease = (product) => {
-    const exist = cart.find((x) => x.id === product.id);
-    if (exist) {
-      setCart(
-        cart.map((x) =>
-          x.id === product.id
-            ? { ...exist, quantity: exist.quantity + 1 }
-            : x
-        )
-      );
-    }
-    if (tele?.HapticFeedback) {
-      tele.HapticFeedback.selectionChanged();
-    }
-  };
 
-  const onDecrease = (product) => {
-    const exist = cart.find((x) => x.id === product.id);
-    if (exist.quantity === 1) {
-      setCart(cart.filter((x) => !(x.id === product.id)));
-    } else {
-      setCart(
-        cart.map((x) =>
-          x.id === product.id
-            ? { ...exist, quantity: exist.quantity - 1 }
-            : x
-        )
-      );
-    }
-    if (tele?.HapticFeedback) {
-      tele.HapticFeedback.selectionChanged();
-    }
-  };
+
+
 
   const toggleWishlist = useCallback((productId) => {
     setWishlist(prev => {
@@ -301,7 +262,7 @@ function App() {
   }, []);
 
   const onRemove = (product) => {
-    setCart(cart.filter((x) => x.id !== product.id));
+    setCart(cart.filter((x) => x.cartId !== product.cartId));
     if (tele?.HapticFeedback) {
       tele.HapticFeedback.impactOccurred('medium');
     }
@@ -377,8 +338,6 @@ function App() {
             <Route path="/cart" element={
               <CartPage
                 cart={cart}
-                onIncrease={onIncrease}
-                onDecrease={onDecrease}
                 onRemove={onRemove}
                 onCheckout={onCheckout}
                 sellerUsername={sellerUsername}
