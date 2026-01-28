@@ -38,6 +38,9 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
         description: '',
         category: '',
         department: '',
+        stock: '',
+        isUnique: false,
+        stockStatus: '',
         variations: [],
         variationType: '',
         existingImages: [],  // URLs of existing images
@@ -124,6 +127,9 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
             description: product.description || '',
             category: product.category || '',
             department: product.department || '',
+            stock: product.stock || '',
+            isUnique: product.isUnique || false,
+            stockStatus: product.stockStatus || '',
             variations: product.variations || [],
             variationType: product.variations && product.variations.length > 0 ? 'Variation' : '',
             existingImages: product.images || [],
@@ -160,6 +166,9 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
             formData.append('description', editFormData.description);
             formData.append('category', editFormData.category);
             formData.append('department', editFormData.department);
+            formData.append('stock', editFormData.stock);
+            formData.append('isUnique', editFormData.isUnique);
+            formData.append('stockStatus', editFormData.stockStatus);
             formData.append('variations', JSON.stringify(editFormData.variations));
             formData.append('existingImages', JSON.stringify(editFormData.existingImages));
 
@@ -452,6 +461,47 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                         </div>
 
 
+                        <div className="grid grid-cols-3 gap-4 border-b pb-4 mb-4 border-gray-100">
+                            <div className="flex items-center pt-6">
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={editFormData.isUnique}
+                                        onChange={e => setEditFormData({ ...editFormData, isUnique: e.target.checked, stock: e.target.checked ? 1 : editFormData.stock })}
+                                        className="w-4 h-4 rounded text-[var(--tg-theme-button-color)]"
+                                    />
+                                    <span className="text-sm font-bold text-[var(--tg-theme-text-color)]">✨ Unique?</span>
+                                </label>
+                            </div>
+                            {editFormData.isUnique ? (
+                                <div className="col-span-2">
+                                    <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">
+                                        Status Label <span className="text-xs font-normal opacity-70">(e.g. "Vintage")</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={editFormData.stockStatus}
+                                        onChange={e => setEditFormData({ ...editFormData, stockStatus: e.target.value })}
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                        placeholder="Unique"
+                                    />
+                                </div>
+                            ) : (
+                                <div>
+                                    <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">
+                                        Stock Qty
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={editFormData.stock}
+                                        onChange={e => setEditFormData({ ...editFormData, stock: e.target.value })}
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                        placeholder="0"
+                                    />
+                                </div>
+                            )}
+                        </div>
+
                         {/* Price Input */}
                         <div>
                             <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">Price (Birr)</label>
@@ -547,6 +597,17 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                                         }}
                                         className="w-24 border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
                                         placeholder="Price"
+                                    />
+                                    <input
+                                        type="number"
+                                        value={variation.stock}
+                                        onChange={(e) => {
+                                            const newVariations = [...editFormData.variations];
+                                            newVariations[index].stock = e.target.value;
+                                            setEditFormData({ ...editFormData, variations: newVariations });
+                                        }}
+                                        className="w-20 border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                        placeholder="Stock"
                                     />
                                     <button
                                         type="button"
