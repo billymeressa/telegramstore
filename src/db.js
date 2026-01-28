@@ -33,9 +33,11 @@ const productSchema = new mongoose.Schema({
     isUnique: { type: Boolean, default: true }, // Default to True
     stockStatus: { type: String, default: 'Distinct' }, // Custom label for unique items (e.g. "Vintage")
     images: [{ type: String }], // Array of image URLs (Cloudinary)
+    originalPrice: { type: Number }, // Price Anchoring: The "before" price
     variations: [{ // Product variations (e.g., different storage sizes)
         name: { type: String, required: true }, // e.g., "16GB", "32GB", "Blue"
         price: { type: Number, required: true }, // Price for this variation
+        originalPrice: { type: Number }, // Variation specific original price
         stock: { type: Number, default: 0 }, // Stock for this variation
         sku: { type: String } // Optional: unique SKU
     }]
@@ -60,7 +62,7 @@ const orderSchema = new mongoose.Schema({
 
 const Product = mongoose.model('Product', productSchema);
 const Order = mongoose.model('Order', orderSchema);
-const User = mongoose.model('User', new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     userId: { type: String, required: true, unique: true },
     username: { type: String },
     firstName: { type: String },
@@ -70,8 +72,65 @@ const User = mongoose.model('User', new mongoose.Schema({
     hasSpunWheel: { type: Boolean, default: false }, // Deprecated but kept for compat
     lastSpinTime: { type: Date }, // New: Track daily spins
     checkInStreak: { type: Number, default: 0 }, // New: Daily check-in streak
-    lastCheckInTime: { type: Date } // New: Last daily check-in
-}));
+    lastCheckInTime: { type: Date }, // New: Last daily check-in
+    walletBalance: { type: Number, default: 0 },
+    referralCode: { type: String, unique: true, default: () => Math.random().toString(36).substring(2, 8).toUpperCase() },
+    referredBy: { type: String }, // Referral code of the referrer
+    rewardHistory: [{
+        type: { type: String, enum: ['daily_checkin', 'referral_bonus', 'purchase_reward', 'other'] },
+        amount: { type: Number, required: true },
+        timestamp: { type: Date, default: Date.now }
+    }]
+});
+
+userSchema.methods.checkDailyCheckIn = async function () {
+    const now = new Date();
+    const lastCheckIn = this.lastCheckInTime ? new Date(this.lastCheckInTime) : null;
+
+    // Provide a small buffer or ensure STRICT 24 hours. The prompt says "validates if 24 hours have passed".
+    // However, usually "Daily Check-in" means "once per calendar day" or "after 24h".
+    // Given the prompt "validates if 24 hours have passed", I will use strict 24h check.
+
+    if (lastCheckIn && (now.getTime() - lastCheckIn.getTime() < 24 * 60 * 60 * 1000)) {
+        return { success: false, message: '24 hours have not passed yet.' };
+    }
+
+    // Logic for streak reset: if > 48 hours passed, streak resets. (Allowing 24-48h window to maintain streak)
+    if (lastCheckIn && (now.getTime() - lastCheckIn.getTime() > 48 * 60 * 60 * 1000)) {
+        this.checkInStreak = 0;
+    }
+
+    this.checkInStreak += 1;
+    this.lastCheckInTime = now;
+
+    // Reward Tiers (Day 1-7+)
+    // Cycle: Day 1 (1) -> Day 7 (7) -> Day 8 (1) -> ...
+    const dayInCycle = ((this.checkInStreak - 1) % 7) + 1;
+    let rewardAmount = 0;
+
+    switch (dayInCycle) {
+        case 1: rewardAmount = 25; break;
+        case 2: rewardAmount = 40; break;
+        case 3: rewardAmount = 50; break;
+        case 4: rewardAmount = 75; break;
+        case 5: rewardAmount = 100; break;
+        case 6: rewardAmount = 150; break;
+        case 7: rewardAmount = 250; break;
+        default: rewardAmount = 25; // Fallback
+    }
+
+    this.walletBalance += rewardAmount;
+    this.rewardHistory.push({
+        type: 'daily_checkin',
+        amount: rewardAmount,
+        timestamp: now
+    });
+
+    await this.save();
+    return { success: true, reward: rewardAmount, streak: this.checkInStreak };
+};
+
+const User = mongoose.model('User', userSchema);
 
 const PromoCode = mongoose.model('PromoCode', new mongoose.Schema({
     code: { type: String, required: true, unique: true },

@@ -1,7 +1,4 @@
-import crypto from 'crypto';
-import 'dotenv/config';
-
-import crypto from 'crypto';
+import { createHmac } from 'node:crypto';
 import 'dotenv/config';
 
 // 1. Base Authentication (HMAC Validation)
@@ -30,12 +27,12 @@ const authenticateUser = (req, res, next) => {
             .join('\n');
 
         // Create Secret Key
-        const secretKey = crypto.createHmac('sha256', 'WebAppData')
+        const secretKey = createHmac('sha256', 'WebAppData')
             .update(process.env.BOT_TOKEN)
             .digest();
 
         // Calculate Hash
-        const calculatedHash = crypto.createHmac('sha256', secretKey)
+        const calculatedHash = createHmac('sha256', secretKey)
             .update(dataCheckString)
             .digest('hex');
 

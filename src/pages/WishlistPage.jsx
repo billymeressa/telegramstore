@@ -14,17 +14,17 @@ const WishlistPage = ({ products }) => {
     const wishlistedProducts = products.filter(p => wishlist.includes(p.id));
 
     return (
-        <div className="min-h-screen bg-[var(--tg-theme-secondary-bg-color)] pb-24 font-sans">
+        <div className="min-h-screen bg-[var(--tg-theme-secondary-bg-color)] pb-24 font-sans pt-tg-safe">
             {/* Header */}
-            <div className="bg-[var(--tg-theme-bg-color)] p-4 border-b border-[var(--tg-theme-section-separator-color)] sticky top-0 z-10">
+            <div className="bg-[var(--tg-theme-bg-color)] p-4 border-b border-[var(--tg-theme-section-separator-color)] sticky top-tg-safe z-10">
                 <h1 className="text-lg font-bold text-[var(--tg-theme-text-color)] flex items-center gap-2">
                     <Heart className="text-red-500 fill-red-500" size={20} />
                     My Wishlist
                 </h1>
-                <p className="text-xs text-[var(--tg-theme-hint-color)] mt-0.5">{wishlistProducts.length} items saved</p>
+                <p className="text-xs text-[var(--tg-theme-hint-color)] mt-0.5">{wishlistedProducts.length} items saved</p>
             </div>
 
-            {wishlistProducts.length === 0 ? (
+            {wishlistedProducts.length === 0 ? (
                 <div className="flex flex-col items-center justify-center pt-32 px-6 text-center">
                     <div className="bg-[var(--tg-theme-bg-color)] p-5 rounded-full mb-4">
                         <Heart size={40} className="text-[var(--tg-theme-hint-color)]/50" />

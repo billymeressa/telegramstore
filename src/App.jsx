@@ -88,6 +88,7 @@ function App() {
   // Global State (Selectors)
   const cart = useStore(state => state.cart);
   const clearCart = useStore(state => state.clearCart);
+  const fetchUserData = useStore(state => state.fetchUserData);
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
@@ -118,6 +119,9 @@ function App() {
         console.error(e);
       }
     }
+
+    // Sync User Data from Backend (Zustand Global State)
+    fetchUserData();
 
     const checkAdminStatus = async () => {
       const tele = window.Telegram?.WebApp;

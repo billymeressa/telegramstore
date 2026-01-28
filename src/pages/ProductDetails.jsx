@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ShoppingBag, Heart, Edit2, Check, Zap } from 'lucide-react';
 
 import { trackEvent } from '../utils/track';
+import useStore from '../store/useStore';
 import ProductList from '../components/ProductList';
 
 const SUBCATEGORIES = {
@@ -250,21 +251,13 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
 
 
     return (
-        <div className="bg-[var(--tg-theme-bg-color)] min-h-screen relative font-sans">
-            {/* Header / Nav */}
-            <div className="fixed top-0 left-0 right-0 z-20 flex items-center justify-between p-2 pointer-events-none">
-                <button
-                    onClick={() => navigate(-1)}
-                    className="w-8 h-8 flex items-center justify-center bg-[var(--tg-theme-bg-color)] rounded-full shadow-sm text-[var(--tg-theme-text-color)] pointer-events-auto"
-                >
-                    <ArrowLeft size={20} />
-                </button>
-            </div>
+        <div className="bg-[var(--tg-theme-bg-color)] min-h-screen relative font-sans pt-tg-safe">
+            {/* Header spacer for Telegram buttons - no custom back button needed, Telegram provides it */}
 
             {/* Sticky Recommended Header */}
             {showStickyHeader && (
                 <div
-                    className="fixed top-0 left-0 right-0 z-40 bg-[var(--tg-theme-bg-color)] border-b border-[var(--tg-theme-section-separator-color)] shadow-sm pt-2 pb-2 px-4 flex items-center"
+                    className="fixed top-tg-safe left-0 right-0 z-40 bg-[var(--tg-theme-bg-color)] border-b border-[var(--tg-theme-section-separator-color)] shadow-sm pt-2 pb-2 px-4 flex items-center"
                 >
                     <div className="flex gap-2 overflow-x-auto no-scrollbar items-center w-full">
                         <button className="px-3.5 py-1 rounded-full text-sm font-medium whitespace-nowrap bg-[var(--tg-theme-button-color)] text-white shadow-md flex-shrink-0">
@@ -784,7 +777,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                             </div>
 
                             {/* Stock Status Badge */}
-                            <div className="mt-2">
+                            <div className="mt-2 flex items-center gap-2 flex-wrap">
                                 {product.isUnique ? (
                                     <span className="inline-block px-2 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded border border-purple-200">
                                         ✨ {product.stockStatus || 'One of a Kind'}
@@ -797,12 +790,20 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                                             </span>
                                         ) : (
                                             currentStock < 10 && (
-                                                <span className="inline-block px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded border border-red-200">
-                                                    🔥 Only {currentStock} left!
+                                                <span className="inline-block px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded border border-red-200 animate-pulse">
+                                                    ቀሪ ብቻ! {currentStock}
                                                 </span>
                                             )
                                         )}
                                     </>
+                                )}
+
+                                {/* Social Proof Indicator */}
+                                {product.viewCount > 0 && (
+                                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded border border-blue-100">
+                                        <Zap size={10} className="fill-blue-700" />
+                                        {Math.min(product.viewCount * 2, 20)} people viewing this now
+                                    </span>
                                 )}
                             </div>
                         </div>

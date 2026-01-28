@@ -233,11 +233,11 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
     };
 
     return (
-        <div className="pb-4 pt-28 min-h-screen bg-[var(--tg-theme-secondary-bg-color)]">
+        <div className="pb-4 pt-[140px] min-h-screen bg-[var(--tg-theme-secondary-bg-color)]">
 
             {/* Scroll-Aware Fixed Header Group */}
             <div
-                className="fixed top-0 left-0 right-0 z-50 flex flex-col bg-[var(--tg-theme-bg-color)] shadow-sm"
+                className="fixed top-tg-safe left-0 right-0 z-50 flex flex-col bg-[var(--tg-theme-bg-color)] shadow-sm"
             >
                 {/* Search Bar */}
                 <div className="pt-2 pb-2 px-3 border-b border-[var(--tg-theme-section-separator-color)] flex gap-2 items-center">

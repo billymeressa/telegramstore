@@ -243,54 +243,93 @@ app.get('/', (req, res) => {
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// POST /api/game/spin - Play the wheel
-app.post('/api/game/spin', authenticateUser, async (req, res) => {
-    // If we have a user ID from Telegram, we can enforce one-spin-per-user
-    // For now, we'll rely on client-side or simple IP check if needed, but let's assume valid user passed.
-    // In a real app, verify initData here.
-    const { userId } = req.body; // or extract from headers
-
-    if (userId) {
+// POST /api/user/spin - Play the wheel
+app.post('/api/user/spin', authenticateUser, async (req, res) => {
+    try {
+        const userId = req.telegramUser.id;
         const user = await User.findOne({ userId });
-        if (user && user.lastSpinTime) {
-            const lastSpin = new Date(user.lastSpinTime);
-            const now = new Date();
-            // Check if same day (simple check)
-            if (lastSpin.toDateString() === now.toDateString()) {
-                return res.json({ success: false, message: 'Come back tomorrow for another spin!', nextSpin: new Date(now.setHours(24, 0, 0, 0)) });
-            }
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
         }
+
+        const now = new Date();
+        const lastSpin = user.lastSpinTime ? new Date(user.lastSpinTime) : null;
+
+        // 1. Check 24-hour Cooldown
+        if (lastSpin && (now.getTime() - lastSpin.getTime() < 24 * 60 * 60 * 1000)) {
+            const timeLeft = Math.ceil((24 * 60 * 60 * 1000 - (now.getTime() - lastSpin.getTime())) / (1000 * 60 * 60));
+            return res.json({
+                success: false,
+                message: `Next spin available in ${timeLeft} hours.`
+            });
+        }
+
+        // 2. Determine Prize (Weighted Probability)
+        // Tier 1 (60%): 5-25 ETB
+        // Tier 2 (25%): 26-100 ETB
+        // Tier 3 (10%): 101-250 ETB
+        // Tier 4 (4%): 251-500 ETB
+        // Tier 5 (1%): 501-2,500 ETB
+
+        const rand = Math.random() * 100; // 0 to 100
+        let rewardAmount = 0;
+        let tier = 0;
+
+        const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+        if (rand < 60) {
+            tier = 1;
+            rewardAmount = getRandomInt(5, 25);
+        } else if (rand < 85) { // 60 + 25
+            tier = 2;
+            rewardAmount = getRandomInt(26, 100);
+        } else if (rand < 95) { // 85 + 10
+            tier = 3;
+            rewardAmount = getRandomInt(101, 250);
+        } else if (rand < 99) { // 95 + 4
+            tier = 4;
+            rewardAmount = getRandomInt(251, 500);
+        } else { // Remaining 1%
+            tier = 5;
+            rewardAmount = getRandomInt(501, 2500);
+        }
+
+        // 3. Update User
+        user.walletBalance = (user.walletBalance || 0) + rewardAmount;
+        user.lastSpinTime = now;
+        user.hasSpunWheel = true; // Legacy flag, kept for compatibility
+
+        user.rewardHistory.push({
+            type: 'purchase_reward', // Or 'spin_reward' - prompt didn't specify enum value for spin but schema has purchase_reward. I'll use 'other' or add to Enum if I could, but schema defined: ['daily_checkin', 'referral_bonus', 'purchase_reward', 'other']. I will use 'other' or strictly 'purchase_reward'? 
+            // Wait, I can just use 'other' or maybe the prompt implied I could add types. 
+            // I'll stick to 'other' for now or maybe 'daily_checkin' is clashing.
+            // Let's use 'other' to be safe, or wait, I previously defined the schema enum.
+            // Mongoose Enum validation will fail if I use 'spin_reward'.
+            // I'll use 'other' and maybe add a note in metadata if I had it.
+            // Actually, for better clarity, I'll cheat and use 'purchase_reward' as it's "Monetary" or just 'other'. 
+            // Let's check my previous schema edit...
+            // enum: ['daily_checkin', 'referral_bonus', 'purchase_reward', 'other']
+            // I'll use 'other' effectively for Spin.
+            type: 'other',
+            amount: rewardAmount,
+            timestamp: now
+        });
+
+        await user.save();
+
+        res.json({
+            success: true,
+            reward: rewardAmount,
+            tier,
+            balance: user.walletBalance,
+            message: `You won ${rewardAmount} ETB!`
+        });
+
+    } catch (e) {
+        console.error("Spin Error:", e);
+        res.status(500).json({ success: false, message: 'Server error' });
     }
-
-    // Determine Result (Server Authoritative)
-    // 0: Try Again, 1: 100 Br, 2: 10% Off, 3: 500 Br (Jackpot)
-    const rand = Math.random();
-    let prizeIndex;
-    let code = null;
-    let message = "Better luck next time!";
-
-    if (rand < 0.4) {
-        prizeIndex = 0; // 40% Lose
-    } else if (rand < 0.7) {
-        prizeIndex = 1; // 30% Fixed 100
-        code = 'WELCOME100';
-        message = "You won 100 Birr off!";
-    } else if (rand < 0.9) {
-        prizeIndex = 2; // 20% 10% Off
-        code = 'FLASH10';
-        message = "You won 10% Discount!";
-    } else {
-        prizeIndex = 3; // 10% Jackpot
-        code = 'LUCKY500';
-        message = "JACKPOT! 500 Birr off!";
-    }
-
-    if (userId) {
-        // Record that user spun
-        await User.updateOne({ userId }, { lastSpinTime: new Date(), hasSpunWheel: true });
-    }
-
-    res.json({ success: true, prizeIndex, code, message });
 });
 
 // POST /api/daily-checkin - Daily Streak
@@ -401,6 +440,42 @@ const uploadToCloudinary = (buffer) => {
         streamifier.createReadStream(buffer).pipe(uploadStream);
     });
 };
+
+// GET /api/user/me - Get full user profile
+app.get('/api/user/me', authenticateUser, async (req, res) => {
+    try {
+        const userId = req.telegramUser.id.toString();
+        // Upsert to ensure user exists if they access Web App directly first time
+        // Actually, start command upserts, so findOne should suffice, but to be safe:
+        let user = await User.findOne({ userId });
+
+        if (!user) {
+            // Create if missing (edge case)
+            user = new User({
+                userId,
+                username: req.telegramUser.username,
+                firstName: req.telegramUser.first_name
+            });
+            await user.save();
+        }
+
+        res.json({
+            success: true,
+            user: {
+                userId: user.userId,
+                walletBalance: user.walletBalance || 0,
+                checkInStreak: user.checkInStreak || 0,
+                lastCheckInTime: user.lastCheckInTime,
+                lastSpinTime: user.lastSpinTime,
+                referralCode: user.referralCode,
+                referredBy: user.referredBy
+            }
+        });
+    } catch (e) {
+        console.error("User Fetch Error:", e);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
 
 // GET /api/seller-info - Public
 app.get('/api/seller-info', async (req, res) => {
@@ -693,8 +768,24 @@ app.get('/api/products/:id', async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         const product = await Product.findOne({ id: id });
-        if (product) res.json(product);
-        else res.status(404).json({ error: 'Product not found' });
+
+        if (product) {
+            // Count unique views for social proof
+            // We use 'view_product' events and count distinct users or total events. 
+            // Prompt says "unique view count", so distinct users.
+            // But for performance, if we have millions, this aggregation might be slow. 
+            // Given it's a mini app, it should be fine. Or we can just count documents for "views".
+            // "Actual unique view count" -> distinct userId.
+            const uniqueViews = (await AnalyticsEvent.distinct('userId', {
+                eventType: 'view_product',
+                'metadata.productId': id
+            })).length;
+
+            // Return product object + viewCount
+            res.json({ ...product.toObject(), viewCount: uniqueViews });
+        } else {
+            res.status(404).json({ error: 'Product not found' });
+        }
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -702,7 +793,7 @@ app.get('/api/products/:id', async (req, res) => {
 
 // POST /api/products (Add/Edit) - PROTECTED
 app.post('/api/products', authenticateUser, requireAdmin, upload.array('images', 5), async (req, res) => {
-    const { title, price, description, category, department, id, variations, stock, isUnique, stockStatus } = req.body;
+    const { title, price, originalPrice, description, category, department, id, variations, stock, isUnique, stockStatus } = req.body;
 
     // Parse variations if it's a string (from FormData)
     let parsedVariations = [];
@@ -749,6 +840,7 @@ app.post('/api/products', authenticateUser, requireAdmin, upload.array('images',
                 {
                     title,
                     price: isNaN(parseFloat(price)) ? 0 : parseFloat(price),
+                    originalPrice: originalPrice ? parseFloat(originalPrice) : undefined, // Ensure number
                     stock: isNaN(parseInt(stock)) ? 0 : parseInt(stock),
                     isUnique: isUnique === 'true' || isUnique === true,
                     stockStatus: stockStatus || '',
@@ -774,6 +866,7 @@ app.post('/api/products', authenticateUser, requireAdmin, upload.array('images',
                 id: Date.now(),
                 title,
                 price: isNaN(parseFloat(price)) ? 0 : parseFloat(price),
+                originalPrice: originalPrice ? parseFloat(originalPrice) : undefined,
                 stock: isNaN(parseInt(stock)) ? 0 : parseInt(stock),
                 isUnique: isUnique === 'true' || isUnique === true,
                 stockStatus: stockStatus || '',

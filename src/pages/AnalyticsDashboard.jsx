@@ -183,7 +183,7 @@ const AnalyticsDashboard = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[var(--tg-theme-secondary-bg-color)] p-4 pb-20">
+        <div className="min-h-screen bg-[var(--tg-theme-secondary-bg-color)] p-4 pb-20 pt-tg-safe">
             <div className="max-w-4xl mx-auto">
                 <h1 className="text-2xl font-bold text-[var(--tg-theme-text-color)] mb-6 flex items-center gap-2">
                     <BarChart3 size={28} className="text-[var(--tg-theme-button-color)]" />

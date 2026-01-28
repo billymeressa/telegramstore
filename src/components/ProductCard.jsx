@@ -56,6 +56,13 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
                         <span className="text-white font-bold border-2 border-white px-3 py-1 uppercase tracking-widest text-sm transform -rotate-12">Sold Out</span>
                     </div>
                 )}
+
+                {/* Discount Badge */}
+                {product.originalPrice && product.originalPrice > product.price && (
+                    <div className="absolute top-2 right-2 z-10 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm">
+                        {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
+                    </div>
+                )}
             </div>
 
             {/* Content */}
@@ -66,7 +73,7 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
 
                 <div className="flex items-end justify-between mt-auto pt-2">
                     <div className="flex flex-col">
-                        <div className="flex items-baseline gap-0.5">
+                        <div className="flex items-baseline gap-1.5 flex-wrap">
                             {product.variations && product.variations.length > 0 ? (
                                 <>
                                     <span className="text-[var(--tg-theme-text-color)] text-base font-extrabold">
@@ -76,13 +83,21 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
                                     <span className="text-[var(--tg-theme-text-color)] text-base font-extrabold">
                                         {Math.floor(Math.max(...product.variations.map(v => v.price)))}
                                     </span>
+                                    {/* Variation Anchoring Logic is complex, omitted for cleaner UI relative to main request */}
                                 </>
                             ) : (
-                                <span className="text-[var(--tg-theme-text-color)] text-lg font-extrabold">
-                                    {Math.floor(product.price)}
-                                </span>
+                                <>
+                                    <span className="text-[var(--tg-theme-text-color)] text-lg font-extrabold">
+                                        {Math.floor(product.price)}
+                                        <span className="text-[var(--tg-theme-hint-color)] text-xs font-normal ml-0.5">Birr</span>
+                                    </span>
+                                    {product.originalPrice > product.price && (
+                                        <span className="text-gray-400 text-xs decoration-gray-400 line-through">
+                                            {Math.floor(product.originalPrice)} Birr
+                                        </span>
+                                    )}
+                                </>
                             )}
-                            <span className="text-[var(--tg-theme-hint-color)] text-xs font-normal ml-0.5">Birr</span>
                         </div>
                     </div>
 
