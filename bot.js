@@ -180,10 +180,42 @@ bot.on('text', async (ctx) => {
 });
 
 bot.launch().catch(err => {
-    console.error("Telegram Launch Error:", err.message);
-    // Continue running API server even if bot fails (e.g. conflict)
+    console.error("Main Store Bot Launch Error:", err.message);
 });
-console.log('Bot is running...');
+console.log('Main Store Bot is running...');
+
+// --- MULTI-BOT LOADER ---
+// Check for additional bots and launch them
+const launchExtraBots = async () => {
+    // 1. Second Bot (Example/Template)
+    if (process.env.SECOND_BOT_TOKEN) {
+        try {
+            const secondBot = new Telegraf(process.env.SECOND_BOT_TOKEN);
+
+            // Dynamic import of the bot logic
+            const botModule = await import('./bots/exampleBot.js');
+
+            // Setup the bot
+            if (botModule.default) {
+                botModule.default(secondBot);
+            } else {
+                console.error("Error: bots/exampleBot.js does not export a default function.");
+            }
+
+            // Launch
+            secondBot.launch().catch(err => console.error("Second Bot Launch Error:", err.message));
+            console.log("✅ Second Bot (Env: SECOND_BOT_TOKEN) is running!");
+        } catch (e) {
+            console.error("Failed to load Second Bot:", e);
+        }
+    }
+
+    // You can add more bots here following the same pattern:
+    // if (process.env.THIRD_BOT_TOKEN) ...
+};
+
+launchExtraBots();
+
 
 import verifyTelegramWebAppData from './src/middleware/auth.js';
 
