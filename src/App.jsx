@@ -20,17 +20,51 @@ const AnalyticsDashboard = lazy(() => import('./pages/AnalyticsDashboard'));
 const GENERIC_CATEGORIES = ['Parts & Accessories', 'Tools', 'Tools & Equipment', 'Other', 'Computer Accessories', 'Cables', 'Adapters'];
 
 // Smart Sort Algorithm
+// Smart Sort Algorithm (Personalized)
 const smartSort = (items) => {
   if (!items || items.length === 0) return [];
-  const premium = items.filter(p => !GENERIC_CATEGORIES.includes(p.category || 'Other'));
-  const generic = items.filter(p => GENERIC_CATEGORIES.includes(p.category || 'Other'));
 
-  const shuffledPremium = [...premium];
-  for (let i = shuffledPremium.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffledPremium[i], shuffledPremium[j]] = [shuffledPremium[j], shuffledPremium[i]];
+  // 1. Get User Preferences
+  let interests = {};
+  try {
+    interests = JSON.parse(localStorage.getItem('user_interests') || '{}');
+  } catch (e) {
+    console.error(e);
   }
-  return [...shuffledPremium, ...generic];
+
+  // Get Top 3 Categories
+  const topCategories = Object.entries(interests)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 3)
+    .map(([cat]) => cat);
+
+  // 2. Bucket Items
+  const personalized = [];
+  const premium = [];
+  const generic = [];
+
+  items.forEach(p => {
+    const cat = p.category || 'Other';
+    if (GENERIC_CATEGORIES.includes(cat)) {
+      generic.push(p);
+    } else if (topCategories.includes(cat)) {
+      personalized.push(p);
+    } else {
+      premium.push(p);
+    }
+  });
+
+  // 3. Shuffle Helpers
+  const shuffle = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
+
+  // 4. Final Mix: Personalized First -> Other Premium -> Generic (Bottom)
+  return [...shuffle(personalized), ...shuffle(premium), ...generic];
 };
 
 const ADMIN_ID = 748823605;

@@ -103,6 +103,16 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                 console.log("Product Data Loaded:", data);
                 setProduct(data);
 
+                // Track User Interest (Personalization)
+                try {
+                    const interests = JSON.parse(localStorage.getItem('user_interests') || '{}');
+                    const category = data.category || 'Other';
+                    interests[category] = (interests[category] || 0) + 1;
+                    localStorage.setItem('user_interests', JSON.stringify(interests));
+                } catch (e) {
+                    console.error("Failed to track interest", e);
+                }
+
                 // Auto-select first variation if product has variations
                 if (data.variations && data.variations.length > 0) {
                     setSelectedVariation(data.variations[0]);
