@@ -795,37 +795,12 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                         </a>
                     )}
                     <button
-                        onClick={async () => {
+                        onClick={() => {
                             if (isOutOfStock) return;
-                            const finalPrice = selectedVariation
-                                ? selectedVariation.price
-                                : product.price;
-
-                            const variationText = selectedVariation ? ` - ${selectedVariation.name}` : '';
-                            const message = `Hi, I would like to buy ${product.title}${variationText} for ${Math.floor(finalPrice)} Birr.`;
-                            const telegramUrl = `https://t.me/${sellerUsername || 'AddisStoreSupport'}?text=${encodeURIComponent(message)}`;
-
-                            // Notify Seller (Admin) via Bot
-                            try {
-                                const initData = window.Telegram?.WebApp?.initData || '';
-                                const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
-
-                                await fetch(`${API_URL}/api/notify-order`, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({
-                                        product: product,
-                                        variation: selectedVariation,
-                                        price: finalPrice,
-                                        userInfo: user
-                                    })
-                                });
-                            } catch (error) {
-                                console.error("Failed to notify seller:", error);
+                            // Use the centralized Buy Now logic (which uses sendData for auto-send)
+                            if (onBuyNow) {
+                                onBuyNow({ ...product, selectedVariation });
                             }
-
-                            // Open Telegram Chat
-                            window.open(telegramUrl, '_blank');
                         }}
                         disabled={isOutOfStock}
                         className={`flex-1 py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity flex items-center justify-center gap-1 ${isOutOfStock
@@ -833,7 +808,7 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                             : 'bg-green-500 text-white'
                             }`}
                     >
-                        <Zap size={18} fill="currentColor" /> {isOutOfStock ? 'Sold Out' : 'Buy'}
+                        <Zap size={18} fill="currentColor" /> {isOutOfStock ? 'Sold Out' : 'Buy Now'}
                     </button>
                     <button
                         onClick={() => {
