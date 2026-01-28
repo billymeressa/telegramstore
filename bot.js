@@ -218,7 +218,7 @@ const launchExtraBots = async () => {
 launchExtraBots();
 
 
-import verifyTelegramWebAppData from './src/middleware/auth.js';
+import { authenticateUser, requireAdmin } from './src/middleware/auth.js';
 
 // --- API SERVER SETUP ---
 const app = express();
@@ -244,7 +244,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // POST /api/game/spin - Play the wheel
-app.post('/api/game/spin', async (req, res) => {
+app.post('/api/game/spin', authenticateUser, async (req, res) => {
     // If we have a user ID from Telegram, we can enforce one-spin-per-user
     // For now, we'll rely on client-side or simple IP check if needed, but let's assume valid user passed.
     // In a real app, verify initData here.
@@ -294,7 +294,7 @@ app.post('/api/game/spin', async (req, res) => {
 });
 
 // POST /api/daily-checkin - Daily Streak
-app.post('/api/daily-checkin', async (req, res) => {
+app.post('/api/daily-checkin', authenticateUser, async (req, res) => {
     const { userId } = req.body;
     if (!userId) return res.status(400).json({ error: 'Missing userId' });
 
@@ -380,7 +380,7 @@ app.post('/api/coupons/validate', async (req, res) => {
 });
 
 // GET /api/check-admin - Check if user is admin
-app.get('/api/check-admin', verifyTelegramWebAppData, (req, res) => {
+app.get('/api/check-admin', authenticateUser, (req, res) => {
     const userId = req.telegramUser.id;
     const mainAdminId = parseInt(process.env.ADMIN_ID);
     const isSuperAdmin = userId === mainAdminId;
@@ -437,7 +437,7 @@ app.post('/api/track', async (req, res) => {
 });
 
 // POST /api/session/start - Start a new session
-app.post('/api/session/start', async (req, res) => {
+app.post('/api/session/start', authenticateUser, async (req, res) => {
     try {
         const { userId } = req.body;
         if (!userId) {
@@ -470,7 +470,7 @@ app.post('/api/session/start', async (req, res) => {
 });
 
 // POST /api/session/end - End current session
-app.post('/api/session/end', async (req, res) => {
+app.post('/api/session/end', authenticateUser, async (req, res) => {
     try {
         const { userId } = req.body;
         if (!userId) {
@@ -701,7 +701,7 @@ app.get('/api/products/:id', async (req, res) => {
 });
 
 // POST /api/products (Add/Edit) - PROTECTED
-app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), async (req, res) => {
+app.post('/api/products', authenticateUser, requireAdmin, upload.array('images', 5), async (req, res) => {
     const { title, price, description, category, department, id, variations, stock, isUnique, stockStatus } = req.body;
 
     // Parse variations if it's a string (from FormData)
@@ -814,7 +814,7 @@ app.post('/api/products', verifyTelegramWebAppData, upload.array('images', 5), a
 });
 
 // DELETE /api/products/:id - PROTECTED
-app.delete('/api/products/:id', verifyTelegramWebAppData, async (req, res) => {
+app.delete('/api/products/:id', authenticateUser, requireAdmin, async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         await Product.findOneAndDelete({ id: id });
@@ -828,7 +828,7 @@ app.delete('/api/products/:id', verifyTelegramWebAppData, async (req, res) => {
 // --- ORDERS API ---
 
 // GET /api/orders
-app.get('/api/orders', async (req, res) => {
+app.get('/api/orders', authenticateUser, async (req, res) => {
     const { userId } = req.query;
     try {
         let query = {};
@@ -843,7 +843,7 @@ app.get('/api/orders', async (req, res) => {
 });
 
 // GET /api/users - PROTECTED
-app.get('/api/users', verifyTelegramWebAppData, async (req, res) => {
+app.get('/api/users', authenticateUser, requireAdmin, async (req, res) => {
     try {
         const users = await User.find({}).sort({ joinedAt: -1 }).limit(50); // Limit to last 50 for now
         res.json(users);
@@ -853,7 +853,7 @@ app.get('/api/users', verifyTelegramWebAppData, async (req, res) => {
 });
 
 // POST /api/orders
-app.post('/api/orders', async (req, res) => {
+app.post('/api/orders', authenticateUser, async (req, res) => {
     const { items, total_price, userId, userInfo } = req.body;
 
     try {
@@ -951,7 +951,7 @@ app.post('/api/orders', async (req, res) => {
 });
 
 // PATCH /api/orders/:id (Update Status) - PROTECTED
-app.patch('/api/orders/:id', verifyTelegramWebAppData, async (req, res) => {
+app.patch('/api/orders/:id', authenticateUser, requireAdmin, async (req, res) => {
     const id = parseInt(req.params.id);
     const { status } = req.body;
 
