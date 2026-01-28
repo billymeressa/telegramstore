@@ -2,8 +2,13 @@ import { useState, useEffect } from 'react';
 import Cart from '../components/Cart';
 import { Phone, MessageSquare, X, CheckCircle, Send, Tag } from 'lucide-react';
 import API_URL from '../config';
+import useStore from '../store/useStore';
 
-const CartPage = ({ cart, onRemove, onCheckout, sellerUsername }) => {
+const CartPage = ({ onCheckout, sellerUsername }) => {
+    // Zustand Store
+    const cart = useStore(state => state.cart);
+    const onRemove = useStore(state => state.removeFromCart);
+
     const totalPrice = cart.reduce((sum, item) => {
         const itemPrice = item.selectedVariation ? item.selectedVariation.price : item.price;
         return sum + itemPrice * item.quantity;

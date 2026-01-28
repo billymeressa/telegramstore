@@ -19,16 +19,25 @@ const SUBCATEGORIES = {
 };
 
 
-const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, products = [], isAdmin = false, sellerUsername }) => {
+const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUsername }) => {
     const { id } = useParams();
     const navigate = useNavigate();
+
+    // Zustand
+    const addToCart = useStore(state => state.addToCart);
+    const wishlist = useStore(state => state.wishlist);
+    const toggleWishlist = useStore(state => state.toggleWishlist);
 
     const [selectedImage, setSelectedImage] = useState(null);
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [selectedVariation, setSelectedVariation] = useState(null);
     const [isAdded, setIsAdded] = useState(false);
+    const [activeImageIndex, setActiveImageIndex] = useState(0);
+    const [showFullDesc, setShowFullDesc] = useState(false);
 
+    // Derived State
+    const isWishlisted = product ? wishlist.includes(product.id) : false;
 
     // Edit mode states
     const [isEditMode, setIsEditMode] = useState(false);
@@ -879,41 +888,27 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                         <Zap size={18} fill="currentColor" /> {isOutOfStock ? 'Sold Out' : 'Buy Now'}
                     </button>
                     <button
+                        disabled={isOutOfStock}
                         onClick={() => {
                             if (isOutOfStock) return;
+
+                            // Calculate final price based on selected variation or base price
                             const finalPrice = selectedVariation
                                 ? selectedVariation.price
                                 : product.price;
 
-                            onAdd({ ...product, selectedVariation, price: finalPrice });
+                            // 2. Add to Cart (Zustand)
+                            addToCart({ ...product, selectedVariation, price: finalPrice });
+
+                            // 3. Show Toast
                             setIsAdded(true);
-                            navigate('/cart');
+                            setTimeout(() => setIsAdded(false), 2000);
                         }}
-                        disabled={isOutOfStock}
-                        className={`flex-[2] py-3 rounded-xl font-semibold text-base shadow flex items-center justify-center gap-2 overflow-hidden relative transition-colors ${isOutOfStock
-                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            : (isAdded ? 'bg-green-500 text-white' : 'bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)]')
-                            }`}
+                        className={`flex-1 py-3 rounded-xl font-bold text-base shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2 border ${isAdded ? 'bg-green-100 text-green-700 border-green-200' : 'bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] border-gray-200'
+                            } ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
-                        {isOutOfStock ? (
-                            <span>Sold Out</span>
-                        ) : (
-                            <>
-                                <div
-                                    className={`absolute transition-all duration-300 ${isAdded ? 'opacity-0 -translate-y-8' : 'opacity-100 translate-y-0'}`}
-                                >
-                                    Add to Cart
-                                </div>
-                                <div
-                                    className={`absolute flex items-center gap-2 font-bold transition-all duration-300 ${isAdded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                                >
-                                    <Check size={20} />
-                                    Added
-                                </div>
-                                {/* Invisible spacer to maintain width/height */}
-                                <span className="opacity-0">Add to Cart</span>
-                            </>
-                        )}
+                        {isAdded ? <Check size={20} /> : <ShoppingBag size={20} />}
+                        {isAdded ? 'Added' : 'Add to Cart'}
                     </button>
                 </div>
             </div>
@@ -923,18 +918,20 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
 
 
             {/* Recommended Products Grid */}
-            {relatedProducts.length > 0 && (
-                <div
-                    ref={recommendedRef}
-                    className="p-4 pt-6 bg-[var(--tg-theme-secondary-bg-color)] mt-4 border-t border-[var(--tg-theme-section-separator-color)]"
-                >
-                    <h3 className="text-lg font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center gap-2">
-                        Recommended for You
-                    </h3>
-                    <ProductList products={relatedProducts} />
-                </div>
-            )}
-        </div>
+            {
+                relatedProducts.length > 0 && (
+                    <div
+                        ref={recommendedRef}
+                        className="p-4 pt-6 bg-[var(--tg-theme-secondary-bg-color)] mt-4 border-t border-[var(--tg-theme-section-separator-color)]"
+                    >
+                        <h3 className="text-lg font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center gap-2">
+                            Recommended for You
+                        </h3>
+                        <ProductList products={relatedProducts} />
+                    </div>
+                )
+            }
+        </div >
     );
 };
 

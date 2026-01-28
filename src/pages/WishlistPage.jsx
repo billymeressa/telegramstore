@@ -1,11 +1,17 @@
-import { useOutletContext, useNavigate } from 'react-router-dom';
-import ProductList from '../components/ProductList';
-import { Heart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import ProductCard from '../components/ProductCard';
+import { Heart, ArrowLeft } from 'lucide-react';
+import useStore from '../store/useStore';
 
-const WishlistPage = ({ products, wishlist, toggleWishlist }) => {
+const WishlistPage = ({ products }) => {
     const navigate = useNavigate();
 
-    const wishlistProducts = products.filter(p => wishlist.includes(p.id));
+    // Zustand
+    const wishlist = useStore(state => state.wishlist);
+    const toggleWishlist = useStore(state => state.toggleWishlist);
+    const addToCart = useStore(state => state.addToCart);
+
+    const wishlistedProducts = products.filter(p => wishlist.includes(p.id));
 
     return (
         <div className="min-h-screen bg-[var(--tg-theme-secondary-bg-color)] pb-24 font-sans">
@@ -35,12 +41,16 @@ const WishlistPage = ({ products, wishlist, toggleWishlist }) => {
                     </button>
                 </div>
             ) : (
-                <div className="mt-2">
-                    <ProductList
-                        products={wishlistProducts}
-                        wishlist={wishlist}
-                        onToggleWishlist={toggleWishlist}
-                    />
+                <div className="mt-2 grid grid-cols-2 gap-4 p-4">
+                    {wishlistedProducts.map(product => (
+                        <ProductCard
+                            key={product.id}
+                            product={product}
+                            onAdd={() => addToCart(product)}
+                            isWishlisted={true}
+                            onToggleWishlist={() => toggleWishlist(product.id)}
+                        />
+                    ))}
                 </div>
             )}
         </div>

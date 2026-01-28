@@ -69,8 +69,13 @@ const smartSort = (items) => {
 
 const ADMIN_ID = 748823605;
 
+// IMPORTS for Store
+import useStore from './store/useStore';
+
 function App() {
   const tele = window.Telegram?.WebApp;
+
+  // Local State for Products (still fetched here for now)
   const [products, setProducts] = useState(() => {
     try {
       const cached = localStorage.getItem('cached_products');
@@ -80,7 +85,10 @@ function App() {
     }
   });
 
-  const [cart, setCart] = useState([]);
+  // Global State (Selectors)
+  const cart = useStore(state => state.cart);
+  const clearCart = useStore(state => state.clearCart);
+
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [user, setUser] = useState(null);
@@ -89,14 +97,7 @@ function App() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
-  const [wishlist, setWishlist] = useState(() => {
-    try {
-      const saved = localStorage.getItem('wishlist');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(products.length === 0);
 
@@ -241,22 +242,18 @@ function App() {
 
         // Infinite Scroll: Loop back if we run out of data
         if ((newProducts.length === 0 || !more) && pageNum > 1 && products.length > 0) {
-          newProducts = products.slice(0, 20); // Re-append first 20 items
-          more = true; // Keep loading forever
+          // Keep user engaged, loop content
+          newProducts = products.slice(0, 20);
+          more = true;
         }
 
         if (pageNum === 1) {
-          // Shuffle first page for freshness
           const sorted = smartSort(newProducts);
           setProducts(sorted);
           localStorage.setItem('cached_products', JSON.stringify(sorted));
         } else {
-          // Also shuffle subsequent pages so they don't look static, but append them
           const sorted = smartSort(newProducts);
-          setProducts(prev => {
-            const updated = [...prev, ...sorted];
-            return updated;
-          });
+          setProducts(prev => [...prev, ...sorted]);
         }
 
         setHasMore(more);
@@ -278,48 +275,6 @@ function App() {
   const loadMore = () => {
     if (!isFetching && hasMore) {
       fetchProductData(page + 1);
-    }
-  };
-
-  const onAdd = (product) => {
-    // Generate a unique ID for this cart item to support distinct variations/duplicates
-    const cartId = Date.now() + Math.random().toString(36).substr(2, 9);
-    setCart([...cart, { ...product, quantity: 1, cartId }]);
-
-    if (tele?.HapticFeedback) {
-      tele.HapticFeedback.impactOccurred('light');
-    }
-
-    setToast(`Added ${product.title} to cart`);
-    trackEvent('add_to_cart', { productId: product.id, productTitle: product.title, price: product.price });
-  };
-
-
-
-
-
-  const toggleWishlist = useCallback((productId) => {
-    setWishlist(prev => {
-      const exists = prev.includes(productId);
-      const newWishlist = exists
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId];
-
-      localStorage.setItem('wishlist', JSON.stringify(newWishlist));
-      setToast(exists ? "Removed from wishlist" : "Added to wishlist");
-
-      if (window.Telegram?.WebApp?.HapticFeedback) {
-        window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-      }
-
-      return newWishlist;
-    });
-  }, []);
-
-  const onRemove = (product) => {
-    setCart(cart.filter((x) => x.cartId !== product.cartId));
-    if (tele?.HapticFeedback) {
-      tele.HapticFeedback.impactOccurred('medium');
     }
   };
 
@@ -347,7 +302,10 @@ function App() {
     try {
       const res = await fetch(`${API_URL}/api/orders`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': tele?.initData || ''
+        },
         body: JSON.stringify(orderData)
       });
       const data = await res.json();
@@ -360,7 +318,7 @@ function App() {
 
         // Only clear cart if we checked out the MAIN cart
         if (itemsToCheckout === cart) {
-          setCart([]);
+          clearCart();
         }
       } else {
         tele.showAlert('Failed to place order.');
@@ -369,7 +327,7 @@ function App() {
       console.error(e);
       tele.showAlert('Error processing order.');
     }
-  }, [cart, user, tele]);
+  }, [cart, user, tele, clearCart]);
 
   const onBuyNow = useCallback((product) => {
     onCheckout([{ ...product, quantity: 1 }]);
@@ -384,9 +342,6 @@ function App() {
             <Route path="/" element={
               <Home
                 products={products}
-                onAdd={onAdd}
-                wishlist={wishlist}
-                toggleWishlist={toggleWishlist}
                 hasMore={hasMore}
                 loadMore={loadMore}
                 isFetching={isFetching}
@@ -394,15 +349,13 @@ function App() {
             } />
             <Route path="/cart" element={
               <CartPage
-                cart={cart}
-                onRemove={onRemove}
                 onCheckout={onCheckout}
                 sellerUsername={sellerUsername}
               />
             } />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/wishlist" element={<WishlistPage products={products} wishlist={wishlist} toggleWishlist={toggleWishlist} />} />
-            <Route path="/product/:id" element={<ProductDetails onAdd={onAdd} onBuyNow={onBuyNow} wishlist={wishlist} toggleWishlist={toggleWishlist} products={products} isAdmin={isAdmin} sellerUsername={sellerUsername} />} />
+            <Route path="/wishlist" element={<WishlistPage products={products} />} />
+            <Route path="/product/:id" element={<ProductDetails onBuyNow={onBuyNow} products={products} isAdmin={isAdmin} sellerUsername={sellerUsername} />} />
             <Route path="/admin" element={isAdmin ? <AdminDashboard products={products} onProductUpdate={setProducts} /> : <Navigate to="/" />} />
             <Route path="/analytics" element={isSuperAdmin ? <AnalyticsDashboard /> : <Navigate to="/" />} />
           </Route>
