@@ -797,9 +797,34 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                     <button
                         onClick={() => {
                             if (isOutOfStock) return;
-                            // Use the centralized Buy Now logic (which uses sendData for auto-send)
-                            if (onBuyNow) {
-                                onBuyNow({ ...product, selectedVariation });
+
+                            // Interactive "Buy Now" Flow
+                            const tele = window.Telegram?.WebApp;
+                            const finalPrice = selectedVariation ? selectedVariation.price : product.price;
+                            const variationText = selectedVariation ? ` (${selectedVariation.name})` : '';
+
+                            // 1. Show Popup Confirmation
+                            if (tele) {
+                                tele.showPopup({
+                                    title: 'Start Purchase',
+                                    message: `Do you want to message the seller to buy ${product.title}${variationText} for ${Math.floor(finalPrice)} Birr?`,
+                                    buttons: [
+                                        { id: 'cancel', type: 'cancel' },
+                                        { id: 'ok', type: 'ok', text: 'Message Seller' }
+                                    ]
+                                }, (buttonId) => {
+                                    if (buttonId === 'ok') {
+                                        // 2. Open Direct Chat (Draft)
+                                        const message = `Hi! I'm interested in buying: ${product.title}${variationText} for ${Math.floor(finalPrice)} Birr. is it available?`;
+                                        const url = `https://t.me/${sellerUsername || 'AddisStoreSupport'}?text=${encodeURIComponent(message)}`;
+
+                                        tele.openTelegramLink(url);
+                                    }
+                                });
+                            } else {
+                                // Fallback for browser
+                                const message = `Hi! I'm interested in buying: ${product.title}${variationText} for ${Math.floor(finalPrice)} Birr.`;
+                                window.open(`https://t.me/${sellerUsername || 'AddisStoreSupport'}?text=${encodeURIComponent(message)}`, '_blank');
                             }
                         }}
                         disabled={isOutOfStock}
