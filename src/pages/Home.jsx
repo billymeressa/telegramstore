@@ -245,6 +245,22 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
     // ... existing infinite scroll effect remains ...
 
+    // Pin Tip Logic
+    const [showPinTip, setShowPinTip] = useState(false);
+
+    useEffect(() => {
+        const hasSeenPinTip = localStorage.getItem('hasSeenPinTip');
+        if (!hasSeenPinTip) {
+            // Show after a slight delay to not overwhelm immediately
+            setTimeout(() => setShowPinTip(true), 2000);
+        }
+    }, []);
+
+    const handleClosePinTip = () => {
+        setShowPinTip(false);
+        localStorage.setItem('hasSeenPinTip', 'true');
+    };
+
     return (
         <div className="pb-4 pt-28 min-h-screen bg-[var(--tg-theme-secondary-bg-color)]">
 
@@ -298,6 +314,30 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
             {/* Main Scrollable Content */}
             <div className="space-y-2">
 
+
+                {/* Pin Bot Tip Banner */}
+                {showPinTip && (
+                    <div className="mx-4 mb-2 p-3 bg-blue-50 border border-blue-100 rounded-xl relative flex items-start gap-3 shadow-sm animate-in slide-in-from-top-2 duration-300">
+                        <div className="bg-blue-100 p-1.5 rounded-lg text-blue-600 shrink-0">
+                            <span className="text-lg">📌</span>
+                        </div>
+                        <div className="flex-1">
+                            <h4 className="text-sm font-bold text-blue-900 leading-tight mb-0.5">Don't lose us!</h4>
+                            <p className="text-xs text-blue-700 leading-relaxed">
+                                Pin this bot to the top of your chat list for quick access later.
+                            </p>
+                            <p className="text-[10px] text-blue-500 mt-1 font-medium">
+                                (Long press chat &gt; Pin)
+                            </p>
+                        </div>
+                        <button
+                            onClick={handleClosePinTip}
+                            className="text-blue-400 hover:text-blue-600 p-1 -mt-1 -mr-1"
+                        >
+                            <X size={16} />
+                        </button>
+                    </div>
+                )}
 
                 {/* Main Product Grid */}
                 <div data-product-grid className="min-h-[50vh]"> {/* For scroll target */}

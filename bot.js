@@ -87,6 +87,7 @@ bot.command('start', async (ctx) => {
             `💳 Secure checkout in just 2 taps\n\n` +
             `🎁 *FIRST-TIME BUYER BONUS: 15% OFF!*\n` +
             `Use code: *WELCOME15* at checkout\n\n` +
+            `_📌 Tip: Pin this bot to the top of your chat list for easy access!_\n\n` +
             `_Questions? Contact ${adminUsername}_`,
             {
                 parse_mode: 'Markdown',
