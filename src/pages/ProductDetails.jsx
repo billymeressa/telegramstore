@@ -46,7 +46,9 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
         existingImages: [],  // URLs of existing images
         newImages: []        // File objects for new uploads
     });
+
     const [isSaving, setIsSaving] = useState(false);
+    const [showRedirectMessage, setShowRedirectMessage] = useState(false); // For Buy Now transition
 
     // Categories to demote (push to bottom)
     const GENERIC_CATEGORIES = ['Parts & Accessories', 'Tools', 'Tools & Equipment', 'Other', 'Computer Accessories', 'Cables', 'Adapters'];
@@ -249,6 +251,21 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                         <button className="px-3.5 py-1 rounded-full text-sm font-medium whitespace-nowrap bg-[var(--tg-theme-button-color)] text-white shadow-md flex-shrink-0">
                             Recommended
                         </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Redirect Notification Overlay - Non-intrusive w/o close button */}
+            {showRedirectMessage && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
+                    <div className="bg-black/80 backdrop-blur-md text-white px-6 py-4 rounded-2xl shadow-2xl flex flex-col items-center gap-3 animate-in zoom-in-95 fade-in duration-200">
+                        <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white mb-1 shadow-lg shadow-green-500/30">
+                            <Check size={28} strokeWidth={3} />
+                        </div>
+                        <div className="text-center">
+                            <h3 className="font-bold text-lg leading-tight">Order Started!</h3>
+                            <p className="text-sm text-white/80 mt-1">Opening chat...</p>
+                        </div>
                     </div>
                 </div>
             )}
@@ -806,12 +823,11 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                             const message = `Hi! I'm interested in buying: ${product.title}${variationText} for ${Math.floor(finalPrice)} Birr. is it available?`;
                             const url = `https://t.me/${sellerUsername || 'AddisStoreSupport'}?text=${encodeURIComponent(message)}`;
 
-                            // 2. Notify Backend Silently (so admin gets a bot notif too)
+                            // 2. Notify Backend Silently
                             try {
                                 const initData = window.Telegram?.WebApp?.initData || '';
                                 const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
 
-                                // Fire and forget (don't wait for it to block UI)
                                 fetch(`${API_URL}/api/notify-order`, {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
@@ -826,15 +842,23 @@ const ProductDetails = ({ onAdd, onBuyNow, wishlist = [], toggleWishlist, produc
                                 console.error("Setup error:", error);
                             }
 
-                            // 3. Show Alert & Redirect
-                            if (tele) {
-                                tele.showAlert(`✅ Order initiated!\n\nRedirecting you to the seller to arrange payment & delivery.`, () => {
-                                    tele.openTelegramLink(url);
-                                });
-                            } else {
-                                alert("Order initiated! Redirecting...");
-                                window.open(url, '_blank');
+                            // 3. Show Transient Toast & Redirect
+                            setShowRedirectMessage(true);
+
+                            // Haptic feedback
+                            if (tele?.HapticFeedback) {
+                                tele.HapticFeedback.notificationOccurred('success');
                             }
+
+                            setTimeout(() => {
+                                if (tele) {
+                                    tele.openTelegramLink(url);
+                                } else {
+                                    window.open(url, '_blank');
+                                }
+                                // Reset after reasonable time (or if they come back)
+                                setTimeout(() => setShowRedirectMessage(false), 1000);
+                            }, 1500);
                         }}
                         disabled={isOutOfStock}
                         className={`flex-1 py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity flex items-center justify-center gap-1 ${isOutOfStock
