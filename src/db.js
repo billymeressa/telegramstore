@@ -43,6 +43,26 @@ const productSchema = new mongoose.Schema({
     }]
 }, { timestamps: true });
 
+// Dynamic Price Anchoring Logic
+productSchema.pre('save', async function () {
+    // 1. Handle Main Product Price
+    if (this.price && (!this.originalPrice || this.originalPrice <= this.price)) {
+        // Generate random multiplier between 1.5 and 3.5
+        const multiplier = 1.5 + Math.random() * 2;
+        this.originalPrice = Math.ceil(this.price * multiplier);
+    }
+
+    // 2. Handle Variations
+    if (this.variations && this.variations.length > 0) {
+        this.variations.forEach(v => {
+            if (v.price && (!v.originalPrice || v.originalPrice <= v.price)) {
+                const multiplier = 1.5 + Math.random() * 2;
+                v.originalPrice = Math.ceil(v.price * multiplier);
+            }
+        });
+    }
+});
+
 const orderSchema = new mongoose.Schema({
     id: { type: Number, required: true, unique: true }, // Keeping numeric ID
     userId: { type: String }, // Telegram User ID
