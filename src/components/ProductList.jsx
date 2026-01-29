@@ -10,14 +10,13 @@ function ProductList({ products }) {
     const wishlist = useStore(state => state.wishlist);
     const toggleWishlist = useStore(state => state.toggleWishlist);
 
-    return (
     // Split products into two stable columns to prevent scroll glitching
     const leftColumn = products.filter((_, i) => i % 2 === 0);
     const rightColumn = products.filter((_, i) => i % 2 === 1);
 
     return (
-        <div className="flex gap-3 px-1 items-start">
-            <div className="flex-1 flex flex-col gap-3">
+        <div className="flex gap-2 px-1 items-start">
+            <div className="flex-1 flex flex-col gap-2">
                 {leftColumn.map((product) => (
                     <ProductCard
                         key={product.id}
@@ -28,7 +27,7 @@ function ProductList({ products }) {
                     />
                 ))}
             </div>
-            <div className="flex-1 flex flex-col gap-3">
+            <div className="flex-1 flex flex-col gap-2">
                 {rightColumn.map((product) => (
                     <ProductCard
                         key={product.id}
@@ -40,7 +39,6 @@ function ProductList({ products }) {
                 ))}
             </div>
         </div>
-    );
     );
 }
 
