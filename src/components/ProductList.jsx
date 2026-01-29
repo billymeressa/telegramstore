@@ -11,18 +11,36 @@ function ProductList({ products }) {
     const toggleWishlist = useStore(state => state.toggleWishlist);
 
     return (
-        <div className="columns-2 md:columns-3 gap-3 px-1">
-            {products.map((product) => (
-                <div key={product.id} className="break-inside-avoid mb-3">
+    // Split products into two stable columns to prevent scroll glitching
+    const leftColumn = products.filter((_, i) => i % 2 === 0);
+    const rightColumn = products.filter((_, i) => i % 2 === 1);
+
+    return (
+        <div className="flex gap-3 px-1 items-start">
+            <div className="flex-1 flex flex-col gap-3">
+                {leftColumn.map((product) => (
                     <ProductCard
+                        key={product.id}
                         product={product}
                         onAdd={() => addToCart(product)}
                         isWishlisted={wishlist.includes(product.id)}
                         onToggleWishlist={() => toggleWishlist(product.id)}
                     />
-                </div>
-            ))}
+                ))}
+            </div>
+            <div className="flex-1 flex flex-col gap-3">
+                {rightColumn.map((product) => (
+                    <ProductCard
+                        key={product.id}
+                        product={product}
+                        onAdd={() => addToCart(product)}
+                        isWishlisted={wishlist.includes(product.id)}
+                        onToggleWishlist={() => toggleWishlist(product.id)}
+                    />
+                ))}
+            </div>
         </div>
+    );
     );
 }
 
