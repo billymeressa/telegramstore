@@ -5,6 +5,7 @@ import ProductList from '../components/ProductList';
 
 
 import { smartSearch } from '../utils/smartSearch';
+import { throttle } from '../utils/throttle';
 import { Search, X, ShoppingBag } from 'lucide-react';
 
 
@@ -155,13 +156,13 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
     // Infinite Scroll Listener
     useEffect(() => {
-        const handleScroll = () => {
+        const handleScroll = throttle(() => {
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
                 if (hasMore && !isFetching && loadMore) {
                     loadMore();
                 }
             }
-        };
+        }, 200); // Check every 200ms
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);

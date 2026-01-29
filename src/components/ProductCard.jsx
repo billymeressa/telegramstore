@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Package, Heart, ShoppingCart, CheckCircle } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import useStore from '../store/useStore';
 import FlashSaleTimer from './FlashSaleTimer';
 
@@ -150,4 +150,10 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
     );
 }
 
-export default ProductCard;
+// Memoize to prevent re-renders when parent scroll triggers state changes that don't affect card
+export default React.memo(ProductCard, (prevProps, nextProps) => {
+    return prevProps.product.id === nextProps.product.id &&
+        prevProps.isWishlisted === nextProps.isWishlisted &&
+        prevProps.product.stock === nextProps.product.stock && // Check stock updates
+        prevProps.product.price === nextProps.product.price;   // Check price updates
+});
