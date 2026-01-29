@@ -240,7 +240,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                 className="fixed top-tg-safe left-0 right-0 z-50 flex flex-col bg-[var(--tg-theme-bg-color)] shadow-sm"
             >
                 {/* Search Bar */}
-                <div className="pt-2 pb-2 px-3 border-b border-[var(--tg-theme-section-separator-color)] flex gap-2 items-center">
+                <div className="pt-tg-safe pb-2 px-3 border-b border-[var(--tg-theme-section-separator-color)] flex gap-2 items-center">
                     <div className="relative flex-1">
                         <input
                             type="text"
