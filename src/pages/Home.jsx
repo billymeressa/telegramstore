@@ -194,7 +194,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
             {/* Scroll-Aware Fixed Header Group */}
             <div
-                className="fixed top-0 left-0 right-0 z-50 flex flex-col bg-[var(--tg-theme-bg-color)]/80 backdrop-blur-md shadow-sm pt-[var(--tg-safe-area-top)]"
+                className="fixed top-0 left-0 right-0 z-50 flex flex-col bg-[var(--tg-theme-bg-color)] shadow-sm pt-[var(--tg-safe-area-top)]"
             >
                 {/* Search Bar Row - Vertically centered with native buttons */}
                 <div className="px-[110px] flex gap-2 items-center h-[var(--tg-header-buttons-height)] min-h-[44px] w-full box-border">
