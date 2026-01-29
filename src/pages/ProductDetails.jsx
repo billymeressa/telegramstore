@@ -55,8 +55,42 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
         return Math.floor(base * multiplier);
     }, [intensity, settings.system_social_proof_mult]);
 
+
     // Derived State
     const isWishlisted = product ? wishlist.includes(product.id) : false;
+
+    // View Tracking
+    useEffect(() => {
+        if (product && product.id) {
+            // Track View for Freshness Logic
+            try {
+                const seen = JSON.parse(localStorage.getItem('seen_products') || '[]');
+                if (!seen.includes(product.id)) {
+                    seen.push(product.id);
+                    localStorage.setItem('seen_products', JSON.stringify(seen));
+                }
+            } catch (e) {
+                console.error("Error tracking seen product", e);
+            }
+
+            // Track detailed analytics
+            trackEvent('view_product', {
+                productId: product.id,
+                productTitle: product.title,
+                category: product.category,
+                price: product.price
+            });
+
+            // Update user interests
+            if (product.category) {
+                try {
+                    const interests = JSON.parse(localStorage.getItem('user_interests') || '{}');
+                    interests[product.category] = (interests[product.category] || 0) + 1;
+                    localStorage.setItem('user_interests', JSON.stringify(interests));
+                } catch (e) { console.error(e); }
+            }
+        }
+    }, [product]);
 
     // Edit mode states
     const [isEditMode, setIsEditMode] = useState(false);

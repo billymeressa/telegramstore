@@ -26,10 +26,12 @@ const GENERIC_CATEGORIES = ['Parts & Accessories', 'Tools', 'Tools & Equipment',
 const smartSort = (items) => {
   if (!items || items.length === 0) return [];
 
-  // 1. Get User Preferences
+  // 1. Get User Data
   let interests = {};
+  let seenIds = [];
   try {
     interests = JSON.parse(localStorage.getItem('user_interests') || '{}');
+    seenIds = JSON.parse(localStorage.getItem('seen_products') || '[]');
   } catch (e) {
     console.error(e);
   }
@@ -40,33 +42,48 @@ const smartSort = (items) => {
     .slice(0, 3)
     .map(([cat]) => cat);
 
-  // 2. Bucket Items
-  const personalized = [];
-  const premium = [];
-  const generic = [];
+  // 2. Separate Seen vs Unseen
+  const unseenItems = [];
+  const seenItems = [];
 
   items.forEach(p => {
-    const cat = p.category || 'Other';
-    if (GENERIC_CATEGORIES.includes(cat)) {
-      generic.push(p);
-    } else if (topCategories.includes(cat)) {
-      personalized.push(p);
+    if (seenIds.includes(p.id)) {
+      seenItems.push(p);
     } else {
-      premium.push(p);
+      unseenItems.push(p);
     }
   });
 
-  // 3. Shuffle Helpers
-  const shuffle = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
+  // 3. Bucket Helper
+  const bucketAndShuffle = (list) => {
+    const personalized = [];
+    const premium = [];
+    const generic = [];
+
+    list.forEach(p => {
+      const cat = p.category || 'Other';
+      if (GENERIC_CATEGORIES.includes(cat)) {
+        generic.push(p);
+      } else if (topCategories.includes(cat)) {
+        personalized.push(p);
+      } else {
+        premium.push(p);
+      }
+    });
+
+    const shuffle = (array) => {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    };
+
+    return [...shuffle(personalized), ...shuffle(premium), ...generic];
   };
 
-  // 4. Final Mix: Personalized First -> Other Premium -> Generic (Bottom)
-  return [...shuffle(personalized), ...shuffle(premium), ...generic];
+  // 4. Final Mix: Unseen (Sorted) -> Seen (Sorted)
+  return [...bucketAndShuffle(unseenItems), ...bucketAndShuffle(seenItems)];
 };
 
 const ADMIN_ID = 748823605;
