@@ -128,6 +128,17 @@ const userSchema = new mongoose.Schema({
     walletBalance: { type: Number, default: 0 },
     referralCode: { type: String, unique: true, default: () => Math.random().toString(36).substring(2, 8).toUpperCase() },
     referredBy: { type: String }, // Referral code of the referrer
+    cart: [{
+        productId: { type: Number },
+        title: { type: String },
+        quantity: { type: Number },
+        price: { type: Number },
+        selectedVariation: {
+            name: String,
+            price: Number
+        }
+    }],
+    lastCartUpdate: { type: Date },
     rewardHistory: [{
         type: { type: String, enum: ['daily_checkin', 'referral_bonus', 'purchase_reward', 'other'] },
         amount: { type: Number, required: true },

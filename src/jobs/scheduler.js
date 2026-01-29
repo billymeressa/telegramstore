@@ -133,6 +133,57 @@ const initScheduler = (bot) => {
         timezone: "Africa/Addis_Ababa"
     });
 
+    // 5. Cart Abandonment Reminder (Hourly)
+    // Run at min 30 of every hour
+    cron.schedule('30 * * * *', async () => {
+        console.log('🛒 Checking for Abandoned Carts...');
+        try {
+            const now = new Date();
+            const ONE_HOUR = 60 * 60 * 1000;
+            const TWO_HOURS = 2 * 60 * 60 * 1000;
+
+            // Find carts updated > 1 hour ago but < 2 hours ago (to notify only once)
+            // And cart has items
+            const abandonDateStart = new Date(now.getTime() - TWO_HOURS);
+            const abandonDateEnd = new Date(now.getTime() - ONE_HOUR);
+
+            // Fetch users with non-empty cart updated in the window
+            const users = await User.find({
+                'cart.0': { $exists: true }, // Cart not empty
+                lastCartUpdate: { $gte: abandonDateStart, $lt: abandonDateEnd }
+            });
+
+            if (users.length > 0) {
+                console.log(`Found ${users.length} abandoned carts. Sending nudges...`);
+                for (const user of users) {
+                    try {
+                        const itemCount = user.cart.reduce((s, i) => s + (i.quantity || 1), 0);
+                        const firstProduct = user.cart[0].title;
+
+                        await bot.telegram.sendMessage(
+                            user.userId,
+                            `🛒 **You left something behind!**\n\n` +
+                            `You have ${itemCount} items including *${firstProduct}* waiting for you.\n` +
+                            `They might sell out soon!`,
+                            {
+                                parse_mode: 'Markdown',
+                                reply_markup: {
+                                    inline_keyboard: [[{ text: "🏃‍♂️ Complete Order", web_app: { url: process.env.WEB_APP_URL } }]]
+                                }
+                            }
+                        );
+                    } catch (err) {
+                        console.error(`Failed to msg ${user.userId}:`, err.message);
+                    }
+                }
+            }
+        } catch (e) {
+            console.error("Cart Abandonment Job Error:", e);
+        }
+    }, {
+        timezone: "Africa/Addis_Ababa"
+    });
+
     console.log('✅ Scheduler active.');
 };
 

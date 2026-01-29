@@ -2,6 +2,29 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { trackEvent } from '../utils/track';
 
+// Debounce timer for cart sync
+let syncTimer = null;
+
+const syncCartToBackend = (cart) => {
+    if (syncTimer) clearTimeout(syncTimer);
+
+    syncTimer = setTimeout(() => {
+        const initData = window.Telegram?.WebApp?.initData;
+        if (!initData) return;
+
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+        fetch(`${API_URL}/api/cart/sync`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': initData
+            },
+            body: JSON.stringify({ cart })
+        }).catch(err => console.error("Cart Sync Failed:", err));
+    }, 2000); // 2 second debounce
+};
+
 const useStore = create(
     persist(
         (set, get) => ({
@@ -19,22 +42,6 @@ const useStore = create(
                 try {
                     const initData = window.Telegram?.WebApp?.initData;
                     if (!initData) return;
-
-                    // Dynamically import config to avoid circular deps if any, or just fetch directly
-                    // Assuming API_URL is needed, but usually we use relative path in prod or env. 
-                    // Let's assume relative path /api or from config. 
-                    // To be safe, I'll use the one from config.js or relative if served from same origin.
-                    // Since frontend sets API_URL, I should probably pass it or assume relative if built.
-                    // But for dev, we need the full URL.
-                    // I'll skip importing config and try relative '/api/user/me' assuming proxy or same origin, 
-                    // OR if I can import config.js let's check imports. 
-                    // useStore doesn't import config currently. 
-                    // Let's import API_URL at the top if needed. 
-                    // WAIT: ReplaceFileContent replaces lines. I can't easily add import at top without potentially breaking if I don't see it.
-                    // But I saw the file content, it has `import { trackEvent }`. 
-                    // I'll grab API_URL from window or env if available, or hardcode/relative.
-                    // Given the environment, let's use a hardcoded fallback or relative.
-                    // Actually, let's fetch from `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/user/me`
 
                     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -76,10 +83,28 @@ const useStore = create(
 
             addToCart: (product) => {
                 const { cart } = get();
-                const cartId = Date.now() + Math.random().toString(36).substr(2, 9);
-                const newItem = { ...product, quantity: 1, cartId };
+                // Determine if this exact item (same ID and same variation) exists
+                const existingItem = cart.find(item =>
+                    item.id === product.id &&
+                    // Use optional chaining carefully. If both lack selectedVariation, they match.
+                    (item.selectedVariation?.name === product.selectedVariation?.name)
+                );
 
-                set({ cart: [...cart, newItem] });
+                let newCart;
+
+                if (existingItem) {
+                    newCart = cart.map(item =>
+                        (item.id === product.id && item.selectedVariation?.name === product.selectedVariation?.name)
+                            ? { ...item, quantity: item.quantity + 1 }
+                            : item
+                    );
+                } else {
+                    const cartId = Date.now() + Math.random().toString(36).substr(2, 9);
+                    newCart = [...cart, { ...product, quantity: 1, cartId }];
+                }
+
+                set({ cart: newCart });
+                syncCartToBackend(newCart);
 
                 // Side Effects
                 if (window.Telegram?.WebApp?.HapticFeedback) {
@@ -93,9 +118,11 @@ const useStore = create(
             },
 
             removeFromCart: (cartId) => {
-                set((state) => ({
-                    cart: state.cart.filter((item) => item.cartId !== cartId)
-                }));
+                const { cart } = get();
+                const newCart = cart.filter((item) => item.cartId !== cartId);
+
+                set({ cart: newCart });
+                syncCartToBackend(newCart);
 
                 if (window.Telegram?.WebApp?.HapticFeedback) {
                     window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
@@ -104,6 +131,7 @@ const useStore = create(
 
             clearCart: () => {
                 set({ cart: [] });
+                syncCartToBackend([]);
             },
 
             toggleWishlist: (productId) => {

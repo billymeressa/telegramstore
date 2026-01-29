@@ -196,6 +196,47 @@ bot.on('web_app_data', (ctx) => {
     }
 });
 
+// Broadcast Command (Admin Only)
+bot.command('broadcast', async (ctx) => {
+    try {
+        const userId = ctx.from.id.toString();
+        const adminId = (process.env.ADMIN_ID || '').toString();
+
+        if (userId !== adminId) {
+            return ctx.reply('⛔ Unauthorized.');
+        }
+
+        const message = ctx.payload;
+        if (!message) {
+            return ctx.reply('⚠️ Usage: /broadcast <message>');
+        }
+
+        const users = await User.find({});
+        let successCount = 0;
+        let failCount = 0;
+
+        await ctx.reply(`📢 Starting broadcast to ${users.length} users...`);
+
+        for (const user of users) {
+            try {
+                await bot.telegram.sendMessage(user.userId, `📢 *Announcement*\n\n${message}`, { parse_mode: 'Markdown' });
+                successCount++;
+                // Tiny delay to be safe
+                await new Promise(r => setTimeout(r, 50));
+            } catch (e) {
+                failCount++;
+                console.error(`Failed to broadcast to ${user.userId}:`, e.message);
+            }
+        }
+
+        ctx.reply(`✅ Broadcast Complete!\nSent: ${successCount}\nFailed: ${failCount}`);
+
+    } catch (e) {
+        console.error("Broadcast Error:", e);
+        ctx.reply('❌ Error executing broadcast.');
+    }
+});
+
 bot.on('text', async (ctx) => {
     try {
         await ctx.reply(
@@ -647,6 +688,39 @@ app.post('/api/session/end', authenticateUser, async (req, res) => {
     } catch (err) {
         console.error("Session End Error:", err);
         res.status(500).json({ error: 'Failed to end session' });
+    }
+});
+
+// POST /api/cart/sync - Sync frontend cart to backend
+app.post('/api/cart/sync', authenticateUser, async (req, res) => {
+    try {
+        const { cart } = req.body;
+        if (!Array.isArray(cart)) {
+            return res.status(400).json({ error: 'Invalid cart format' });
+        }
+
+        const userId = req.telegramUser.id.toString();
+        const user = await User.findOne({ userId });
+
+        if (user) {
+            user.cart = cart.map(item => ({
+                productId: item.id,
+                title: item.title,
+                quantity: item.quantity,
+                price: item.price,
+                selectedVariation: item.selectedVariation ? {
+                    name: item.selectedVariation.name,
+                    price: item.selectedVariation.price
+                } : undefined
+            }));
+            user.lastCartUpdate = new Date();
+            await user.save();
+        }
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error("Cart Sync Error:", err);
+        res.status(500).json({ error: 'Failed to sync cart' });
     }
 });
 
