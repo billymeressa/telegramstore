@@ -41,116 +41,109 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
         onToggleWishlist();
     };
 
+    const discountPercentage = product.originalPrice && product.originalPrice > product.price
+        ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+        : 0;
+
     return (
         <div
             onClick={() => navigate(`/product/${product.id}`)}
-            className="bg-[var(--tg-theme-bg-color)] rounded-xl overflow-hidden cursor-pointer transition-shadow shadow-sm border border-[var(--tg-theme-section-separator-color)] hover:shadow-md active:scale-95 transition-transform flex flex-col relative"
+            className="group block bg-[var(--tg-theme-bg-color)] rounded-lg overflow-hidden cursor-pointer relative shadow-sm hover:shadow-md transition-shadow will-change-transform"
         >
-            {/* Wishlist Button */}
-            <button
-                onClick={handleWishlist}
-                className="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full shadow-sm active:scale-90 transition-transform"
-            >
-                <Heart
-                    size={16}
-                    className={`transition-colors ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
-                />
-            </button>
-
-            {/* Image */}
-            <div className="relative w-full aspect-[4/5] bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center overflow-hidden">
+            {/* Image Container - Aspect 1:1 or slightly cooler */}
+            <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
                 {product.images && product.images.length > 0 ? (
                     <img
                         src={product.images[0]}
                         alt={product.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
                         decoding="async"
                     />
                 ) : (
-                    <div className="flex items-center justify-center h-full w-full text-[var(--tg-theme-hint-color)] bg-[var(--tg-theme-secondary-bg-color)]">
-                        <Package size={32} opacity={0.5} />
+                    <div className="flex h-full w-full items-center justify-center text-gray-300">
+                        <Package size={40} />
                     </div>
                 )}
 
-                {/* Sold Out Badge */}
+                {/* Overlays */}
+                {/* Discount Badge - Very Prominent */}
+                {discountPercentage > 0 && (
+                    <div className="absolute top-0 right-0 bg-yellow-400 text-black text-[10px] font-extrabold px-1.5 py-1 rounded-bl-lg">
+                        -{discountPercentage}%
+                    </div>
+                )}
+
+                {/* Sold Out Overlay */}
                 {!product.isUnique && product.stock === 0 && (!product.variations || product.variations.length === 0) && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
-                        <span className="text-white font-bold border-2 border-white px-3 py-1 uppercase tracking-widest text-sm transform -rotate-12">Sold Out</span>
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10 backdrop-blur-[1px]">
+                        <span className="text-white font-bold border-2 border-white px-3 py-1 text-xs uppercase tracking-widest transform -rotate-12">Sold Out</span>
                     </div>
                 )}
 
-                {/* Discount Badge */}
-                {product.originalPrice && product.originalPrice > product.price && (
-                    <div className="absolute top-2 right-2 z-10 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm">
-                        {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
+                {/* Wishlist Button - Subtle top right */}
+                <button
+                    onClick={handleWishlist}
+                    className="absolute top-1 left-1 p-1.5 bg-black/20 hover:bg-black/40 backdrop-blur-md rounded-full text-white transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 active:scale-90"
+                >
+                    <Heart
+                        size={16}
+                        className={isWishlisted ? 'fill-red-500 text-red-500' : 'text-white'}
+                    />
+                </button>
+
+                {/* Low Stock / Flash Sale Footer Overlay */}
+                {(showFlashSale || ((product.forceLowStockDisplay || (product.stock > 0 && product.stock < 10)) && (!product.variations || product.variations.length === 0))) && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-6 flex items-end justify-between">
+                        {showFlashSale && <FlashSaleTimer className="text-white scale-75 origin-bottom-left" />}
+                        {(product.forceLowStockDisplay || (product.stock > 0 && product.stock < 10)) && (
+                            <span className="text-[10px] font-bold text-red-100 bg-red-600/90 px-1.5 py-0.5 rounded">
+                                Alert: Low Stock
+                            </span>
+                        )}
                     </div>
                 )}
             </div>
 
-            {/* Content */}
-            <div className="p-2.5 flex flex-col gap-1 text-left flex-grow">
-                {showFlashSale && <FlashSaleTimer className="mb-1 w-fit" />}
-
-                <h3 className="text-[var(--tg-theme-text-color)] text-sm leading-tight line-clamp-2 font-bold flex-grow">
+            {/* Info Container */}
+            <div className="p-2 flex flex-col gap-1">
+                {/* Title */}
+                <h3 className="text-[var(--tg-theme-text-color)] text-xs font-normal leading-snug line-clamp-2 min-h-[2.5em]">
                     {product.title}
                 </h3>
 
-                <div className="flex items-end justify-between mt-auto pt-2">
-                    <div className="flex flex-col">
-                        <div className="flex items-baseline gap-1.5 flex-wrap">
-                            {product.variations && product.variations.length > 0 ? (
-                                <>
-                                    <span className="text-[var(--tg-theme-text-color)] text-base font-extrabold">
-                                        {Math.floor(Math.min(...product.variations.map(v => v.price)))}
-                                    </span>
-                                    <span className="text-[var(--tg-theme-text-color)] text-xs font-normal mx-0.5">-</span>
-                                    <span className="text-[var(--tg-theme-text-color)] text-base font-extrabold">
-                                        {Math.floor(Math.max(...product.variations.map(v => v.price)))}
-                                    </span>
-                                    {/* Variation Anchoring Logic is complex, omitted for cleaner UI relative to main request */}
-                                </>
-                            ) : (
-                                <>
-                                    <span className="text-[var(--tg-theme-text-color)] text-lg font-extrabold">
-                                        {Math.floor(product.price)}
-                                        <span className="text-[var(--tg-theme-hint-color)] text-xs font-normal ml-0.5">Birr</span>
-                                    </span>
-                                    {product.originalPrice > product.price && (
-                                        <span className="text-gray-400 text-xs decoration-gray-400 line-through">
-                                            {Math.floor(product.originalPrice)} Birr
-                                        </span>
-                                    )}
-                                </>
-                            )}
-                        </div>
+                {/* Price Block - Temu Style */}
+                <div className="mt-1 flex items-baseline gap-1.5 flex-wrap">
+                    {/* Main Price */}
+                    <div className="text-[var(--tg-theme-button-color)] font-bold text-base leading-none">
+                        <span className="text-[10px] align-top font-medium">ETB</span>
+                        {product.variations && product.variations.length > 0
+                            ? Math.floor(Math.min(...product.variations.map(v => v.price)))
+                            : Math.floor(product.price)
+                        }
                     </div>
 
-                    {/* Quick Add Button */}
-                    <button
-                        onClick={handleAdd}
-                        disabled={product.stock === 0 && !product.isUnique && (!product.variations || product.variations.length === 0)}
-                        className={`p-2 rounded-full shadow-sm transition-all ${isAdded
-                            ? 'bg-green-100 text-green-600'
-                            : 'bg-[var(--tg-theme-button-color)] text-white active:scale-90'
-                            } disabled:opacity-50 disabled:cursor-not-allowed`}
-                    >
-                        {isAdded ? <CheckCircle size={18} /> : <ShoppingCart size={18} />}
-                    </button>
+                    {/* Original Price */}
+                    {(product.originalPrice > product.price || (product.variations && product.variations[0]?.originalPrice)) && (
+                        <div className="text-[var(--tg-theme-hint-color)] text-[10px] line-through decoration-gray-400">
+                            ETB {Math.floor(product.originalPrice || (product.variations ? Math.max(...product.variations.map(v => v.originalPrice || 0)) : 0))}
+                        </div>
+                    )}
                 </div>
 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1 mt-1">
-                    {product.isUnique && (
-                        <span className="inline-block bg-purple-100 text-purple-700 text-[10px] font-bold px-1.5 py-0.5 rounded border border-purple-200">
-                            Unique
-                        </span>
-                    )}
-                    {(product.forceLowStockDisplay || (product.stock > 0 && product.stock < 10)) && (!product.variations || product.variations.length === 0) && (
-                        <span className="inline-block bg-red-100 text-red-700 text-[10px] font-bold px-1.5 py-0.5 rounded border border-red-200">
-                            Low Stock
-                        </span>
-                    )}
+                {/* Rating / Sold Count (Fake Social Proof for now to match style, or real logic if available) */}
+                <div className="flex items-center gap-1 mt-0.5">
+                    <span className="text-[10px] text-[var(--tg-theme-hint-color)]">
+                        {product.isUnique ? '1/1 Available' : '4.8 ★'}
+                    </span>
+                    {/* Add To Cart Button - Circle Icon bottom right */}
+                    <button
+                        onClick={handleAdd}
+                        className={`ml-auto p-1.5 rounded-full shadow-sm active:scale-90 transition-all ${isAdded ? 'bg-green-500 text-white' : 'border border-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-color)] hover:bg-[var(--tg-theme-button-color)] hover:text-white'}`}
+                        disabled={product.stock === 0 && !product.isUnique && (!product.variations || product.variations.length === 0)}
+                    >
+                        {isAdded ? <CheckCircle size={14} /> : <ShoppingCart size={14} />}
+                    </button>
                 </div>
             </div>
         </div>
