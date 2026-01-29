@@ -48,8 +48,47 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
         ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
         : 0;
 
+    // Track Impression for Fresh Rotation
+    React.useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Set timeout to mark as seen after 1.5s of visibility
+                    const timeoutId = setTimeout(() => {
+                        try {
+                            const seen = JSON.parse(localStorage.getItem('seen_products') || '[]');
+                            if (!seen.includes(product.id)) {
+                                seen.push(product.id);
+                                localStorage.setItem('seen_products', JSON.stringify(seen));
+                            }
+                        } catch (e) { console.error(e); }
+                    }, 1500);
+
+                    // Store ID to clear timeout if scrolled away quickly
+                    entry.target.dataset.timeoutId = timeoutId;
+                } else {
+                    // Clear timeout if scrolled away before 1.5s
+                    const timeoutId = entry.target.dataset.timeoutId;
+                    if (timeoutId) {
+                        clearTimeout(parseInt(timeoutId));
+                        delete entry.target.dataset.timeoutId;
+                    }
+                }
+            });
+        }, { threshold: 0.6 }); // 60% of card must be visible
+
+        const card = document.getElementById(`product-card-${product.id}`);
+        if (card) observer.observe(card);
+
+        return () => {
+            if (card) observer.unobserve(card);
+            observer.disconnect();
+        };
+    }, [product.id]);
+
     return (
         <div
+            id={`product-card-${product.id}`}
             onClick={() => navigate(`/product/${product.id}`)}
             className="group block bg-[var(--tg-theme-bg-color)] rounded-lg overflow-hidden cursor-pointer relative shadow-sm hover:shadow-md transition-shadow"
         >
