@@ -144,6 +144,9 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
     return (
         <div className="bg-gray-50 min-h-dvh pb-40 font-sans pt-[var(--tg-content-safe-area-top)]">
 
+            {/* Gamification: Progress Bar */}
+            <CartProgress />
+
             {/* Header / Subtotal - Clean Card Style */}
             {cart.length > 0 && (
                 <div className="bg-white p-4 mb-2 shadow-sm border-b border-gray-100">

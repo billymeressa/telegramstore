@@ -23,7 +23,8 @@ import { smartSort } from './utils/smartSort';
 
 const ADMIN_ID = 748823605;
 
-// IMPORTS for Store
+import LiveSalesNotification from './components/LiveSalesNotification';
+import MysteryGift from './components/MysteryGift';
 import useStore from './store/useStore';
 
 function App() {
@@ -374,6 +375,8 @@ function App() {
         sellerUsername={sellerUsername}
         orderMessage={orderMessage}
       />
+      <LiveSalesNotification products={products} />
+      <MysteryGift />
     </BrowserRouter>
   );
 }
