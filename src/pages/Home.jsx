@@ -194,7 +194,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
         <div className="pb-4 min-h-dvh bg-gray-50">
 
             {/* Standard Scrollable Header Group */}
-            <div className="bg-white shadow-sm pt-[var(--tg-safe-area-top)]">
+            <div className="sticky top-0 z-50 bg-white shadow-sm pt-[var(--tg-safe-area-top)] transition-all">
                 {/* Search Bar Row */}
                 <div className="px-3 flex gap-3 items-center h-[var(--tg-header-buttons-height)] min-h-[52px] w-full box-border pb-1">
                     <div className="flex-1 relative">
