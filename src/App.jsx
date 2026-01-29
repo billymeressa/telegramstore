@@ -126,6 +126,21 @@ function App() {
         try {
           tele.headerColor = tele.themeParams.bg_color || '#ffffff';
           tele.backgroundColor = tele.themeParams.secondary_bg_color || '#f4f4f5';
+
+          // Sync Safe Areas
+          const syncSafeAreas = () => {
+            if (tele.contentSafeAreaInset) {
+              const { top, bottom } = tele.contentSafeAreaInset;
+              document.documentElement.style.setProperty('--tg-safe-area-top', `${top}px`);
+              document.documentElement.style.setProperty('--tg-safe-area-bottom', `${bottom}px`);
+            }
+          };
+
+          syncSafeAreas();
+          if (tele.onEvent) {
+            tele.onEvent('safeAreaChanged', syncSafeAreas);
+            tele.onEvent('contentSafeAreaChanged', syncSafeAreas);
+          }
         } catch (e) {
           console.error(e);
         }

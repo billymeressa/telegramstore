@@ -127,7 +127,7 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
 
             {/* Bottom Checkout Bar */}
             {cart.length > 0 && (
-                <div className="fixed bottom-[56px] left-0 right-0 bg-[var(--tg-theme-bg-color)] border-t border-[var(--tg-theme-section-separator-color)] p-3 z-30 pb-safe">
+                <div className="fixed bottom-[calc(60px+var(--tg-safe-area-bottom))] left-0 right-0 bg-[var(--tg-theme-bg-color)] border-t border-[var(--tg-theme-section-separator-color)] p-3 z-30">
                     {/* Promo Code Input */}
                     <div className="flex gap-2 mb-3">
                         <div className="relative flex-1">
