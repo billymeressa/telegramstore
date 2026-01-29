@@ -233,14 +233,14 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
     };
 
     return (
-        <div className="pb-4 pt-[calc(100px+var(--safe-area-top))] min-h-dvh bg-[var(--tg-theme-secondary-bg-color)]">
+        <div className="pb-4 pt-[calc(var(--tg-content-safe-area-top)+44px)] min-h-dvh bg-[var(--tg-theme-secondary-bg-color)]">
 
             {/* Scroll-Aware Fixed Header Group */}
             <div
-                className="fixed top-0 left-0 right-0 z-50 flex flex-col bg-[var(--tg-theme-bg-color)]/80 backdrop-blur-md shadow-sm"
+                className="fixed top-0 left-0 right-0 z-50 flex flex-col bg-[var(--tg-theme-bg-color)]/80 backdrop-blur-md shadow-sm pt-[var(--tg-safe-area-top)]"
             >
-                {/* Search Bar Row - High padding-right to avoid native buttons */}
-                <div className="pt-tg-safe pb-2 px-3 pr-24 flex gap-2 items-center">
+                {/* Search Bar Row - Vertically centered with native buttons */}
+                <div className="px-3 pr-[100px] flex gap-2 items-center h-[var(--tg-header-buttons-height)]">
                     <div className="relative flex-1">
                         <input
                             type="text"

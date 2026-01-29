@@ -129,11 +129,19 @@ function App() {
 
           // Sync Safe Areas
           const syncSafeAreas = () => {
-            if (tele.contentSafeAreaInset) {
-              const { top, bottom } = tele.contentSafeAreaInset;
-              document.documentElement.style.setProperty('--tg-safe-area-top', `${top}px`);
-              document.documentElement.style.setProperty('--tg-safe-area-bottom', `${bottom}px`);
-            }
+            const safeTop = tele.safeAreaInset?.top || 0;
+            const contentTop = tele.contentSafeAreaInset?.top || 0;
+            const safeBottom = tele.safeAreaInset?.bottom || 0;
+            const contentBottom = tele.contentSafeAreaInset?.bottom || 0;
+
+            document.documentElement.style.setProperty('--tg-safe-area-top', `${safeTop}px`);
+            document.documentElement.style.setProperty('--tg-content-safe-area-top', `${contentTop}px`);
+            document.documentElement.style.setProperty('--tg-safe-area-bottom', `${safeBottom}px`);
+            document.documentElement.style.setProperty('--tg-content-safe-area-bottom', `${contentBottom}px`);
+
+            // Header height (area where native buttons sit)
+            const headerHeight = contentTop - safeTop;
+            document.documentElement.style.setProperty('--tg-header-buttons-height', `${headerHeight > 0 ? headerHeight : 44}px`);
           };
 
           syncSafeAreas();
