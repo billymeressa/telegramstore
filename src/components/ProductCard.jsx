@@ -21,7 +21,7 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
     return (
         <div
             onClick={() => navigate(`/product/${product.id}`)}
-            className="bg-[var(--tg-theme-bg-color)] rounded-xl overflow-hidden cursor-pointer transition-shadow shadow-sm border border-[var(--tg-theme-section-separator-color)] hover:shadow-md active:scale-95 transition-transform flex flex-col h-full relative"
+            className="bg-[var(--tg-theme-bg-color)] rounded-xl overflow-hidden cursor-pointer transition-shadow shadow-sm border border-[var(--tg-theme-section-separator-color)] hover:shadow-md active:scale-95 transition-transform flex flex-col relative"
         >
             {/* Wishlist Button */}
             <button
