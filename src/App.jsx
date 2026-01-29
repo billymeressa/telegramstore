@@ -118,13 +118,13 @@ function App() {
         tele.expand();
 
         // Try to enter fullscreen mode (introduced in Bot API 8.0)
-        if (tele.requestFullscreen) {
-          try {
-            tele.requestFullscreen();
-          } catch (e) {
-            console.error("requestFullscreen failed:", e);
-          }
-        }
+        // if (tele.requestFullscreen) {
+        //   try {
+        //     tele.requestFullscreen();
+        //   } catch (e) {
+        //     console.error("requestFullscreen failed:", e);
+        //   }
+        // }
 
         try {
           // Force Light Mode Colors
