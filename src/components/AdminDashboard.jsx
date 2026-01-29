@@ -46,7 +46,11 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             .catch(err => console.error("Error fetching settings:", err));
     };
 
-    const updateGlobalSetting = async (key, value) => {
+    const updateLocalSetting = (key, value) => {
+        setGlobalSettings(prev => ({ ...prev, [key]: value }));
+    };
+
+    const persistSetting = async (key, value) => {
         try {
             const tele = window.Telegram?.WebApp;
             const res = await fetch(`${API_URL}/api/settings`, {
@@ -59,18 +63,24 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             });
             const data = await res.json();
             if (data.success) {
-                setGlobalSettings(prev => ({ ...prev, [key]: value }));
-                tele ? tele.showAlert('Settings Updated!') : alert('Settings Updated!');
+                // Success - state is already updated locally
+                // tele ? tele.showAlert('Settings Saved') : console.log('Saved');
+                // Optional: Show subtle feedback instead of full alert to avoid spamming
             } else {
-                alert('Failed to update: ' + data.error);
+                alert('Failed to save: ' + data.error);
+                // Optional: Revert local state here if needed
             }
         } catch (err) {
             console.error(err);
-            alert('Error updating setting');
+            alert('Error saving setting');
         }
     };
 
-
+    // Helper for non-slider inputs (immediate save)
+    const updateAndPersist = (key, value) => {
+        updateLocalSetting(key, value);
+        persistSetting(key, value);
+    };
 
     useEffect(() => {
         if (activeTab === 'orders') {
@@ -310,7 +320,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                     {['low', 'medium', 'high'].map((level) => (
                                         <button
                                             key={level}
-                                            onClick={() => updateGlobalSetting('global_sale_intensity', level)}
+                                            onClick={() => updateAndPersist('global_sale_intensity', level)}
                                             className={`py-3 px-4 rounded-lg border text-sm font-bold capitalize transition-all ${globalSettings.global_sale_intensity === level
                                                 ? 'bg-[var(--tg-theme-button-color)] text-white border-transparent shadow'
                                                 : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
@@ -338,7 +348,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                             min="0"
                                             max="90"
                                             value={(globalSettings.system_discount_min || 0.15) * 100}
-                                            onChange={(e) => updateGlobalSetting('system_discount_min', parseFloat(e.target.value) / 100)}
+                                            onChange={(e) => updateAndPersist('system_discount_min', parseFloat(e.target.value) / 100)}
                                             className="w-full border border-gray-300 rounded px-2 py-1.5 text-sm"
                                         />
                                     </div>
@@ -349,7 +359,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                             min="0"
                                             max="90"
                                             value={(globalSettings.system_discount_max || 0.35) * 100}
-                                            onChange={(e) => updateGlobalSetting('system_discount_max', parseFloat(e.target.value) / 100)}
+                                            onChange={(e) => updateAndPersist('system_discount_max', parseFloat(e.target.value) / 100)}
                                             className="w-full border border-gray-300 rounded px-2 py-1.5 text-sm"
                                         />
                                     </div>
@@ -370,7 +380,9 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                         min="0"
                                         max="100"
                                         value={(globalSettings.system_flash_sale_prob || 0.2) * 100}
-                                        onChange={(e) => updateGlobalSetting('system_flash_sale_prob', parseFloat(e.target.value) / 100)}
+                                        onChange={(e) => updateLocalSetting('system_flash_sale_prob', parseFloat(e.target.value) / 100)}
+                                        onMouseUp={(e) => persistSetting('system_flash_sale_prob', parseFloat(e.target.value) / 100)}
+                                        onTouchEnd={(e) => persistSetting('system_flash_sale_prob', parseFloat(e.target.value) / 100)}
                                         className="flex-1"
                                     />
                                     <span className="text-sm font-bold w-12 text-right">
@@ -394,7 +406,9 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                         max="10"
                                         step="0.1"
                                         value={globalSettings.system_social_proof_mult || 1.5}
-                                        onChange={(e) => updateGlobalSetting('system_social_proof_mult', parseFloat(e.target.value))}
+                                        onChange={(e) => updateLocalSetting('system_social_proof_mult', parseFloat(e.target.value))}
+                                        onMouseUp={(e) => persistSetting('system_social_proof_mult', parseFloat(e.target.value))}
+                                        onTouchEnd={(e) => persistSetting('system_social_proof_mult', parseFloat(e.target.value))}
                                         className="flex-1"
                                     />
                                     <span className="text-sm font-bold w-12 text-right">
