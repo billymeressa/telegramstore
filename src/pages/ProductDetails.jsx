@@ -300,7 +300,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                     className="fixed top-0 left-0 right-0 z-40 bg-[var(--tg-theme-bg-color)] border-b border-[var(--tg-theme-section-separator-color)] shadow-sm pt-tg-safe pb-2 px-4 flex items-center"
                 >
                     <div className="flex gap-2 overflow-x-auto no-scrollbar items-center w-full">
-                        <button className="px-3.5 py-1 rounded-full text-sm font-medium whitespace-nowrap bg-[var(--tg-theme-button-color)] text-white shadow-md flex-shrink-0">
+                        <button className="px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all flex-shrink-0 border bg-primary text-white border-primary shadow-sm">
                             Recommended
                         </button>
                     </div>
