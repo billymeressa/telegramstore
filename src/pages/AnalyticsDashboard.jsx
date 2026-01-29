@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import API_URL from '../config';
 import { BarChart3, Users, Eye, ShoppingCart, TrendingUp } from 'lucide-react';
+import NativeHeader from '../components/NativeHeader';
 
 const StatCard = ({ icon, label, value, color }) => {
     const colorClasses = {
@@ -183,12 +184,9 @@ const AnalyticsDashboard = () => {
     }
 
     return (
-        <div className="min-h-dvh bg-[var(--tg-theme-secondary-bg-color)] p-4 pb-20 pt-tg-safe">
+        <div className="min-h-dvh bg-[var(--tg-theme-secondary-bg-color)] p-4 pb-20 pt-[calc(var(--tg-content-safe-area-top)+44px)]">
+            <NativeHeader title="Analytics Dashboard" />
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-2xl font-bold text-[var(--tg-theme-text-color)] mb-6 flex items-center gap-2">
-                    <BarChart3 size={28} className="text-[var(--tg-theme-button-color)]" />
-                    Analytics Dashboard
-                </h1>
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 gap-3 mb-6">

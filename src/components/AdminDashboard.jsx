@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import API_URL from '../config';
 import { LayoutDashboard, Package, Truck, CheckCircle, XCircle } from 'lucide-react';
+import NativeHeader from '../components/NativeHeader';
 
 const SUBCATEGORIES = {
     'Men': ['Shirts', 'T-Shirts', 'Pants', 'Jeans', 'Shoes', 'Suits', 'Accessories', 'Activewear', 'Other'],
@@ -210,7 +211,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
     };
 
     return (
-        <div className="bg-white rounded-md shadow-sm border border-gray-200 mt-4 overflow-hidden pt-tg-safe">
+        <div className="bg-white rounded-md shadow-sm border border-gray-200 mt-4 overflow-hidden pt-[calc(var(--tg-content-safe-area-top)+44px)]">
+            <NativeHeader title="Seller Dashboard" />
             <div className="bg-[var(--tg-theme-button-color)] p-4">
                 <h2 className="text-xl font-bold text-[var(--tg-theme-button-text-color)] flex items-center gap-2">
                     <LayoutDashboard size={24} />

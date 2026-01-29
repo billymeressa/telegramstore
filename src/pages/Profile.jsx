@@ -5,6 +5,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import SpinWheel from '../components/SpinWheel';
 import useStore from '../store/useStore';
 import { Wallet, Coins } from 'lucide-react';
+import NativeHeader from '../components/NativeHeader';
 
 const tele = window.Telegram?.WebApp;
 
@@ -46,7 +47,8 @@ const Profile = () => {
     };
 
     return (
-        <div className="bg-[var(--tg-theme-secondary-bg-color)] min-h-dvh pb-24 font-sans pt-tg-safe">
+        <div className="bg-[var(--tg-theme-secondary-bg-color)] min-h-dvh pb-24 font-sans pt-[calc(var(--tg-content-safe-area-top)+44px)]">
+            <NativeHeader title="Profile" />
             {/* Header / User Info */}
             <div className="bg-[var(--tg-theme-bg-color)] p-4 border-b border-[var(--tg-theme-section-separator-color)] mb-2">
                 <div className="flex items-center gap-4">

@@ -3,6 +3,7 @@ import Cart from '../components/Cart';
 import { Phone, MessageSquare, X, CheckCircle, Send, Tag } from 'lucide-react';
 import API_URL from '../config';
 import useStore from '../store/useStore';
+import NativeHeader from '../components/NativeHeader';
 
 const CartPage = ({ onCheckout, sellerUsername }) => {
     // Zustand Store
@@ -139,7 +140,8 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
     };
 
     return (
-        <div className="bg-[var(--tg-theme-secondary-bg-color)] min-h-dvh pb-32 font-sans pt-tg-header">
+        <div className="bg-[var(--tg-theme-secondary-bg-color)] min-h-dvh pb-32 font-sans pt-[calc(var(--tg-content-safe-area-top)+44px)]">
+            <NativeHeader title="Shopping Cart" />
             {/* Header / Subtotal */}
             {cart.length > 0 && (
                 <div className="bg-[var(--tg-theme-bg-color)] p-4 border-b border-[var(--tg-theme-section-separator-color)] mb-2 space-y-1">

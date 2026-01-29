@@ -6,6 +6,7 @@ import { ArrowLeft, ShoppingBag, Heart, Edit2, Check, Zap } from 'lucide-react';
 import { trackEvent } from '../utils/track';
 import useStore from '../store/useStore';
 import ProductList from '../components/ProductList';
+import NativeHeader from '../components/NativeHeader';
 
 const SUBCATEGORIES = {
     'Men': ['Shirts', 'T-Shirts', 'Pants', 'Jeans', 'Shoes', 'Suits', 'Accessories', 'Activewear', 'Other'],
@@ -273,8 +274,9 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
 
 
     return (
-        <div className="bg-[var(--tg-theme-bg-color)] min-h-dvh relative font-sans pt-tg-safe">
-            {/* Header spacer for Telegram buttons - no custom back button needed, Telegram provides it */}
+        <div className="bg-[var(--tg-theme-bg-color)] min-h-dvh relative font-sans pt-[calc(var(--tg-content-safe-area-top)+44px)]">
+            {/* Native Header for Title */}
+            <NativeHeader title={product.title} />
 
             {/* Sticky Recommended Header */}
             {showStickyHeader && (

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import useStore from '../store/useStore';
 import { Share, Copy, Gift, Coins, Trophy } from 'lucide-react';
+import NativeHeader from '../components/NativeHeader';
 
 const Rewards = () => {
     const user = useStore(state => state.user);
@@ -33,7 +34,8 @@ const Rewards = () => {
     };
 
     return (
-        <div className="min-h-dvh bg-[var(--tg-theme-secondary-bg-color)] pb-32 pt-tg-safe font-sans">
+        <div className="min-h-dvh bg-[var(--tg-theme-secondary-bg-color)] pb-32 pt-[calc(var(--tg-content-safe-area-top)+44px)] font-sans">
+            <NativeHeader title="Rewards" />
             {/* Header */}
             <div className="bg-[var(--tg-theme-bg-color)] p-6 rounded-b-3xl shadow-sm text-center mb-6">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
