@@ -123,27 +123,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
             .slice(0, 10);
     }, [product, products]);
 
-    // Seamless Feed Logic
-    const moreProducts = useMemo(() => {
-        if (!product) return [];
-        const relatedIds = new Set(relatedProducts.map(p => p.id));
-        // Filter out current product AND related products
-        return products.filter(p => p.id !== product.id && !relatedIds.has(p.id));
-    }, [products, product, relatedProducts]);
 
-    // Infinite Scroll Listener for Details Page
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
-                if (hasMore && !isFetching && loadMore) {
-                    loadMore();
-                }
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [hasMore, isFetching, loadMore]);
 
     // Sticky Header Logic
     const [showStickyHeader, setShowStickyHeader] = useState(false);
@@ -910,7 +890,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                 relatedProducts.length > 0 && (
                     <div
                         ref={recommendedRef}
-                        className="pt-6 bg-[var(--tg-theme-secondary-bg-color)] mt-4 border-t border-[var(--tg-theme-section-separator-color)]"
+                        className="pt-6 bg-[var(--tg-theme-secondary-bg-color)] mt-4 border-t border-[var(--tg-theme-section-separator-color)] pb-32"
                     >
                         <h3 className="px-4 text-lg font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center gap-2">
                             Recommended for You
@@ -919,20 +899,6 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                     </div>
                 )
             }
-
-            {/* Seamless Feed: More to Explore */}
-            <div className="pt-2 bg-[var(--tg-theme-secondary-bg-color)] pb-32">
-                <h3 className="px-4 text-lg font-bold text-[var(--tg-theme-text-color)] mb-4">
-                    More to Explore
-                </h3>
-                <ProductList products={moreProducts} />
-
-                {isFetching && (
-                    <div className="flex justify-center py-4">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--tg-theme-button-color)]"></div>
-                    </div>
-                )}
-            </div>
 
             {/* Sticky Action Footer */}
             <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 p-2 pb-[calc(8px+var(--tg-safe-area-bottom))] shadow-[0_-4px_20px_rgba(0,0,0,0.05)] flex gap-2 items-center">
