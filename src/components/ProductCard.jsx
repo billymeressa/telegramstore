@@ -95,20 +95,8 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
                     {product.title}
                 </h3>
 
-                {/* Timer & Stock Alert Row */}
-                {(showFlashSale || ((product.forceLowStockDisplay || (product.stock > 0 && product.stock < 10)) && (!product.variations || product.variations.length === 0))) && (
-                    <div className="flex flex-wrap items-center gap-1 mb-0.5">
-                        {showFlashSale && <FlashSaleTimer className="scale-90 origin-left" />}
-                        {(product.forceLowStockDisplay || (product.stock > 0 && product.stock < 10)) && (
-                            <span className="text-[9px] font-bold text-red-600 bg-red-50 border border-red-100 px-1 py-0.5 rounded">
-                                Only {product.stock} left
-                            </span>
-                        )}
-                    </div>
-                )}
-
-                {/* Price Block - Temu Style */}
-                <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
+                {/* Unified Metadata Row - Inline */}
+                <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
                     {/* Main Price */}
                     <div className="text-primary font-bold text-base leading-none">
                         <span className="text-[10px] font-medium mr-0.5">ETB</span>
@@ -125,11 +113,21 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
                         </div>
                     )}
 
-                    {/* Discount Badge (Moved Here) */}
+                    {/* Discount Badge */}
                     {discountPercentage > 0 && (
                         <div className="text-[9px] font-bold text-red-600 bg-red-50 border border-red-100 px-1 py-0.5 rounded">
                             -{discountPercentage}%
                         </div>
+                    )}
+
+                    {/* Sales Timer */}
+                    {showFlashSale && <FlashSaleTimer className="scale-90 origin-left" />}
+
+                    {/* Stock Alert */}
+                    {(product.forceLowStockDisplay || (product.stock > 0 && product.stock < 10)) && (!product.variations || product.variations.length === 0) && (
+                        <span className="text-[9px] font-bold text-red-600 bg-red-50 border border-red-100 px-1 py-0.5 rounded">
+                            Only {product.stock} left
+                        </span>
                     )}
                 </div>
 
