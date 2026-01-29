@@ -131,7 +131,7 @@ function App() {
           const syncSafeAreas = () => {
             const safeTop = tele.safeAreaInset?.top || 0;
             const contentTop = tele.contentSafeAreaInset?.top || 0;
-            const safeBottom = tele.safeAreaInset?.bottom || 0;
+            const safeBottom = Math.max(tele.safeAreaInset?.bottom || 0, tele.contentSafeAreaInset?.bottom || 0);
             const contentBottom = tele.contentSafeAreaInset?.bottom || 0;
 
             document.documentElement.style.setProperty('--tg-safe-area-top', `${safeTop}px`);
