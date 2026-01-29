@@ -8,6 +8,9 @@ import useStore from '../store/useStore';
 import ProductList from '../components/ProductList';
 
 
+// Smart Sort imported
+import { smartSort } from '../utils/smartSort';
+
 const SUBCATEGORIES = {
     'Men': ['Shirts', 'T-Shirts', 'Pants', 'Jeans', 'Shoes', 'Suits', 'Accessories', 'Activewear', 'Other'],
     'Women': ['Dresses', 'Tops', 'Skirts', 'Pants', 'Jeans', 'Shoes', 'Bags', 'Jewelry', 'Accessories', 'Other'],
@@ -111,24 +114,6 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
 
     const [isSaving, setIsSaving] = useState(false);
     const [showRedirectMessage, setShowRedirectMessage] = useState(false); // For Buy Now transition
-
-    // Categories to demote (push to bottom)
-    const GENERIC_CATEGORIES = ['Parts & Accessories', 'Tools', 'Tools & Equipment', 'Other', 'Computer Accessories', 'Cables', 'Adapters'];
-
-    // Smart Sort Algorithm
-    const smartSort = (items) => {
-        if (!items || items.length === 0) return [];
-        const premium = items.filter(p => !GENERIC_CATEGORIES.includes(p.category || 'Other'));
-        const generic = items.filter(p => GENERIC_CATEGORIES.includes(p.category || 'Other'));
-
-        // Fisher-Yates Shuffle for premium items
-        const shuffledPremium = [...premium];
-        for (let i = shuffledPremium.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffledPremium[i], shuffledPremium[j]] = [shuffledPremium[j], shuffledPremium[i]];
-        }
-        return [...shuffledPremium, ...generic];
-    };
 
     // Smart Recommendations Logic (Filtered & Sorted)
     const relatedProducts = useMemo(() => {
