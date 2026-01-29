@@ -42,17 +42,18 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
     const settings = useStore(state => state.settings);
     const intensity = settings.global_sale_intensity || 'medium';
     const viewerCount = useMemo(() => {
-        if (intensity === 'low') return 0; // Check if hidden for low later, or use small number
         // Base random 5-25
         const base = 5 + Math.floor(Math.random() * 20);
-        let multiplier = 1;
-        if (intensity === 'medium') multiplier = 1.5;
-        if (intensity === 'high') multiplier = 3;
 
-        let count = Math.floor(base * multiplier);
-        if (intensity === 'low' && count < 10) return 0; // Hide if low traffic on low intensity
-        return count;
-    }, [intensity]);
+        // Use granular multiplier if available
+        let multiplier = settings.system_social_proof_mult !== undefined
+            ? settings.system_social_proof_mult
+            : (intensity === 'low' ? 1 : intensity === 'high' ? 3 : 1.5);
+
+        if (intensity === 'low' && multiplier === 1) return 0; // Legacy behavior for low intensity
+
+        return Math.floor(base * multiplier);
+    }, [intensity, settings.system_social_proof_mult]);
 
     // Derived State
     const isWishlisted = product ? wishlist.includes(product.id) : false;

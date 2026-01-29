@@ -13,7 +13,12 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
     const showFlashSale = useMemo(() => {
         if (product.isFlashSale) return true; // Backend override
 
-        if (intensity === 'low') return false;
+        // Use granular setting if available, otherwise fallback to intensity
+        const prob = settings.system_flash_sale_prob !== undefined
+            ? settings.system_flash_sale_prob
+            : (intensity === 'low' ? 0 : intensity === 'high' ? 0.5 : 0.2);
+
+        if (prob === 0) return false;
 
         // Deterministic random based on ID/Title
         let hash = 0;
@@ -24,10 +29,8 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
         }
         const rand = Math.abs(hash) % 100; // 0-99
 
-        if (intensity === 'high') return rand < 50; // 50% chance
-        if (intensity === 'medium') return rand < 20; // 20% chance
-        return false;
-    }, [intensity, product.id, product.title, product.isFlashSale]);
+        return rand < (prob * 100);
+    }, [intensity, settings.system_flash_sale_prob, product.id, product.title, product.isFlashSale]);
 
     const handleAdd = (e) => {
         e.stopPropagation();
@@ -66,13 +69,6 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
                     </div>
                 )}
 
-                {/* Discount Badge - Temu Style (Red Flag) */}
-                {discountPercentage > 0 && (
-                    <div className="absolute top-0 left-0 bg-danger text-white text-[10px] font-bold px-1.5 py-0.5 rounded-br-lg z-10 shadow-sm">
-                        -{discountPercentage}%
-                    </div>
-                )}
-
                 {/* Sold Out Overlay */}
                 {!product.isUnique && product.stock === 0 && (!product.variations || product.variations.length === 0) && (
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10 backdrop-blur-[1px]">
@@ -90,18 +86,6 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
                         className={isWishlisted ? 'fill-danger text-danger' : 'text-gray-500'}
                     />
                 </button>
-
-                {/* Low Stock / Flash Sale Footer Overlay */}
-                {(showFlashSale || ((product.forceLowStockDisplay || (product.stock > 0 && product.stock < 10)) && (!product.variations || product.variations.length === 0))) && (
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-1.5 pt-4 flex items-end justify-between">
-                        {showFlashSale && <FlashSaleTimer className="text-white scale-75 origin-bottom-left" />}
-                        {(product.forceLowStockDisplay || (product.stock > 0 && product.stock < 10)) && (
-                            <span className="text-[9px] font-bold text-red-50 bg-red-600/90 px-1 py-0.5 rounded">
-                                Only {product.stock} left
-                            </span>
-                        )}
-                    </div>
-                )}
             </div>
 
             {/* Info Container */}
@@ -111,8 +95,20 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
                     {product.title}
                 </h3>
 
+                {/* Timer & Stock Alert Row */}
+                {(showFlashSale || ((product.forceLowStockDisplay || (product.stock > 0 && product.stock < 10)) && (!product.variations || product.variations.length === 0))) && (
+                    <div className="flex flex-wrap items-center gap-1 mb-0.5">
+                        {showFlashSale && <FlashSaleTimer className="scale-90 origin-left" />}
+                        {(product.forceLowStockDisplay || (product.stock > 0 && product.stock < 10)) && (
+                            <span className="text-[9px] font-bold text-red-600 bg-red-50 border border-red-100 px-1 py-0.5 rounded">
+                                Only {product.stock} left
+                            </span>
+                        )}
+                    </div>
+                )}
+
                 {/* Price Block - Temu Style */}
-                <div className="flex items-baseline gap-1 flex-wrap mt-0.5">
+                <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
                     {/* Main Price */}
                     <div className="text-primary font-bold text-base leading-none">
                         <span className="text-[10px] font-medium mr-0.5">ETB</span>
@@ -126,6 +122,13 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
                     {(product.originalPrice > product.price || (product.variations && product.variations[0]?.originalPrice)) && (
                         <div className="text-gray-400 text-[9px] line-through">
                             ETB {Math.floor(product.originalPrice || (product.variations ? Math.max(...product.variations.map(v => v.originalPrice || 0)) : 0))}
+                        </div>
+                    )}
+
+                    {/* Discount Badge (Moved Here) */}
+                    {discountPercentage > 0 && (
+                        <div className="text-[9px] font-bold text-red-600 bg-red-50 border border-red-100 px-1 py-0.5 rounded">
+                            -{discountPercentage}%
                         </div>
                     )}
                 </div>

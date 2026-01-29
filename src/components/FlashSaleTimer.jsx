@@ -30,8 +30,8 @@ const FlashSaleTimer = ({ className = "" }) => {
     if (timeLeft === 0) return null;
 
     return (
-        <div className={`flex items-center gap-1.5 text-xs text-red-600 font-bold bg-red-50 px-2 py-1 rounded border border-red-100 ${className}`}>
-            <Timer size={12} className="text-red-600" />
+        <div className={`flex items-center gap-1.5 text-xs text-white font-bold bg-[#ef4444] px-2 py-1 rounded border border-white/20 shadow-md ${className}`}>
+            <Timer size={12} className="text-white" />
             <span className="tracking-wide text-[10px] uppercase font-extrabold">Flash Sale: <span className="tabular-nums font-mono text-xs">{formatTime(timeLeft)}</span></span>
         </div>
     );

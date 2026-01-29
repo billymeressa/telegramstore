@@ -297,33 +297,110 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                             </p>
                         </div>
 
-                        <div className="bg-white p-4 rounded border border-gray-200 shadow-sm">
-                            <label className="block text-sm font-bold text-[#0F1111] mb-2">
-                                Global Sale Intensity
-                            </label>
-                            <p className="text-xs text-gray-500 mb-3">
-                                Determines frequency of Flash Sales and magnitude of Social Proof counters.
-                            </p>
-                            <div className="grid grid-cols-3 gap-2">
-                                {['low', 'medium', 'high'].map((level) => (
-                                    <button
-                                        key={level}
-                                        onClick={() => updateGlobalSetting('global_sale_intensity', level)}
-                                        className={`py-3 px-4 rounded-lg border text-sm font-bold capitalize transition-all ${globalSettings.global_sale_intensity === level
-                                            ? 'bg-[var(--tg-theme-button-color)] text-white border-transparent shadow'
-                                            : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
-                                            }`}
-                                    >
-                                        {level}
-                                    </button>
-                                ))}
+                        <div className="space-y-4">
+                            {/* Global Intensity */}
+                            <div className="bg-white p-4 rounded border border-gray-200 shadow-sm">
+                                <label className="block text-sm font-bold text-[#0F1111] mb-2">
+                                    Global Sale Intensity
+                                </label>
+                                <p className="text-xs text-gray-500 mb-3">
+                                    Determines frequency of general promotional badges and urgency.
+                                </p>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {['low', 'medium', 'high'].map((level) => (
+                                        <button
+                                            key={level}
+                                            onClick={() => updateGlobalSetting('global_sale_intensity', level)}
+                                            className={`py-3 px-4 rounded-lg border text-sm font-bold capitalize transition-all ${globalSettings.global_sale_intensity === level
+                                                ? 'bg-[var(--tg-theme-button-color)] text-white border-transparent shadow'
+                                                : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                                                }`}
+                                        >
+                                            {level}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                            <div className="mt-3 text-xs bg-gray-50 p-2 rounded text-gray-600 italic">
-                                <strong>Effect:</strong> {
-                                    globalSettings.global_sale_intensity === 'low' ? 'Minimal urgency. No timers.' :
-                                        globalSettings.global_sale_intensity === 'high' ? 'High urgency! Frequent flash sales & 3x social proof.' :
-                                            'Balanced approach. Occasional timers & 1.5x social proof.'
-                                }
+
+                            {/* Discount Range Settings */}
+                            <div className="bg-white p-4 rounded border border-gray-200 shadow-sm">
+                                <label className="block text-sm font-bold text-[#0F1111] mb-2">
+                                    Automatic Discount Range
+                                </label>
+                                <p className="text-xs text-gray-500 mb-3">
+                                    Set the minimum and maximum percentage off generated for new products.
+                                </p>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-700 mb-1">Min Discount %</label>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="90"
+                                            value={(globalSettings.system_discount_min || 0.15) * 100}
+                                            onChange={(e) => updateGlobalSetting('system_discount_min', parseFloat(e.target.value) / 100)}
+                                            className="w-full border border-gray-300 rounded px-2 py-1.5 text-sm"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-700 mb-1">Max Discount %</label>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="90"
+                                            value={(globalSettings.system_discount_max || 0.35) * 100}
+                                            onChange={(e) => updateGlobalSetting('system_discount_max', parseFloat(e.target.value) / 100)}
+                                            className="w-full border border-gray-300 rounded px-2 py-1.5 text-sm"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Flash Sale Probability */}
+                            <div className="bg-white p-4 rounded border border-gray-200 shadow-sm">
+                                <label className="block text-sm font-bold text-[#0F1111] mb-2">
+                                    Flash Sale Frequency
+                                </label>
+                                <p className="text-xs text-gray-500 mb-3">
+                                    Probability that a product shows a countdown timer (0% - 100%).
+                                </p>
+                                <div className="flex items-center gap-4">
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="100"
+                                        value={(globalSettings.system_flash_sale_prob || 0.2) * 100}
+                                        onChange={(e) => updateGlobalSetting('system_flash_sale_prob', parseFloat(e.target.value) / 100)}
+                                        className="flex-1"
+                                    />
+                                    <span className="text-sm font-bold w-12 text-right">
+                                        {Math.round((globalSettings.system_flash_sale_prob || 0.2) * 100)}%
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Social Proof Multiplier */}
+                            <div className="bg-white p-4 rounded border border-gray-200 shadow-sm">
+                                <label className="block text-sm font-bold text-[#0F1111] mb-2">
+                                    Social Proof Multiplier
+                                </label>
+                                <p className="text-xs text-gray-500 mb-3">
+                                    Multiplies the "Viewers right now" count to create urgency.
+                                </p>
+                                <div className="flex items-center gap-4">
+                                    <input
+                                        type="range"
+                                        min="1"
+                                        max="10"
+                                        step="0.1"
+                                        value={globalSettings.system_social_proof_mult || 1.5}
+                                        onChange={(e) => updateGlobalSetting('system_social_proof_mult', parseFloat(e.target.value))}
+                                        className="flex-1"
+                                    />
+                                    <span className="text-sm font-bold w-12 text-right">
+                                        {globalSettings.system_social_proof_mult || 1.5}x
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>

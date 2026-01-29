@@ -49,19 +49,47 @@ const productSchema = new mongoose.Schema({
 
 // Dynamic Price Anchoring Logic
 productSchema.pre('save', async function () {
+    // Fetch settings for dynamic discounts
+    let minDiscount = 0.15;
+    let maxDiscount = 0.35;
+
+    try {
+        const settings = await mongoose.model('SystemSetting').find({
+            key: { $in: ['system_discount_min', 'system_discount_max'] }
+        });
+        settings.forEach(s => {
+            if (s.key === 'system_discount_min') minDiscount = parseFloat(s.value);
+            if (s.key === 'system_discount_max') maxDiscount = parseFloat(s.value);
+        });
+    } catch (e) {
+        console.error("Error fetching system settings in product save hook:", e);
+    }
+
+    // Helper to generate multiplier: e.g., if discount is 20% (0.2), multiplier is 1 / (1 - 0.2) = 1.25
+    // But our previous logic was: multiplier = 1.15 + random.
+    // Let's stick to the multiplier approach but derived from discount %.
+    // Target Discount Range: [minDiscount, maxDiscount]
+    // Price = Original * (1 - discount)
+    // Original = Price / (1 - discount)
+    // Multiplier = 1 / (1 - discount)
+
+    const getMultiplier = () => {
+        const randomDiscount = minDiscount + Math.random() * (maxDiscount - minDiscount);
+        // Ensure we don't divide by zero or get insane values
+        const safeDiscount = Math.min(Math.max(randomDiscount, 0), 0.9);
+        return 1 / (1 - safeDiscount);
+    };
+
     // 1. Handle Main Product Price
     if (this.price && (!this.originalPrice || this.originalPrice <= this.price)) {
-        // Generate random multiplier between 1.15 and 1.55 (~13% - 35% discount)
-        const multiplier = 1.15 + Math.random() * 0.40;
-        this.originalPrice = Math.ceil(this.price * multiplier);
+        this.originalPrice = Math.ceil(this.price * getMultiplier());
     }
 
     // 2. Handle Variations
     if (this.variations && this.variations.length > 0) {
         this.variations.forEach(v => {
             if (v.price && (!v.originalPrice || v.originalPrice <= v.price)) {
-                const multiplier = 1.15 + Math.random() * 0.40;
-                v.originalPrice = Math.ceil(v.price * multiplier);
+                v.originalPrice = Math.ceil(v.price * getMultiplier());
             }
         });
     }
