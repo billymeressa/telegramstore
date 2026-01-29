@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import API_URL from '../config';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ShoppingBag, Heart, Edit2, Check, Zap } from 'lucide-react';
@@ -20,7 +20,7 @@ const SUBCATEGORIES = {
 };
 
 
-const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUsername }) => {
+const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUsername, hasMore, loadMore, isFetching }) => {
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -82,6 +82,28 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
     const relatedProducts = product ? smartSort(products
         .filter(p => p.category === product.category && p.id !== product.id))
         .slice(0, 10) : [];
+
+    // Seamless Feed Logic
+    const moreProducts = useMemo(() => {
+        if (!product) return [];
+        const relatedIds = new Set(relatedProducts.map(p => p.id));
+        // Filter out current product AND related products
+        return products.filter(p => p.id !== product.id && !relatedIds.has(p.id));
+    }, [products, product, relatedProducts]);
+
+    // Infinite Scroll Listener for Details Page
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+                if (hasMore && !isFetching && loadMore) {
+                    loadMore();
+                }
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [hasMore, isFetching, loadMore]);
 
     // Sticky Header Logic
     const [showStickyHeader, setShowStickyHeader] = useState(false);
@@ -932,6 +954,29 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                     </div>
                 )
             }
+
+            {/* Seamless Feed: More to Explore */}
+            <div className="p-4 pt-2 bg-[var(--tg-theme-secondary-bg-color)] pb-20">
+                <h3 className="text-lg font-bold text-[var(--tg-theme-text-color)] mb-4">
+                    More to Explore
+                </h3>
+                <ProductList products={moreProducts} />
+
+                {isFetching && (
+                    <div className="flex justify-center py-4">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--tg-theme-button-color)]"></div>
+                    </div>
+                )}
+            </div>
+
+            {/* Floating Back Button (Bottom Left) */}
+            <button
+                onClick={() => navigate(-1)}
+                className="fixed bottom-4 left-4 z-50 p-3 bg-white/90 backdrop-blur text-gray-800 rounded-full shadow-lg border border-gray-200 active:scale-95 transition-transform"
+                aria-label="Go Back"
+            >
+                <ArrowLeft size={24} />
+            </button>
         </div >
     );
 };

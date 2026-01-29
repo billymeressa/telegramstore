@@ -403,7 +403,7 @@ function App() {
             } />
             <Route path="/profile" element={<Profile />} />
             <Route path="/wishlist" element={<WishlistPage products={products} />} />
-            <Route path="/product/:id" element={<ProductDetails onBuyNow={onBuyNow} products={products} isAdmin={isAdmin} sellerUsername={sellerUsername} />} />
+            <Route path="/product/:id" element={<ProductDetails onBuyNow={onBuyNow} products={products} isAdmin={isAdmin} sellerUsername={sellerUsername} hasMore={hasMore} loadMore={loadMore} isFetching={isFetching} />} />
             <Route path="/admin" element={isAdmin ? <AdminDashboard products={products} onProductUpdate={setProducts} /> : <Navigate to="/" />} />
             <Route path="/analytics" element={isSuperAdmin ? <AnalyticsDashboard /> : <Navigate to="/" />} />
             <Route path="/rewards" element={<Rewards />} />
