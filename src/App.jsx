@@ -109,36 +109,57 @@ function App() {
 
   useEffect(() => {
     const tele = window.Telegram?.WebApp;
-    const initWebApp = () => {
-      if (tele) {
-        tele.ready();
-        tele.expand();
+    if (!tele) return;
 
-        // Try to enter fullscreen mode (introduced in Bot API 8.0)
-        if (tele.requestFullscreen) {
-          try {
-            tele.requestFullscreen();
-          } catch (e) {
-            console.error("requestFullscreen failed:", e);
-          }
-        }
+    const updateLayout = () => {
+      const root = document.documentElement;
 
-        try {
-          tele.headerColor = tele.themeParams.bg_color || '#ffffff';
-          tele.backgroundColor = tele.themeParams.secondary_bg_color || '#f4f4f5';
-        } catch (e) {
-          console.error(e);
-        }
+      // 1. Set Safe Area Insets (Latest API)
+      if (tele.safeAreaInset) {
+        root.style.setProperty('--tg-safe-top', `${tele.safeAreaInset.top}px`);
+        root.style.setProperty('--tg-safe-bottom', `${tele.safeAreaInset.bottom}px`);
+        root.style.setProperty('--tg-safe-left', `${tele.safeAreaInset.left}px`);
+        root.style.setProperty('--tg-safe-right', `${tele.safeAreaInset.right}px`);
+      } else {
+        // Fallback for older Telegram clients
+        root.style.setProperty('--tg-safe-top', '0px');
+        root.style.setProperty('--tg-safe-bottom', '0px');
+      }
+
+      // 2. Set Viewport Height
+      if (tele.viewportStableHeight) {
+        root.style.setProperty('--tg-viewport-height', `${tele.viewportStableHeight}px`);
       }
     };
 
-    if (tele) {
-      initWebApp();
-      // Second pass after a short delay for reliability
-      setTimeout(initWebApp, 500);
-      setTimeout(initWebApp, 2000);
+    // Initial Call
+    tele.ready();
+    tele.expand();
+    updateLayout();
+
+    // Enter fullscreen mode (introduced in Bot API 8.0)
+    if (tele.requestFullscreen) {
+      try {
+        tele.requestFullscreen();
+      } catch (e) {
+        console.error("requestFullscreen failed:", e);
+      }
     }
 
+    // Sync on every viewport change (e.g., keyboard opening, expansion)
+    tele.onEvent('viewportChanged', updateLayout);
+    // Listen for safe area changes specifically
+    tele.onEvent('safeAreaChanged', updateLayout);
+
+    // Cleanup
+    return () => {
+      tele.offEvent('viewportChanged', updateLayout);
+      tele.offEvent('safeAreaChanged', updateLayout);
+    };
+  }, []);
+
+  useEffect(() => {
+    const tele = window.Telegram?.WebApp;
     // Sync User Data from Backend (Zustand Global State)
     fetchUserData();
 

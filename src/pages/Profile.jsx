@@ -46,7 +46,7 @@ const Profile = () => {
     };
 
     return (
-        <div className="bg-[var(--tg-theme-secondary-bg-color)] min-h-dvh pb-24 font-sans pt-tg-safe">
+        <div className="bg-[var(--tg-theme-secondary-bg-color)] min-h-[var(--tg-viewport-height,100dvh)] pb-24 font-sans pt-tg-safe">
             {/* Header / User Info */}
             <div className="bg-[var(--tg-theme-bg-color)] p-4 border-b border-[var(--tg-theme-section-separator-color)] mb-2">
                 <div className="flex items-center gap-4">

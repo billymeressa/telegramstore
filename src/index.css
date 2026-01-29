@@ -15,8 +15,13 @@
   --tg-theme-header-bg-color: #ffffff;
   --tg-theme-section-bg-color: #ffffff;
   --tg-theme-section-separator-color: #e3e3e4;
-  /* Telegram full-screen mode safe area for native buttons */
-  --tg-safe-area-top: env(safe-area-inset-top, 0px);
+
+  /* Dynamic Safe Area Insets (Populated by JS) */
+  --tg-safe-top: 0px;
+  --tg-safe-bottom: 0px;
+  --tg-safe-left: 0px;
+  --tg-safe-right: 0px;
+  --tg-viewport-height: 100dvh;
 }
 
 /* Dark Mode (Preserved for future use) - Uncomment to enable
@@ -84,13 +89,13 @@ body {
 
 /* Telegram full-screen safe area utilities */
 .pt-tg-safe {
-  padding-top: var(--tg-safe-area-top, 56px);
+  padding-top: var(--tg-safe-top, 0px);
 }
 
 .top-tg-safe {
-  top: var(--tg-safe-area-top, 56px);
+  top: var(--tg-safe-top, 0px);
 }
 
 .mt-tg-safe {
-  margin-top: var(--tg-safe-area-top, 56px);
+  margin-top: var(--tg-safe-top, 0px);
 }

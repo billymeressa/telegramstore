@@ -33,7 +33,7 @@ const Layout = ({ cartCount, isAdmin, isSuperAdmin, user }) => {
     }, [location, navigate]);
 
     return (
-        <div className="min-h-dvh bg-[var(--tg-theme-secondary-bg-color)] pb-20 font-sans">
+        <div className="min-h-[var(--tg-viewport-height,100dvh)] bg-[var(--tg-theme-secondary-bg-color)] pb-20 font-sans">
             <Outlet context={{ isAdmin, isSuperAdmin, user }} />
 
             {/* Bottom Navigation (Hidden on ProductDetails) */}
