@@ -40,7 +40,11 @@ const productSchema = new mongoose.Schema({
         originalPrice: { type: Number }, // Variation specific original price
         stock: { type: Number, default: 0 }, // Stock for this variation
         sku: { type: String } // Optional: unique SKU
-    }]
+    }],
+    // Scarcity Rotation Fields
+    isFlashSale: { type: Boolean, default: false },
+    flashSaleEndTime: { type: Date },
+    forceLowStockDisplay: { type: Boolean, default: false } // To artificially show "Low Stock" badge
 }, { timestamps: true });
 
 // Dynamic Price Anchoring Logic

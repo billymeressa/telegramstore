@@ -36,7 +36,7 @@ const Layout = ({ cartCount, isAdmin, isSuperAdmin, user }) => {
 
             {/* Bottom Navigation (Hidden on ProductDetails) */}
             {!location.pathname.startsWith('/product/') && (
-                <nav className="fixed bottom-0 left-0 right-0 bg-[var(--tg-theme-secondary-bg-color)] border-t border-[var(--tg-theme-section-separator-color)] pt-1 pb-[calc(4px+var(--tg-safe-area-bottom))] px-2 flex justify-around items-center z-[9999] transform-gpu translate-z-0">
+                <nav className="fixed bottom-0 left-0 right-0 bg-[var(--tg-theme-secondary-bg-color)] border-t border-[var(--tg-theme-section-separator-color)] pt-1 pb-[calc(16px+var(--tg-safe-area-bottom))] px-2 flex justify-around items-center z-[9999] transform-gpu translate-z-0">
                     <button
                         onClick={() => navigate('/')}
                         className={`flex flex-col items-center justify-center w-full py-1.5 gap-0.5 active:opacity-70 transition-opacity ${location.pathname === '/' ? 'text-[var(--tg-theme-button-color)]' : 'text-[var(--tg-theme-hint-color)]'}`}
@@ -85,6 +85,10 @@ const Layout = ({ cartCount, isAdmin, isSuperAdmin, user }) => {
                             <span className="text-[9px] font-medium">Admin</span>
                         </button>
                     )}
+
+                    <div className="absolute bottom-0 left-0 right-0 text-[9px] text-center text-[var(--tg-theme-hint-color)] opacity-60 pointer-events-none font-medium pb-[calc(2px+var(--tg-safe-area-bottom)/2)]">
+                        Addis Store
+                    </div>
                 </nav>
             )}
         </div>

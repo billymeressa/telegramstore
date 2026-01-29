@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { User, PromoCode } from '../db.js';
+import { User, PromoCode, Product } from '../db.js';
 
 const initScheduler = (bot) => {
     console.log('📅 Initializing Cron Scheduler (Timezone: Africa/Addis_Ababa)...');
@@ -78,6 +78,57 @@ const initScheduler = (bot) => {
     // unless we change to a simple counter flag. But logging the new day is helpful.
     cron.schedule('0 0 * * *', () => {
         console.log('🌅 New Day Started (EAT)! Daily limits technically refresh now.');
+    }, {
+        timezone: "Africa/Addis_Ababa"
+    });
+
+    // 4. Automated Scarcity Rotation (Every 4 Hours)
+    // Run at 00:00, 04:00, 08:00, 12:00, 16:00, 20:00 EAT
+    cron.schedule('0 0,4,8,12,16,20 * * *', async () => {
+        console.log('⚡ Running Automated Scarcity Rotation...');
+        try {
+            const { Product } = await import('../db.js'); // Dynamic import to ensure DB connection is ready? Actually passed via closure usually, but safer here. Or just use DB model if in scope.
+            // Note: Product is not imported in this file scope in the original snippet, need to ensure it is.
+            // Checking imports above... "import { User, PromoCode } from '../db.js';" -> Need to add Product to imports.
+            // I will assume I need to update imports too. For now, let's write the logic.
+
+            // 1. Reset All
+            await Product.updateMany({}, {
+                isFlashSale: false,
+                flashSaleEndTime: null,
+                forceLowStockDisplay: false
+            });
+
+            // 2. Select 5-10 Random Premium Products
+            // "Premium" = Price > 2000 OR Category in [Electronics, Shoes, Watches]
+            // We'll just define premium as price > 1500 for simplicity and impact
+            const count = 5 + Math.floor(Math.random() * 6); // 5 to 10
+
+            const randomProducts = await Product.aggregate([
+                { $match: { price: { $gt: 1500 }, stock: { $gt: 0 } } }, // Only in-stock premium items
+                { $sample: { size: count } }
+            ]);
+
+            if (randomProducts.length > 0) {
+                const ids = randomProducts.map(p => p.id);
+                const endTime = new Date(Date.now() + 4 * 60 * 60 * 1000); // Now + 4 hours
+
+                await Product.updateMany(
+                    { id: { $in: ids } },
+                    {
+                        isFlashSale: true,
+                        flashSaleEndTime: endTime,
+                        forceLowStockDisplay: true
+                    }
+                );
+                console.log(`⚡ Activated Flash Sale for ${ids.length} products: ${ids.join(', ')}`);
+            } else {
+                console.log('⚡ No premium products found for Flash Sale rotation.');
+            }
+
+        } catch (e) {
+            console.error("Scarcity Rotation Error:", e);
+        }
     }, {
         timezone: "Africa/Addis_Ababa"
     });

@@ -11,6 +11,8 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
     const intensity = settings.global_sale_intensity || 'medium';
 
     const showFlashSale = useMemo(() => {
+        if (product.isFlashSale) return true; // Backend override
+
         if (intensity === 'low') return false;
 
         // Deterministic random based on ID/Title
@@ -25,7 +27,7 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
         if (intensity === 'high') return rand < 50; // 50% chance
         if (intensity === 'medium') return rand < 20; // 20% chance
         return false;
-    }, [intensity, product.id, product.title]);
+    }, [intensity, product.id, product.title, product.isFlashSale]);
 
     const handleAdd = (e) => {
         e.stopPropagation();
@@ -144,7 +146,7 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
                             Unique
                         </span>
                     )}
-                    {product.stock > 0 && product.stock < 10 && (!product.variations || product.variations.length === 0) && (
+                    {(product.forceLowStockDisplay || (product.stock > 0 && product.stock < 10)) && (!product.variations || product.variations.length === 0) && (
                         <span className="inline-block bg-red-100 text-red-700 text-[10px] font-bold px-1.5 py-0.5 rounded border border-red-200">
                             Low Stock
                         </span>
