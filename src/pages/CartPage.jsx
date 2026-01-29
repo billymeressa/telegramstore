@@ -157,12 +157,7 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
                         onClick={handleCheckout}
                         className="w-full bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity flex justify-between px-4"
                     >
-                        <div className="flex items-center gap-2">
-                            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.79 6.89c-.19 1.99-1.01 6.89-1.42 9.1-.17.92-.5 1.22-.82 1.25-.7.06-1.23-.46-1.9-.91-1.06-.7-1.66-1.13-2.69-1.81-1.19-.79-.42-1.22.26-1.93.18-.18 3.26-2.99 3.33-3.24.01-.03.01-.12-.04-.17-.06-.05-.14-.04-.21-.02-.09.02-1.82 1.16-5.13 3.39-.49.33-.92.49-1.31.48-.43-.01-1.25-.24-1.86-.42-.75-.22-1.35-.34-1.29-.71.03-.19.29-.39.79-.58 3.1-1.33 5.16-2.22 6.19-2.65 2.94-1.23 3.55-1.44 3.96-1.44.09 0 .28.02.4.1.1.08.15.2.16.29 0 .04.01.12 0 .18z" />
-                            </svg>
-                            <span>Checkout ({totalItems})</span>
-                        </div>
+                        <span>Checkout ({totalItems})</span>
                         <span>{Math.floor(finalPrice)} Birr</span>
                     </button>
 

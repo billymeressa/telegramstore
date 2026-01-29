@@ -38,7 +38,7 @@ const Layout = ({ cartCount, isAdmin, isSuperAdmin, user }) => {
 
             {/* Bottom Navigation (Hidden on ProductDetails) */}
             {!location.pathname.startsWith('/product/') && (
-                <nav className="fixed bottom-0 left-0 right-0 bg-[var(--tg-theme-bg-color)] border-t border-[var(--tg-theme-section-separator-color)] pb-tg-safe pt-1 px-2 flex justify-around items-center z-[100]">
+                <nav className="fixed bottom-0 left-0 right-0 bg-[var(--tg-theme-secondary-bg-color)] border-t border-[var(--tg-theme-section-separator-color)] pb-tg-safe pt-1 px-2 flex justify-around items-center z-50">
                     <button
                         onClick={() => navigate('/')}
                         className={`flex flex-col items-center justify-center w-full py-1.5 gap-0.5 active:opacity-70 transition-opacity ${location.pathname === '/' ? 'text-[var(--tg-theme-button-color)]' : 'text-[var(--tg-theme-hint-color)]'}`}

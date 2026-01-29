@@ -103,5 +103,5 @@ body {
 }
 
 .pb-tg-safe {
-  padding-bottom: max(var(--tg-safe-area-bottom), env(safe-area-inset-bottom, 40px));
+  padding-bottom: var(--tg-safe-area-bottom);
 }
