@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import API_URL from '../config';
-import { LayoutDashboard, Package, Truck, CheckCircle, XCircle } from 'lucide-react';
+import { LayoutDashboard, Package, Truck, CheckCircle, XCircle, Settings } from 'lucide-react';
 import NativeHeader from '../components/NativeHeader';
 
 const SUBCATEGORIES = {
@@ -26,6 +26,49 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
     const fileInputRef = useRef(null);
     const [orders, setOrders] = useState([]);
     const [variationType, setVariationType] = useState(''); // e.g., "Storage", "Size", "Color"
+    const [globalSettings, setGlobalSettings] = useState({ global_sale_intensity: 'medium' });
+
+    useEffect(() => {
+        if (activeTab === 'settings') {
+            fetchSettings();
+        }
+    }, [activeTab]);
+
+    const fetchSettings = () => {
+        if (!API_URL) return;
+        fetch(`${API_URL}/api/settings`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.settings) {
+                    setGlobalSettings(data.settings);
+                }
+            })
+            .catch(err => console.error("Error fetching settings:", err));
+    };
+
+    const updateGlobalSetting = async (key, value) => {
+        try {
+            const tele = window.Telegram?.WebApp;
+            const res = await fetch(`${API_URL}/api/settings`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': tele?.initData || ''
+                },
+                body: JSON.stringify({ key, value })
+            });
+            const data = await res.json();
+            if (data.success) {
+                setGlobalSettings(prev => ({ ...prev, [key]: value }));
+                tele ? tele.showAlert('Settings Updated!') : alert('Settings Updated!');
+            } else {
+                alert('Failed to update: ' + data.error);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Error updating setting');
+        }
+    };
 
 
 
@@ -234,10 +277,58 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                 >
                     Orders
                 </button>
+                <button
+                    onClick={() => setActiveTab('settings')}
+                    className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'settings' ? 'bg-[var(--tg-theme-bg-color)] border-t-2 border-[var(--tg-theme-button-color)] text-[var(--tg-theme-text-color)] font-bold' : 'text-[var(--tg-theme-hint-color)] hover:text-[var(--tg-theme-text-color)]'}`}
+                >
+                    Engine
+                </button>
             </div>
 
             <div className="p-6">
-                {activeTab === 'products' ? (
+                {activeTab === 'settings' ? (
+                    <div className="space-y-6">
+                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100">
+                            <h3 className="flex items-center gap-2 font-bold text-blue-900 text-lg mb-2">
+                                <Settings size={20} />
+                                Automated Sales & Promotion Engine
+                            </h3>
+                            <p className="text-sm text-blue-800 leading-relaxed">
+                                Control the intensity of automated marketing features like Flash Sales and Social Proof indicators.
+                            </p>
+                        </div>
+
+                        <div className="bg-white p-4 rounded border border-gray-200 shadow-sm">
+                            <label className="block text-sm font-bold text-[#0F1111] mb-2">
+                                Global Sale Intensity
+                            </label>
+                            <p className="text-xs text-gray-500 mb-3">
+                                Determines frequency of Flash Sales and magnitude of Social Proof counters.
+                            </p>
+                            <div className="grid grid-cols-3 gap-2">
+                                {['low', 'medium', 'high'].map((level) => (
+                                    <button
+                                        key={level}
+                                        onClick={() => updateGlobalSetting('global_sale_intensity', level)}
+                                        className={`py-3 px-4 rounded-lg border text-sm font-bold capitalize transition-all ${globalSettings.global_sale_intensity === level
+                                                ? 'bg-[var(--tg-theme-button-color)] text-white border-transparent shadow'
+                                                : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        {level}
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="mt-3 text-xs bg-gray-50 p-2 rounded text-gray-600 italic">
+                                <strong>Effect:</strong> {
+                                    globalSettings.global_sale_intensity === 'low' ? 'Minimal urgency. No timers.' :
+                                        globalSettings.global_sale_intensity === 'high' ? 'High urgency! Frequent flash sales & 3x social proof.' :
+                                            'Balanced approach. Occasional timers & 1.5x social proof.'
+                                }
+                            </div>
+                        </div>
+                    </div>
+                ) : activeTab === 'products' ? (
                     <>
                         {/* Add/Edit Form */}
                         <form onSubmit={handleAdd} className="space-y-4 mb-8 bg-gray-50 p-4 rounded border border-gray-200">

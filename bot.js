@@ -5,7 +5,7 @@ import cors from 'cors';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
-import { connectDB, Product, Order, User, AnalyticsEvent, Session, PromoCode } from './src/db.js';
+import { connectDB, Product, Order, User, AnalyticsEvent, Session, PromoCode, SystemSetting } from './src/db.js';
 import path from 'path';
 
 
@@ -52,6 +52,16 @@ console.log('-----------------------------------');
         }
     } catch (e) {
         console.error("Seeding error:", e);
+    }
+    // Seed Default Settings
+    try {
+        const setting = await SystemSetting.findOne({ key: 'global_sale_intensity' });
+        if (!setting) {
+            console.log("Seeding Default System Settings...");
+            await SystemSetting.create({ key: 'global_sale_intensity', value: 'medium' });
+        }
+    } catch (e) {
+        console.error("Settings Seeding error:", e);
     }
 })();
 
@@ -499,6 +509,50 @@ app.get('/api/user/me', authenticateUser, async (req, res) => {
     } catch (e) {
         console.error("User Fetch Error:", e);
         res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+// GET /api/settings - Get Global Settings
+app.get('/api/settings', async (req, res) => {
+    try {
+        const settings = await SystemSetting.find({});
+        // Convert to simple key-value object
+        const formatted = {};
+        settings.forEach(s => formatted[s.key] = s.value);
+        res.json({ success: true, settings: formatted });
+    } catch (err) {
+        console.error("Fetch Settings Error:", err);
+        res.status(500).json({ error: 'Failed to fetch settings' });
+    }
+});
+
+// POST /api/settings - Update Global Settings (Admin Only)
+app.post('/api/settings', authenticateUser, async (req, res) => {
+    try {
+        // Basic check using env ADMIN_ID (ensure only admin can change)
+        // In a real app we might rely on isSuperAdmin middleware or similar
+        const userId = req.telegramUser.id.toString();
+        const adminId = (process.env.ADMIN_ID || '').toString();
+
+        if (userId !== adminId) {
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
+
+        const { key, value } = req.body;
+        if (!key || value === undefined) {
+            return res.status(400).json({ error: 'Missing key or value' });
+        }
+
+        const setting = await SystemSetting.findOneAndUpdate(
+            { key },
+            { value, updatedAt: new Date() },
+            { upsert: true, new: true }
+        );
+
+        res.json({ success: true, setting });
+    } catch (err) {
+        console.error("Update Settings Error:", err);
+        res.status(500).json({ error: 'Failed to update settings' });
     }
 });
 

@@ -7,6 +7,7 @@ const useStore = create(
         (set, get) => ({
             cart: [],
             wishlist: [],
+            settings: {},
 
             // User Data & Gamification
             user: null,
@@ -57,6 +58,21 @@ const useStore = create(
             },
 
             setWalletBalance: (amount) => set({ walletBalance: amount }),
+
+            fetchSettings: async () => {
+                try {
+                    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+                    const res = await fetch(`${API_URL}/api/settings`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.success) {
+                            set({ settings: data.settings });
+                        }
+                    }
+                } catch (e) {
+                    console.error("Failed to fetch settings:", e);
+                }
+            },
 
             addToCart: (product) => {
                 const { cart } = get();
@@ -117,7 +133,7 @@ const useStore = create(
         {
             name: 'telegram-store-storage', // unique name
             storage: createJSONStorage(() => localStorage), // (optional) by default, 'localStorage' check is used
-            partialize: (state) => ({ cart: state.cart, wishlist: state.wishlist, user: state.user }), // Persist user too
+            partialize: (state) => ({ cart: state.cart, wishlist: state.wishlist, user: state.user, settings: state.settings }), // Persist settings too
         }
     )
 );

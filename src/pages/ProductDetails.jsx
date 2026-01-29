@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import API_URL from '../config';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShoppingBag, Heart, Edit2, Check, Zap } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Heart, Edit2, Check, Zap, Users, Flame } from 'lucide-react';
 
 import { trackEvent } from '../utils/track';
 import useStore from '../store/useStore';
@@ -37,6 +37,22 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
     const [isAdded, setIsAdded] = useState(false);
     const [activeImageIndex, setActiveImageIndex] = useState(0);
     const [showFullDesc, setShowFullDesc] = useState(false);
+
+    // Social Proof Logic
+    const settings = useStore(state => state.settings);
+    const intensity = settings.global_sale_intensity || 'medium';
+    const viewerCount = useMemo(() => {
+        if (intensity === 'low') return 0; // Check if hidden for low later, or use small number
+        // Base random 5-25
+        const base = 5 + Math.floor(Math.random() * 20);
+        let multiplier = 1;
+        if (intensity === 'medium') multiplier = 1.5;
+        if (intensity === 'high') multiplier = 3;
+
+        let count = Math.floor(base * multiplier);
+        if (intensity === 'low' && count < 10) return 0; // Hide if low traffic on low intensity
+        return count;
+    }, [intensity]);
 
     // Derived State
     const isWishlisted = product ? wishlist.includes(product.id) : false;
@@ -799,6 +815,19 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                                     </div>
                                 )}
                             </div>
+
+                            {/* Social Proof Indicator */}
+                            {viewerCount > 0 && (
+                                <div className="flex items-center gap-2 mt-2 text-xs font-medium text-orange-600 animate-pulse">
+                                    <div className="flex -space-x-1">
+                                        <Users size={14} className="fill-orange-100" />
+                                    </div>
+                                    <span>
+                                        <Flame size={12} className="inline mb-0.5 fill-orange-500" />
+                                        {viewerCount} people are viewing this right now
+                                    </span>
+                                </div>
+                            )}
 
                             {/* Stock Status Badge */}
                             <div className="mt-2 flex items-center gap-2 flex-wrap">

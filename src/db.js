@@ -159,4 +159,10 @@ const Session = mongoose.model('Session', new mongoose.Schema({
     isActive: { type: Boolean, default: true }
 }));
 
-export { connectDB, Product, Order, User, AnalyticsEvent, Session, PromoCode };
+const SystemSetting = mongoose.model('SystemSetting', new mongoose.Schema({
+    key: { type: String, required: true, unique: true }, // e.g., 'global_sale_intensity'
+    value: { type: mongoose.Schema.Types.Mixed, required: true }, // e.g., 'low', 'medium', 'high'
+    updatedAt: { type: Date, default: Date.now }
+}));
+
+export { connectDB, Product, Order, User, AnalyticsEvent, Session, PromoCode, SystemSetting };

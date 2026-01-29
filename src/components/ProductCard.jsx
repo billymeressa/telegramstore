@@ -1,10 +1,31 @@
 import { useNavigate } from 'react-router-dom';
 import { Package, Heart, ShoppingCart, CheckCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import useStore from '../store/useStore';
+import FlashSaleTimer from './FlashSaleTimer';
 
 function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
     const navigate = useNavigate();
     const [isAdded, setIsAdded] = useState(false);
+    const settings = useStore(state => state.settings);
+    const intensity = settings.global_sale_intensity || 'medium';
+
+    const showFlashSale = useMemo(() => {
+        if (intensity === 'low') return false;
+
+        // Deterministic random based on ID/Title
+        let hash = 0;
+        const str = String(product.id || product.title);
+        for (let i = 0; i < str.length; i++) {
+            hash = ((hash << 5) - hash) + str.charCodeAt(i);
+            hash |= 0;
+        }
+        const rand = Math.abs(hash) % 100; // 0-99
+
+        if (intensity === 'high') return rand < 50; // 50% chance
+        if (intensity === 'medium') return rand < 20; // 20% chance
+        return false;
+    }, [intensity, product.id, product.title]);
 
     const handleAdd = (e) => {
         e.stopPropagation();
@@ -67,6 +88,8 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
 
             {/* Content */}
             <div className="p-2.5 flex flex-col gap-1 text-left flex-grow">
+                {showFlashSale && <FlashSaleTimer className="mb-1 w-fit" />}
+
                 <h3 className="text-[var(--tg-theme-text-color)] text-sm leading-tight line-clamp-2 font-bold flex-grow">
                     {product.title}
                 </h3>
