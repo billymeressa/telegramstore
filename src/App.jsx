@@ -125,8 +125,9 @@ function App() {
         }
 
         try {
-          tele.headerColor = tele.themeParams.bg_color || '#ffffff';
-          tele.backgroundColor = tele.themeParams.secondary_bg_color || '#f4f4f5';
+          // Force Light Mode Colors
+          tele.headerColor = '#ffffff';
+          tele.backgroundColor = '#f4f4f5';
 
           // Sync Safe Areas
           const syncSafeAreas = () => {

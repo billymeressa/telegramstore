@@ -5,6 +5,7 @@
 /* Light Mode (Default) - Override Telegram theme variables */
 /* To enable dark mode adaptation, use window.Telegram.WebApp.colorScheme in JS */
 :root {
+  color-scheme: light;
   --tg-theme-bg-color: #ffffff;
   --tg-theme-secondary-bg-color: #f4f4f5;
   --tg-theme-text-color: #000000;
