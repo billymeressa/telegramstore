@@ -5,11 +5,12 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import SpinWheel from '../components/SpinWheel';
 import useStore from '../store/useStore';
 import { Wallet, Coins } from 'lucide-react';
+import ProductList from '../components/ProductList';
 
 
 const tele = window.Telegram?.WebApp;
 
-const Profile = () => {
+const Profile = ({ products = [] }) => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const { isAdmin, isSuperAdmin, user } = useOutletContext();
@@ -202,6 +203,14 @@ const Profile = () => {
                             ))}
                         </div>
                     )}
+                </div>
+
+                {/* Recommended Section (New) */}
+                <div className="pt-6 pb-4">
+                    <h3 className="px-1 text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                        More for You
+                    </h3>
+                    <ProductList products={products.slice(0, 10)} />
                 </div>
             </div>
         </div>
