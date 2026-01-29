@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Toast from './components/Toast';
 import ContactModal from './components/ContactModal'; // New Import
 import { trackEvent, startSession, endSession } from './utils/track';
+import ScrollToTop from './components/ScrollToTop';
 
 // Lazy Load Pages for Code Splitting
 const CartPage = lazy(() => import('./pages/CartPage'));
@@ -383,6 +384,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       {loading && <LoadingScreen />}
       <Suspense fallback={<LoadingScreen />}>
         <Routes>
