@@ -45,10 +45,10 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
             const data = await res.json();
 
             if (data.success) {
-                setDiscount(data.discount);
+                setCouponDiscount(data.discount);
                 setCouponMessage({ type: 'success', text: `Coupon applied! You saved ${data.discount} Birr` });
             } else {
-                setDiscount(0);
+                setCouponDiscount(0);
                 setCouponMessage({ type: 'error', text: data.message });
             }
         } catch (e) {
@@ -66,11 +66,40 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
             msg += `- ${item.title}${variationText} (x${item.quantity}) @ ${Math.floor(itemPrice * item.quantity)}\n`;
         });
 
-        if (discount > 0) {
-            msg += `\nSubtotal: ${Math.floor(totalPrice)} Birr`;
-            msg += `\nDiscount: -${Math.floor(discount)} Birr`;
+        msg += `\nSubtotal: ${Math.floor(totalPrice)} Birr`;
+
+        if (couponDiscount > 0) {
+            msg += `\nCoupon Discount: -${Math.floor(couponDiscount)} Birr`;
         }
 
+        if (creditDiscount > 0) {
+            msg += `\nCredit Discount: -${Math.floor(creditDiscount)} Birr (used ${Math.floor(creditDiscount)} credits)`;
+        }
+
+        // Ideally shipping fee should be dynamic or calculated. 
+        // For now, assuming shipping is handled externally or included, 
+        // but prompt asked to show "Shipping Fee". 
+        // If we don't have shipping logic yet, maybe 0 or omitted?
+        // Prompt 7 mentioned "Free Shipping Progress Bar" but didn't implement actual shipping fee logic?
+        // Let's assume Free Shipping or TBD. 
+        // The prompt "Prompt 8" says "Final order message... clearly show the: Subtotal, Credit Discount, Shipping Fee, and Final Total".
+        // I will add a placeholder or logic for Shipping Fee.
+        // If Free Shipping Threshold (1500) is reached, 0. Else, maybe standard fee?
+        // The prompt 7 just said "Free Shipping Progress Bar" but didn't specify the fee if NOT free.
+        // I'll default to 0 for now or added if I knew the fee. 
+        // Let's check if there's a standard fee in Cart.jsx? No.
+        // I will display "Shipping: To be calculated" or "0" if free.
+        // Actually, let's look at the Free Shipping limit: 1500.
+        // Let's assume a standard fee if < 1500? Or just display 0 if free.
+        // Let's add 'Shipping Fee' line.
+        const FREE_SHIPPING_THRESHOLD = 1500;
+        const shippingFee = totalPrice >= FREE_SHIPPING_THRESHOLD ? 0 : 0; // Keeping 0 for now as no fee specified for non-free.
+        // Wait, if I put 0, user might think it's always free. 
+        // But I don't have instructions on WHAT the fee is. 
+        // I'll leave Shipping Fee as part of the message but maybe generic text if > 0 unavailable.
+        // "Shipping Fee: Free" or "Shipping Fee: Contact Seller".
+
+        msg += `\nShipping Fee: ${shippingFee === 0 && totalPrice >= FREE_SHIPPING_THRESHOLD ? 'Free' : 'TBD'}`;
         msg += `\nTotal: ${Math.floor(finalPrice)} Birr`;
 
         if (promoCode) {
@@ -90,8 +119,13 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
                 body: JSON.stringify({
                     items: cart.map(i => ({
                         ...i,
-                        selectedVariation: i.selectedVariation // passing selected variation explicitly
+                        selectedVariation: i.selectedVariation
                     })),
+                    subtotal: Math.floor(totalPrice),
+                    shippingFee: shippingFee,
+                    discount: Math.floor(couponDiscount + creditDiscount), // Total discount
+                    creditDiscount: Math.floor(creditDiscount),
+                    couponDiscount: Math.floor(couponDiscount),
                     total: Math.floor(finalPrice),
                     userInfo: user
                 })
@@ -102,10 +136,6 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
 
         // Open Telegram Chat
         window.open(telegramUrl, '_blank');
-
-        // Optional: Call original checkout to save order to DB/Clear Cart if desired
-        // For now, we just open the link as requested. 
-        // await onCheckout(cart, promoCode, discount);
     };
 
     return (
@@ -117,10 +147,10 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
                         <span>Subtotal</span>
                         <span>{Math.floor(totalPrice)} Birr</span>
                     </div>
-                    {discount > 0 && (
+                    {couponDiscount > 0 && (
                         <div className="flex justify-between text-green-600 text-sm font-medium">
-                            <span>Discount</span>
-                            <span>-{Math.floor(discount)} Birr</span>
+                            <span>Coupon Discount</span>
+                            <span>-{Math.floor(couponDiscount)} Birr</span>
                         </div>
                     )}
                     <div className="flex justify-between text-[var(--tg-theme-text-color)] text-lg font-bold border-t border-[var(--tg-theme-section-separator-color)] pt-2 mt-2">
