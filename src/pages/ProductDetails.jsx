@@ -976,9 +976,9 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                 relatedProducts.length > 0 && (
                     <div
                         ref={recommendedRef}
-                        className="p-4 pt-6 bg-[var(--tg-theme-secondary-bg-color)] mt-4 border-t border-[var(--tg-theme-section-separator-color)]"
+                        className="pt-6 bg-[var(--tg-theme-secondary-bg-color)] mt-4 border-t border-[var(--tg-theme-section-separator-color)]"
                     >
-                        <h3 className="text-lg font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center gap-2">
+                        <h3 className="px-4 text-lg font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center gap-2">
                             Recommended for You
                         </h3>
                         <ProductList products={relatedProducts} />
@@ -987,8 +987,8 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
             }
 
             {/* Seamless Feed: More to Explore */}
-            <div className="p-4 pt-2 bg-[var(--tg-theme-secondary-bg-color)] pb-20">
-                <h3 className="text-lg font-bold text-[var(--tg-theme-text-color)] mb-4">
+            <div className="pt-2 bg-[var(--tg-theme-secondary-bg-color)] pb-20">
+                <h3 className="px-4 text-lg font-bold text-[var(--tg-theme-text-color)] mb-4">
                     More to Explore
                 </h3>
                 <ProductList products={moreProducts} />
