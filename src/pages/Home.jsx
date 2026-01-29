@@ -237,25 +237,25 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
             {/* Scroll-Aware Fixed Header Group */}
             <div
-                className="fixed top-0 left-0 right-0 z-50 flex flex-col bg-[var(--tg-theme-bg-color)] shadow-sm pt-tg-safe"
+                className="fixed top-0 left-0 right-0 z-50 flex flex-col bg-[var(--tg-theme-bg-color)]/80 backdrop-blur-md shadow-sm"
             >
-                {/* Search Bar */}
-                <div className="pb-2 px-3 border-b border-[var(--tg-theme-section-separator-color)] flex gap-2 items-center">
+                {/* Search Bar Row - High padding-right to avoid native buttons */}
+                <div className="pt-tg-safe pb-2 px-3 pr-24 flex gap-2 items-center">
                     <div className="relative flex-1">
                         <input
                             type="text"
                             placeholder="Search products..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] pl-9 pr-4 py-1.5 rounded-lg border-none outline-none placeholder:text-[var(--tg-theme-hint-color)] text-sm font-normal caret-[var(--tg-theme-button-color)]"
+                            className="w-full bg-[var(--tg-theme-secondary-bg-color)]/60 text-[var(--tg-theme-text-color)] pl-9 pr-4 py-1.5 rounded-lg border-none outline-none placeholder:text-[var(--tg-theme-hint-color)] text-sm font-normal caret-[var(--tg-theme-button-color)]"
                         />
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--tg-theme-hint-color)]" size={16} />
                     </div>
                     <button
                         onClick={() => setShowHelp(true)}
-                        className="p-2 text-[var(--tg-theme-hint-color)] hover:text-[var(--tg-theme-text-color)]"
+                        className="p-1.5 text-[var(--tg-theme-hint-color)] hover:text-[var(--tg-theme-text-color)]"
                     >
-                        <HelpCircle size={24} />
+                        <HelpCircle size={22} />
                     </button>
                 </div>
 
