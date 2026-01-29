@@ -1,4 +1,5 @@
 import React from 'react';
+import { X } from 'lucide-react';
 
 function Cart({ cartItems, onRemove }) {
     const totalPrice = cartItems.reduce((sum, item) => {
