@@ -97,9 +97,12 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
     };
 
     // Smart Recommendations Logic (Filtered & Sorted)
-    const relatedProducts = product ? smartSort(products
-        .filter(p => p.category === product.category && p.id !== product.id))
-        .slice(0, 10) : [];
+    const relatedProducts = useMemo(() => {
+        if (!product) return [];
+        return smartSort(products
+            .filter(p => p.category === product.category && p.id !== product.id))
+            .slice(0, 10);
+    }, [product, products]);
 
     // Seamless Feed Logic
     const moreProducts = useMemo(() => {
