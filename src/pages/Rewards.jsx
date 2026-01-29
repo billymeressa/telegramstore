@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import useStore from '../store/useStore';
 import { Share, Copy, Gift, Coins, Trophy } from 'lucide-react';
+import SlotMachine from '../components/SlotMachine';
 
 
 const Rewards = () => {
     const user = useStore(state => state.user);
     const [copied, setCopied] = useState(false);
+    const [showSlots, setShowSlots] = useState(false);
 
     // Determines Bot Username for deep linking
     // In production, this should be environmental or fetched. 
@@ -85,7 +87,7 @@ const Rewards = () => {
             </div>
 
             {/* Action Button */}
-            <div className="px-4">
+            <div className="px-4 flex flex-col gap-3">
                 <button
                     onClick={handleShare}
                     className="w-full bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
@@ -93,7 +95,19 @@ const Rewards = () => {
                     <Share size={20} />
                     <span>Share with Friends</span>
                 </button>
+
+                <button
+                    onClick={() => setShowSlots(true)}
+                    className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] transition-transform border border-purple-400/30 relative overflow-hidden"
+                >
+                    {/* Shimmer */}
+                    <div className="absolute inset-0 bg-white/20 w-full -translate-x-full animate-[shimmer_2s_infinite]"></div>
+                    <Trophy size={20} className="text-yellow-300" />
+                    <span>Play Daily Slots</span>
+                </button>
             </div>
+
+            {showSlots && <SlotMachine onClose={() => setShowSlots(false)} />}
 
             {/* How it works */}
             <div className="px-6 mt-8">

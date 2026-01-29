@@ -128,17 +128,17 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
             </div>
 
             {/* Info Container */}
-            <div className="p-2 flex flex-col gap-1">
+            <div className="p-1.5 flex flex-col gap-0.5">
                 {/* Title */}
-                <h3 className="text-gray-800 text-[11px] font-normal leading-tight line-clamp-2 min-h-[2.2em]">
+                <h3 className="text-gray-900 text-[10px] font-medium leading-tight line-clamp-2 min-h-[2.4em]">
                     {product.title}
                 </h3>
 
                 {/* Unified Metadata Row - Inline */}
-                <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
+                <div className="flex flex-wrap items-center gap-1 mt-0.5">
                     {/* Main Price */}
-                    <div className="text-primary font-bold text-base leading-none">
-                        <span className="text-[10px] font-medium mr-0.5">ETB</span>
+                    <div className="text-primary font-bold text-sm leading-none">
+                        <span className="text-[9px] font-medium mr-0.5">ETB</span>
                         {product.variations && product.variations.length > 0
                             ? Math.floor(Math.min(...product.variations.map(v => v.price)))
                             : Math.floor(product.price)
@@ -147,41 +147,34 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
 
                     {/* Original Price */}
                     {(product.originalPrice > product.price || (product.variations && product.variations[0]?.originalPrice)) && (
-                        <div className="text-gray-400 text-[9px] line-through">
-                            ETB {Math.floor(product.originalPrice || (product.variations ? Math.max(...product.variations.map(v => v.originalPrice || 0)) : 0))}
+                        <div className="text-gray-400 text-[8px] line-through">
+                            {Math.floor(product.originalPrice || (product.variations ? Math.max(...product.variations.map(v => v.originalPrice || 0)) : 0))}
                         </div>
                     )}
 
                     {/* Discount Badge */}
                     {discountPercentage > 0 && (
-                        <div className="text-[9px] font-bold text-red-600 bg-red-50 border border-red-100 px-1 py-0.5 rounded">
+                        <div className="text-[8px] font-bold text-red-600 bg-red-50 border border-red-100 px-1 py-0 rounded-[3px]">
                             -{discountPercentage}%
                         </div>
                     )}
 
                     {/* Sales Timer */}
-                    {showFlashSale && <FlashSaleTimer className="scale-90 origin-left" />}
-
-                    {/* Stock Alert */}
-                    {(product.forceLowStockDisplay || (product.stock > 0 && product.stock < 10)) && (!product.variations || product.variations.length === 0) && (
-                        <span className="text-[9px] font-bold text-red-600 bg-red-50 border border-red-100 px-1 py-0.5 rounded">
-                            Only {product.stock} left
-                        </span>
-                    )}
+                    {showFlashSale && <FlashSaleTimer className="scale-75 origin-left" />}
                 </div>
 
                 {/* Trust / Social Proof */}
-                <div className="flex items-center justify-between mt-1">
-                    <span className="text-[9px] text-gray-500 bg-gray-100 px-1 py-0.5 rounded">
-                        {product.isUnique ? 'Unique' : '100+ sold'}
+                <div className="flex items-center justify-between mt-0.5">
+                    <span className="text-[8px] text-gray-400 font-medium">
+                        100+ sold
                     </span>
                     {/* Add To Cart Button */}
                     <button
                         onClick={handleAdd}
-                        className={`p-1.5 rounded-full shadow-sm active:scale-90 transition-all ${isAdded ? 'bg-success text-white' : 'border border-primary text-primary hover:bg-primary hover:text-white'}`}
+                        className={`p-1 rounded-full shadow-sm active:scale-90 transition-all ${isAdded ? 'bg-success text-white' : 'border border-gray-200 text-primary hover:bg-primary hover:text-white'}`}
                         disabled={product.stock === 0 && !product.isUnique && (!product.variations || product.variations.length === 0)}
                     >
-                        {isAdded ? <CheckCircle size={14} /> : <ShoppingCart size={14} />}
+                        {isAdded ? <CheckCircle size={12} /> : <ShoppingCart size={12} />}
                     </button>
                 </div>
             </div>

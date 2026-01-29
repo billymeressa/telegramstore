@@ -23,12 +23,15 @@ import { smartSort } from './utils/smartSort';
 
 const ADMIN_ID = 748823605;
 
+import { Trophy } from 'lucide-react';
 import LiveSalesNotification from './components/LiveSalesNotification';
 import MysteryGift from './components/MysteryGift';
+import SlotMachine from './components/SlotMachine';
 import useStore from './store/useStore';
 
 function App() {
   const tele = window.Telegram?.WebApp;
+  const [showSlots, setShowSlots] = useState(false);
 
   // Local State for Products (still fetched here for now)
   const [products, setProducts] = useState(() => {
@@ -377,6 +380,17 @@ function App() {
       />
       <LiveSalesNotification products={products} />
       <MysteryGift />
+
+      {/* Floating Slot Machine Button (Bottom Left) */}
+      <button
+        onClick={() => setShowSlots(true)}
+        className="fixed bottom-24 left-4 z-40 bg-purple-600 text-white p-3 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-transform border-2 border-yellow-400 animate-bounce"
+        style={{ animationDuration: '3s' }}
+      >
+        <Trophy size={24} className="text-yellow-300" />
+      </button>
+
+      {showSlots && <SlotMachine onClose={() => setShowSlots(false)} />}
     </BrowserRouter>
   );
 }
