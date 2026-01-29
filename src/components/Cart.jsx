@@ -59,7 +59,7 @@ function Cart({ cartItems, onRemove }) {
                                     {item.title}
                                 </h4>
                                 <button
-                                    onClick={() => onRemove(item)}
+                                    onClick={() => onRemove(item.cartId)}
                                     className="absolute top-2 right-2 text-gray-300 hover:text-red-500 p-1 transition-colors"
                                 >
                                     <X size={16} />

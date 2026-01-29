@@ -3,11 +3,13 @@ import Cart from '../components/Cart';
 import { Phone, MessageSquare, X, CheckCircle, Send, Tag } from 'lucide-react';
 import API_URL from '../config';
 import useStore from '../store/useStore';
-import NativeHeader from '../components/NativeHeader';
+
 
 const CartPage = ({ onCheckout, sellerUsername }) => {
     // Zustand Store
-    const cart = useStore(state => state.cart);
+    // Zustand Store
+    const cartState = useStore(state => state.cart);
+    const cart = Array.isArray(cartState) ? cartState : [];
     const onRemove = useStore(state => state.removeFromCart);
     const walletBalance = useStore(state => state.walletBalance);
 
@@ -140,8 +142,7 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
     };
 
     return (
-        <div className="bg-gray-50 min-h-dvh pb-40 font-sans pt-[calc(var(--tg-content-safe-area-top)+44px)]">
-            <NativeHeader title="Shopping Cart" />
+        <div className="bg-gray-50 min-h-dvh pb-40 font-sans pt-[var(--tg-content-safe-area-top)]">
 
             {/* Header / Subtotal - Clean Card Style */}
             {cart.length > 0 && (

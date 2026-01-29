@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import API_URL from '../config';
 import { LayoutDashboard, Package, Truck, CheckCircle, XCircle, Settings } from 'lucide-react';
-import NativeHeader from '../components/NativeHeader';
+
 
 const SUBCATEGORIES = {
     'Men': ['Shirts', 'T-Shirts', 'Pants', 'Jeans', 'Shoes', 'Suits', 'Accessories', 'Activewear', 'Other'],
@@ -254,8 +254,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
     };
 
     return (
-        <div className="bg-white rounded-md shadow-sm border border-gray-200 mt-4 overflow-hidden pt-[calc(var(--tg-content-safe-area-top)+44px)]">
-            <NativeHeader title="Seller Dashboard" />
+        <div className="bg-white rounded-md shadow-sm border border-gray-200 mt-4 overflow-hidden pt-[var(--tg-content-safe-area-top)]">
             <div className="bg-[var(--tg-theme-button-color)] p-4">
                 <h2 className="text-xl font-bold text-[var(--tg-theme-button-text-color)] flex items-center gap-2">
                     <LayoutDashboard size={24} />
@@ -311,8 +310,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                         key={level}
                                         onClick={() => updateGlobalSetting('global_sale_intensity', level)}
                                         className={`py-3 px-4 rounded-lg border text-sm font-bold capitalize transition-all ${globalSettings.global_sale_intensity === level
-                                                ? 'bg-[var(--tg-theme-button-color)] text-white border-transparent shadow'
-                                                : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                                            ? 'bg-[var(--tg-theme-button-color)] text-white border-transparent shadow'
+                                            : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
                                             }`}
                                     >
                                         {level}

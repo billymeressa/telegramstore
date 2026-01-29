@@ -51,8 +51,8 @@ const productSchema = new mongoose.Schema({
 productSchema.pre('save', async function () {
     // 1. Handle Main Product Price
     if (this.price && (!this.originalPrice || this.originalPrice <= this.price)) {
-        // Generate random multiplier between 1.5 and 3.5
-        const multiplier = 1.5 + Math.random() * 2;
+        // Generate random multiplier between 1.15 and 1.55 (~13% - 35% discount)
+        const multiplier = 1.15 + Math.random() * 0.40;
         this.originalPrice = Math.ceil(this.price * multiplier);
     }
 
@@ -60,7 +60,7 @@ productSchema.pre('save', async function () {
     if (this.variations && this.variations.length > 0) {
         this.variations.forEach(v => {
             if (v.price && (!v.originalPrice || v.originalPrice <= v.price)) {
-                const multiplier = 1.5 + Math.random() * 2;
+                const multiplier = 1.15 + Math.random() * 0.40;
                 v.originalPrice = Math.ceil(v.price * multiplier);
             }
         });
