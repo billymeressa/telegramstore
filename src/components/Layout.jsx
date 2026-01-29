@@ -1,5 +1,5 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Store, ShoppingBag, User, LayoutDashboard } from 'lucide-react';
+import { Store, ShoppingBag, User, LayoutDashboard, Gift } from 'lucide-react';
 import { useEffect } from 'react';
 
 const tele = window.Telegram?.WebApp;
@@ -68,6 +68,14 @@ const Layout = ({ cartCount, isAdmin, isSuperAdmin, user }) => {
                     >
                         {location.pathname === '/profile' ? <User size={22} strokeWidth={2.5} /> : <User size={22} strokeWidth={1.5} />}
                         <span className="text-[9px] font-medium">Profile</span>
+                    </button>
+
+                    <button
+                        onClick={() => navigate('/rewards')}
+                        className={`flex flex-col items-center justify-center w-full py-1.5 gap-0.5 active:opacity-70 transition-opacity ${location.pathname === '/rewards' ? 'text-[var(--tg-theme-button-color)]' : 'text-[var(--tg-theme-hint-color)]'}`}
+                    >
+                        {location.pathname === '/rewards' ? <Gift size={22} strokeWidth={2.5} /> : <Gift size={22} strokeWidth={1.5} />}
+                        <span className="text-[9px] font-medium">Rewards</span>
                     </button>
 
                     {isAdmin && (

@@ -8,6 +8,7 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
     // Zustand Store
     const cart = useStore(state => state.cart);
     const onRemove = useStore(state => state.removeFromCart);
+    const walletBalance = useStore(state => state.walletBalance);
 
     const totalPrice = cart.reduce((sum, item) => {
         const itemPrice = item.selectedVariation ? item.selectedVariation.price : item.price;
@@ -16,10 +17,21 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
     const [promoCode, setPromoCode] = useState('');
-    const [discount, setDiscount] = useState(0);
+    const [couponDiscount, setCouponDiscount] = useState(0);
     const [couponMessage, setCouponMessage] = useState(null); // { type: 'success'|'error', text: '' }
+    const [useCredits, setUseCredits] = useState(false);
 
-    const finalPrice = Math.max(0, totalPrice - discount);
+    // Credit Redemption Rules
+    const MIN_PURCHASE_FOR_CREDITS = 200;
+    const canUseCredits = totalPrice >= MIN_PURCHASE_FOR_CREDITS && walletBalance > 0;
+
+    // Calculate Credits to apply
+    // If using credits, apply up to the remaining total after coupon
+    const creditDiscount = (useCredits && canUseCredits)
+        ? Math.min(walletBalance, Math.max(0, totalPrice - couponDiscount))
+        : 0;
+
+    const finalPrice = Math.max(0, totalPrice - couponDiscount - creditDiscount);
 
     const applyCoupon = async () => {
         if (!promoCode.trim()) return;

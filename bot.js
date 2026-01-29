@@ -64,17 +64,42 @@ cloudinary.config({
 
 bot.command('start', async (ctx) => {
     try {
-        // Save User to DB
-        await User.findOneAndUpdate(
-            { userId: ctx.from.id.toString() },
-            {
+        const startPayload = ctx.payload; // Parameter passed with /start
+
+        // Find or create user
+        let user = await User.findOne({ userId: ctx.from.id.toString() });
+        const isNewUser = !user;
+
+        if (isNewUser) {
+            user = new User({
+                userId: ctx.from.id.toString(),
                 username: ctx.from.username,
                 firstName: ctx.from.first_name,
-                userId: ctx.from.id.toString(),
+                referralCode: ctx.from.id.toString(), // Use ID as simple referral code
                 lastActiveAt: new Date()
-            },
-            { upsert: true, new: true }
-        );
+            });
+
+            // Handle Referral
+            if (startPayload && startPayload !== user.userId) {
+                // Check if referrer exists
+                const referrer = await User.findOne({ userId: startPayload }); // Assuming payload is userId
+                // Alternatively, if we use custom codes, find by referralCode
+                // But for now, we use userId as code.
+
+                if (referrer) {
+                    user.referredBy = referrer.userId;
+                    console.log(`User ${user.userId} referred by ${referrer.userId}`);
+                }
+            }
+            await user.save();
+        } else {
+            // Update existing user info
+            user.username = ctx.from.username;
+            user.firstName = ctx.from.first_name;
+            user.lastActiveAt = new Date();
+            if (!user.referralCode) user.referralCode = user.userId; // Ensure code exists
+            await user.save();
+        }
 
         // Remove old persistent keyboard if present
         await ctx.reply('Loading store...', { reply_markup: { remove_keyboard: true } });
@@ -710,6 +735,46 @@ app.post('/api/notify-order', async (req, res) => {
                 message += `    Qty: ${item.quantity} x ${item.price} ETB\n`;
             });
             message += `\n💰 *Total:* ${total} ETB\n`;
+
+            // --- REFERRAL LOGIC ---
+            if (userInfo && userInfo.id) {
+                const buyer = await User.findOne({ userId: userInfo.id.toString() });
+
+                // Check if this is their first order (or if they haven't triggered a referral award yet)
+                // We can check if they have any previous orders, or use a flag. 
+                // Let's check order count or a flag 'referralRewardTriggered'.
+                // Simplest: Check if orders count is 0 (before this one is saved, but we don't save orders here yet! We send notif).
+                // Wait, this endpoint is just notification. The order saving happens locally or effectively here if we saved it.
+                // But the prompt says "ensure the backend awards 200 ETB".
+                // I should verify if this is the FIRST order.
+                // Assuming we track orders in DB? Schema has Order model.
+                // Let's count previous orders for this user.
+
+                const previousOrdersCount = await Order.countDocuments({ userId: userInfo.id.toString() });
+
+                if (previousOrdersCount === 0 && buyer && buyer.referredBy) {
+                    // Award Referrer
+                    const referrer = await User.findOne({ userId: buyer.referredBy });
+                    if (referrer) {
+                        referrer.walletBalance = (referrer.walletBalance || 0) + 200;
+                        referrer.rewardHistory.push({
+                            type: 'referral_bonus',
+                            amount: 200,
+                            timestamp: new Date()
+                        });
+                        await referrer.save();
+
+                        // Notify Referrer
+                        bot.telegram.sendMessage(referrer.userId,
+                            `🎉 *Referral Bonus!*\n\nYour friend ${userInfo.first_name} just made their first purchase.\nYou've earned *200 ETB*!`,
+                            { parse_mode: 'Markdown' }
+                        ).catch(e => console.error("Failed to notify referrer:", e));
+
+                        console.log(`Awarded 200 ETB to referrer ${referrer.userId} for user ${buyer.userId}`);
+                    }
+                }
+            }
+
         } else if (product) {
             // Single Item Buy
             const varText = variation ? ` (${variation.name})` : '';

@@ -15,6 +15,7 @@ const WishlistPage = lazy(() => import('./pages/WishlistPage'));
 const ProductDetails = lazy(() => import('./pages/ProductDetails'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 const AnalyticsDashboard = lazy(() => import('./pages/AnalyticsDashboard'));
+const Rewards = lazy(() => import('./pages/Rewards'));
 
 // Categories to demote (push to bottom)
 const GENERIC_CATEGORIES = ['Parts & Accessories', 'Tools', 'Tools & Equipment', 'Other', 'Computer Accessories', 'Cables', 'Adapters'];
@@ -404,6 +405,7 @@ function App() {
             <Route path="/product/:id" element={<ProductDetails onBuyNow={onBuyNow} products={products} isAdmin={isAdmin} sellerUsername={sellerUsername} />} />
             <Route path="/admin" element={isAdmin ? <AdminDashboard products={products} onProductUpdate={setProducts} /> : <Navigate to="/" />} />
             <Route path="/analytics" element={isSuperAdmin ? <AnalyticsDashboard /> : <Navigate to="/" />} />
+            <Route path="/rewards" element={<Rewards />} />
           </Route>
         </Routes>
       </Suspense>

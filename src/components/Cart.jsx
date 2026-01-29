@@ -14,9 +14,31 @@ function Cart({ cartItems, onRemove }) {
             </div>
         );
     }
+    const FREE_SHIPPING_THRESHOLD = 1500;
+    const remainingForFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - totalPrice);
+    const progressPercentage = Math.min(100, (totalPrice / FREE_SHIPPING_THRESHOLD) * 100);
 
     return (
         <div className="space-y-2 pb-24 px-2">
+            {/* Free Shipping Progress Bar */}
+            <div className="bg-[var(--tg-theme-bg-color)] p-4 rounded-xl shadow-sm mb-3">
+                <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium text-[var(--tg-theme-text-color)]">
+                        {remainingForFreeShipping > 0
+                            ? `Add ${remainingForFreeShipping} ETB more for free shipping`
+                            : "🎉 You've earned Free Shipping!"}
+                    </span>
+                    <span className="text-xs font-bold text-[var(--tg-theme-hint-color)]">
+                        {Math.floor(progressPercentage)}%
+                    </span>
+                </div>
+                <div className="w-full bg-[var(--tg-theme-secondary-bg-color)] rounded-full h-2.5">
+                    <div
+                        className="bg-green-500 h-2.5 rounded-full transition-all duration-500 ease-out"
+                        style={{ width: `${progressPercentage}%` }}
+                    ></div>
+                </div>
+            </div>
             {cartItems.map((item) => (
                 <div key={item.cartId} className="flex bg-[var(--tg-theme-bg-color)] p-2 rounded-xl shadow-sm gap-3">
                     {/* Item Image */}
