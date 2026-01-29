@@ -106,3 +106,7 @@ body {
 .pb-tg-safe {
   padding-bottom: var(--tg-safe-area-bottom);
 }
+
+.pt-tg-header {
+  padding-top: calc(var(--safe-area-top) + var(--tg-header-buttons-height));
+}
