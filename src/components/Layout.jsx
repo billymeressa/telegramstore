@@ -31,12 +31,12 @@ const Layout = ({ cartCount, isAdmin, isSuperAdmin, user }) => {
     }, [location.pathname, handleBack]);
 
     return (
-        <div className="min-h-dvh bg-[var(--tg-theme-secondary-bg-color)] pb-[calc(70px+var(--tg-safe-area-bottom))] font-sans">
+        <div className="min-h-dvh bg-[var(--tg-theme-secondary-bg-color)] pb-[calc(50px+var(--tg-safe-area-bottom))] font-sans">
             <Outlet context={{ isAdmin, isSuperAdmin, user }} />
 
             {/* Bottom Navigation (Hidden on ProductDetails) */}
             {!location.pathname.startsWith('/product/') && (
-                <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 pt-1 pb-[calc(20px+var(--tg-safe-area-bottom))] px-2 flex justify-around items-center z-[9999] shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
+                <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 pt-1 pb-[var(--tg-safe-area-bottom)] px-2 flex justify-around items-center z-[9999] shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
                     <button
                         onClick={() => navigate('/')}
                         className={`flex flex-col items-center justify-center w-full py-1.5 gap-0.5 active:scale-95 transition-transform ${location.pathname === '/' ? 'text-primary' : 'text-gray-400'}`}

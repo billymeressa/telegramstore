@@ -191,10 +191,10 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
     };
 
     return (
-        <div className="pb-4 pt-[calc(var(--tg-content-safe-area-top)+110px)] min-h-dvh bg-gray-50">
+        <div className="pb-4 min-h-dvh bg-gray-50">
 
-            {/* Scroll-Aware Fixed Header Group */}
-            <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm pt-[var(--tg-safe-area-top)] transition-all duration-300">
+            {/* Standard Scrollable Header Group */}
+            <div className="bg-white shadow-sm pt-[var(--tg-safe-area-top)]">
                 {/* Search Bar Row */}
                 <div className="px-3 flex gap-3 items-center h-[var(--tg-header-buttons-height)] min-h-[52px] w-full box-border pb-1">
                     <div className="flex-1 relative">
