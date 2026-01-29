@@ -197,7 +197,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                 className="fixed top-0 left-0 right-0 z-50 flex flex-col bg-[var(--tg-theme-bg-color)]/80 backdrop-blur-md shadow-sm pt-[var(--tg-safe-area-top)]"
             >
                 {/* Search Bar Row - Vertically centered with native buttons */}
-                <div className="px-3 pr-[90px] flex gap-2 items-center h-[var(--tg-header-buttons-height)] w-full box-border">
+                <div className="px-3 pr-[110px] flex gap-2 items-center h-[var(--tg-header-buttons-height)] min-h-[44px] w-full box-border">
                     <div className="relative flex-1 flex items-center">
                         <input
                             type="text"
