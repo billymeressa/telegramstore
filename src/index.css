@@ -34,15 +34,20 @@
 }
 */
 
+html,
+body {
+  height: 100dvh;
+}
+
 body {
   background-color: var(--tg-theme-bg-color);
-  /* #FAFAFA */
   color: var(--tg-theme-text-color);
   margin: 0;
-  min-height: 100vh;
+  min-height: 100dvh;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 /* Custom Scrollbar Styles */
@@ -74,6 +79,7 @@ body {
 
 #root {
   width: 100%;
+  min-height: 100dvh;
 }
 
 /* Telegram full-screen safe area utilities */

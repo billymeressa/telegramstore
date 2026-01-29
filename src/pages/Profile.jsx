@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import API_URL from '../config';
 import { Package, Clock, CheckCircle, Truck, XCircle, Settings, Heart, BarChart3 } from 'lucide-react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
+import SpinWheel from '../components/SpinWheel';
+import useStore from '../store/useStore';
+import { Wallet, Coins } from 'lucide-react';
 
 const tele = window.Telegram?.WebApp;
 
@@ -10,6 +13,11 @@ const Profile = () => {
     const [loading, setLoading] = useState(true);
     const { isAdmin, isSuperAdmin, user } = useOutletContext();
     const navigate = useNavigate();
+
+    // Store data
+    const walletBalance = useStore(state => state.walletBalance);
+    const checkInStreak = useStore(state => state.checkInStreak);
+    const fetchUserData = useStore(state => state.fetchUserData);
 
     useEffect(() => {
         if (user?.id) {
@@ -38,7 +46,7 @@ const Profile = () => {
     };
 
     return (
-        <div className="bg-[var(--tg-theme-secondary-bg-color)] min-h-screen pb-24 font-sans pt-tg-safe">
+        <div className="bg-[var(--tg-theme-secondary-bg-color)] min-h-dvh pb-24 font-sans pt-tg-safe">
             {/* Header / User Info */}
             <div className="bg-[var(--tg-theme-bg-color)] p-4 border-b border-[var(--tg-theme-section-separator-color)] mb-2">
                 <div className="flex items-center gap-4">
@@ -56,7 +64,44 @@ const Profile = () => {
                 </div>
             </div>
 
-            <div className="px-3 space-y-3">
+            <div className="px-3 space-y-4">
+                {/* Wallet & Rewards Card */}
+                <div className="bg-gradient-to-br from-blue-600 to-blue-500 rounded-2xl p-5 text-white shadow-lg">
+                    <div className="flex justify-between items-start mb-6">
+                        <div>
+                            <p className="text-blue-100 text-xs font-medium uppercase tracking-wider mb-1">Total Balance</p>
+                            <div className="flex items-center gap-2">
+                                <span className="text-3xl font-black">{walletBalance || 0}</span>
+                                <span className="text-sm font-bold opacity-80 uppercase">ETB</span>
+                            </div>
+                        </div>
+                        <div className="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
+                            <Wallet size={24} />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
+                            <div className="flex items-center gap-2 mb-1">
+                                <Coins size={14} className="text-yellow-300" />
+                                <span className="text-[10px] font-bold uppercase opacity-80">Daily Streak</span>
+                            </div>
+                            <p className="text-lg font-bold">{checkInStreak || 0} Days</p>
+                        </div>
+                        <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className="text-lg">🎡</span>
+                                <span className="text-[10px] font-bold uppercase opacity-80">Free Spins</span>
+                            </div>
+                            <p className="text-lg font-bold">1 Available</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Spin Wheel Section */}
+                <div className="bg-[var(--tg-theme-bg-color)] rounded-2xl overflow-hidden shadow-sm border border-[var(--tg-theme-section-separator-color)]">
+                    <SpinWheel />
+                </div>
                 {/* Admin Access Button */}
                 {isAdmin && (
                     <>

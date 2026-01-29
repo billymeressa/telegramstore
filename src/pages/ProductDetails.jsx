@@ -251,7 +251,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
 
 
     return (
-        <div className="bg-[var(--tg-theme-bg-color)] min-h-screen relative font-sans pt-tg-safe">
+        <div className="bg-[var(--tg-theme-bg-color)] min-h-dvh relative font-sans pt-tg-safe">
             {/* Header spacer for Telegram buttons - no custom back button needed, Telegram provides it */}
 
             {/* Sticky Recommended Header */}

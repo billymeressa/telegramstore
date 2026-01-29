@@ -109,15 +109,34 @@ function App() {
 
   useEffect(() => {
     const tele = window.Telegram?.WebApp;
-    if (tele) {
-      tele.ready();
-      tele.expand();
-      try {
-        tele.headerColor = tele.themeParams.bg_color || '#ffffff';
-        tele.backgroundColor = tele.themeParams.secondary_bg_color || '#f4f4f5';
-      } catch (e) {
-        console.error(e);
+    const initWebApp = () => {
+      if (tele) {
+        tele.ready();
+        tele.expand();
+
+        // Try to enter fullscreen mode (introduced in Bot API 8.0)
+        if (tele.requestFullscreen) {
+          try {
+            tele.requestFullscreen();
+          } catch (e) {
+            console.error("requestFullscreen failed:", e);
+          }
+        }
+
+        try {
+          tele.headerColor = tele.themeParams.bg_color || '#ffffff';
+          tele.backgroundColor = tele.themeParams.secondary_bg_color || '#f4f4f5';
+        } catch (e) {
+          console.error(e);
+        }
       }
+    };
+
+    if (tele) {
+      initWebApp();
+      // Second pass after a short delay for reliability
+      setTimeout(initWebApp, 500);
+      setTimeout(initWebApp, 2000);
     }
 
     // Sync User Data from Backend (Zustand Global State)

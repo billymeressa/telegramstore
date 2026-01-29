@@ -97,7 +97,7 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
     };
 
     return (
-        <div className="bg-[var(--tg-theme-secondary-bg-color)] min-h-screen pb-32 font-sans pt-tg-safe">
+        <div className="bg-[var(--tg-theme-secondary-bg-color)] min-h-dvh pb-32 font-sans pt-tg-safe">
             {/* Header / Subtotal */}
             {cart.length > 0 && (
                 <div className="bg-[var(--tg-theme-bg-color)] p-4 border-b border-[var(--tg-theme-section-separator-color)] mb-2 space-y-1">
