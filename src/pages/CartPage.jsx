@@ -140,24 +140,25 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
     };
 
     return (
-        <div className="bg-[var(--tg-theme-secondary-bg-color)] min-h-dvh pb-32 font-sans pt-[calc(var(--tg-content-safe-area-top)+44px)]">
+        <div className="bg-gray-50 min-h-dvh pb-40 font-sans pt-[calc(var(--tg-content-safe-area-top)+44px)]">
             <NativeHeader title="Shopping Cart" />
-            {/* Header / Subtotal */}
+
+            {/* Header / Subtotal - Clean Card Style */}
             {cart.length > 0 && (
-                <div className="bg-[var(--tg-theme-bg-color)] p-4 border-b border-[var(--tg-theme-section-separator-color)] mb-2 space-y-1">
-                    <div className="flex justify-between text-[var(--tg-theme-text-color)] text-sm">
+                <div className="bg-white p-4 mb-2 shadow-sm border-b border-gray-100">
+                    <div className="flex justify-between text-gray-600 text-sm mb-1">
                         <span>Subtotal</span>
                         <span>{Math.floor(totalPrice)} Birr</span>
                     </div>
                     {couponDiscount > 0 && (
-                        <div className="flex justify-between text-green-600 text-sm font-medium">
+                        <div className="flex justify-between text-success text-sm font-medium mb-1">
                             <span>Coupon Discount</span>
                             <span>-{Math.floor(couponDiscount)} Birr</span>
                         </div>
                     )}
-                    <div className="flex justify-between text-[var(--tg-theme-text-color)] text-lg font-bold border-t border-[var(--tg-theme-section-separator-color)] pt-2 mt-2">
-                        <span>Total</span>
-                        <span>{Math.floor(finalPrice)} Birr</span>
+                    <div className="flex justify-between text-gray-900 text-lg font-bold border-t border-gray-100 pt-2 mt-2">
+                        <span>Total Estimate</span>
+                        <span className="text-primary">{Math.floor(finalPrice)} Birr</span>
                     </div>
                 </div>
             )}
@@ -171,40 +172,39 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
 
             {/* Bottom Checkout Bar */}
             {cart.length > 0 && (
-                <div className="fixed bottom-[calc(60px+var(--tg-safe-area-bottom))] left-0 right-0 bg-[var(--tg-theme-bg-color)] border-t border-[var(--tg-theme-section-separator-color)] p-3 z-30">
+                <div className="fixed bottom-[calc(60px+var(--tg-safe-area-bottom))] left-0 right-0 bg-white border-t border-gray-100 p-3 z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.05)]">
                     {/* Promo Code Input */}
                     <div className="flex gap-2 mb-3">
                         <div className="relative flex-1">
                             <input
                                 type="text"
-                                placeholder="Enter Promo Code"
+                                placeholder="Promo Code"
                                 value={promoCode}
                                 onChange={(e) => setPromoCode(e.target.value)}
-                                className="w-full bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] border border-gray-300 rounded-lg py-2 pl-9 pr-3 text-sm outline-none focus:border-[var(--tg-theme-button-color)]"
+                                className="w-full bg-gray-50 text-gray-800 border-none rounded-lg py-2.5 pl-9 pr-3 text-sm outline-none focus:ring-1 focus:ring-primary/50 transition-all font-medium"
                             />
                             <Tag size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                         </div>
                         <button
                             onClick={applyCoupon}
-                            className="bg-gray-800 text-white px-4 rounded-lg text-sm font-medium active:scale-95 transition-transform"
+                            className="bg-gray-900 text-white px-5 rounded-lg text-sm font-medium active:scale-95 transition-transform"
                         >
                             Apply
                         </button>
                     </div>
                     {couponMessage && (
-                        <div className={`text-xs mb-3 ${couponMessage.type === 'success' ? 'text-green-600' : 'text-red-500'}`}>
+                        <div className={`text-xs mb-3 font-medium px-1 ${couponMessage.type === 'success' ? 'text-success' : 'text-danger'}`}>
                             {couponMessage.text}
                         </div>
                     )}
 
                     <button
                         onClick={handleCheckout}
-                        className="w-full bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity flex justify-between px-4"
+                        className="w-full bg-primary text-white py-3.5 rounded-full font-bold text-base shadow-lg shadow-primary/30 active:scale-95 transition-all flex justify-between px-6 items-center"
                     >
                         <span>Checkout ({totalItems})</span>
                         <span>{Math.floor(finalPrice)} Birr</span>
                     </button>
-
                 </div>
             )}
         </div>

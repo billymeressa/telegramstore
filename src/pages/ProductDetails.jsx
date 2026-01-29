@@ -403,8 +403,8 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                                             key={idx}
                                             onClick={() => setSelectedImage(img)}
                                             className={`w-2 h-2 rounded-full transition-all ${(selectedImage || product.images[0]) === img
-                                                ? 'bg-[var(--tg-theme-button-color)] w-6'
-                                                : 'bg-gray-300'
+                                                ? 'bg-primary w-6'
+                                                : 'bg-white/60 backdrop-blur'
                                                 }`}
                                             aria-label={`View image ${idx + 1}`}
                                         />
@@ -798,22 +798,35 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                                 </div>
                             )}
 
-                            <div className="flex items-baseline gap-2">
-                                {selectedVariation ? (
-                                    <div className="flex items-baseline gap-1">
-                                        <span className="text-3xl font-bold text-[var(--tg-theme-text-color)]">
-                                            {Math.floor(selectedVariation.price)}
-                                        </span>
-                                        <span className="text-sm font-medium text-[var(--tg-theme-hint-color)]">Birr</span>
-                                    </div>
-                                ) : (
-                                    <div className="flex items-baseline gap-1">
-                                        <span className="text-3xl font-bold text-[var(--tg-theme-text-color)]">
-                                            {Math.floor(product.price)}
-                                        </span>
-                                        <span className="text-sm font-medium text-[var(--tg-theme-hint-color)]">Birr</span>
-                                    </div>
-                                )}
+                            <div className="flex flex-col gap-1">
+                                {/* Price Row */}
+                                <div className="flex items-baseline gap-2">
+                                    {selectedVariation ? (
+                                        <div className="flex items-baseline gap-0.5 text-primary">
+                                            <span className="text-sm font-semibold">ETB</span>
+                                            <span className="text-4xl font-extrabold tracking-tight">
+                                                {Math.floor(selectedVariation.price)}
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-baseline gap-0.5 text-primary">
+                                            <span className="text-sm font-semibold">ETB</span>
+                                            <span className="text-4xl font-extrabold tracking-tight">
+                                                {Math.floor(product.price)}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Flash Sale / Discount Label */}
+                                <div className="flex items-center gap-2">
+                                    <span className="px-1.5 py-0.5 bg-danger/10 text-danger text-xs font-bold rounded">
+                                        -{product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 20}%
+                                    </span>
+                                    {product.originalPrice && (
+                                        <span className="text-gray-400 text-sm line-through">ETB {product.originalPrice}</span>
+                                    )}
+                                </div>
                             </div>
 
                             {/* Social Proof Indicator */}
@@ -844,19 +857,11 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                                         ) : (
                                             currentStock < 10 && (
                                                 <span className="inline-block px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded border border-red-200 animate-pulse">
-                                                    ቀሪ ብቻ! {currentStock}
+                                                    Almost Gone! Only {currentStock} left
                                                 </span>
                                             )
                                         )}
                                     </>
-                                )}
-
-                                {/* Social Proof Indicator */}
-                                {product.viewCount > 0 && (
-                                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded border border-blue-100">
-                                        <Zap size={10} className="fill-blue-700" />
-                                        {Math.min(product.viewCount * 2, 20)} people viewing this now
-                                    </span>
                                 )}
                             </div>
                         </div>
@@ -864,107 +869,14 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                         {/* Info */}
                         <div className="space-y-4">
                             <div>
-                                <h3 className="text-sm font-medium text-[var(--tg-theme-hint-color)] uppercase tracking-wide mb-1.5">Description</h3>
-                                <p className="text-[var(--tg-theme-text-color)] leading-relaxed text-sm opacity-90 whitespace-pre-wrap">
+                                <h3 className="text-sm font-bold text-gray-900 mb-2">Description</h3>
+                                <p className="text-gray-700 leading-relaxed text-sm whitespace-pre-wrap">
                                     {product.description || "No description available."}
                                 </p>
                             </div>
                         </div>
                     </>
                 )}
-
-
-                {/* Call & Add to Cart Action */}
-                <div className="flex gap-3 mt-6 mb-2">
-                    {product.seller_phone && (
-                        <a
-                            href={`tel:${product.seller_phone}`}
-                            className="flex-1 bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] py-3 rounded-xl font-semibold text-base shadow border border-[var(--tg-theme-button-color)] flex items-center justify-center active:opacity-80 transition-opacity"
-                        >
-                            Call
-                        </a>
-                    )}
-                    <button
-                        onClick={async () => {
-                            if (isOutOfStock) return;
-
-                            const tele = window.Telegram?.WebApp;
-                            const finalPrice = selectedVariation ? selectedVariation.price : product.price;
-                            const variationText = selectedVariation ? ` (${selectedVariation.name})` : '';
-
-                            // 1. Prepare Data
-                            const message = `Hi! I'm interested in buying: ${product.title}${variationText} for ${Math.floor(finalPrice)} Birr. is it available?`;
-                            const url = `https://t.me/${sellerUsername || 'AddisStoreSupport'}?text=${encodeURIComponent(message)}`;
-
-                            // 2. Notify Backend Silently
-                            try {
-                                const initData = window.Telegram?.WebApp?.initData || '';
-                                const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
-
-                                fetch(`${API_URL}/api/notify-order`, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({
-                                        product: product,
-                                        variation: selectedVariation,
-                                        price: finalPrice,
-                                        userInfo: user
-                                    })
-                                }).catch(e => console.error("Notify error:", e));
-                            } catch (error) {
-                                console.error("Setup error:", error);
-                            }
-
-                            // 3. Show Transient Toast & Redirect
-                            setShowRedirectMessage(true);
-
-                            // Haptic feedback
-                            if (tele?.HapticFeedback) {
-                                tele.HapticFeedback.notificationOccurred('success');
-                            }
-
-                            setTimeout(() => {
-                                if (tele) {
-                                    tele.openTelegramLink(url);
-                                } else {
-                                    window.open(url, '_blank');
-                                }
-                                // Reset after reasonable time (or if they come back)
-                                setTimeout(() => setShowRedirectMessage(false), 1000);
-                            }, 1500);
-                        }}
-                        disabled={isOutOfStock}
-                        className={`flex-1 py-3 rounded-xl font-semibold text-base shadow active:opacity-80 transition-opacity flex items-center justify-center gap-1 ${isOutOfStock
-                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            : 'bg-green-500 text-white'
-                            }`}
-                    >
-                        <Zap size={18} fill="currentColor" /> {isOutOfStock ? 'Sold Out' : 'Buy Now'}
-                    </button>
-                    <button
-                        disabled={isOutOfStock}
-                        onClick={() => {
-                            if (isOutOfStock) return;
-
-                            // Calculate final price based on selected variation or base price
-                            const finalPrice = selectedVariation
-                                ? selectedVariation.price
-                                : product.price;
-
-                            // 2. Add to Cart (Zustand)
-                            addToCart({ ...product, selectedVariation, price: finalPrice });
-
-                            // 3. Show Toast
-                            setIsAdded(true);
-                            setTimeout(() => setIsAdded(false), 2000);
-                        }}
-                        className={`flex-1 py-3 rounded-xl font-bold text-base shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2 border ${isAdded ? 'bg-green-100 text-green-700 border-green-200' : 'bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)] border-gray-200'
-                            } ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    >
-                        {isAdded ? <Check size={20} /> : <ShoppingBag size={20} />}
-                        {isAdded ? 'Added' : 'Add to Cart'}
-                    </button>
-                </div>
             </div>
 
 
@@ -987,7 +899,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
             }
 
             {/* Seamless Feed: More to Explore */}
-            <div className="pt-2 bg-[var(--tg-theme-secondary-bg-color)] pb-20">
+            <div className="pt-2 bg-[var(--tg-theme-secondary-bg-color)] pb-32">
                 <h3 className="px-4 text-lg font-bold text-[var(--tg-theme-text-color)] mb-4">
                     More to Explore
                 </h3>
@@ -1000,14 +912,78 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                 )}
             </div>
 
-            {/* Floating Back Button (Bottom Left) */}
-            <button
-                onClick={() => navigate(-1)}
-                className="fixed bottom-4 left-4 z-50 p-3 bg-white/90 backdrop-blur text-gray-800 rounded-full shadow-lg border border-gray-200 active:scale-95 transition-transform"
-                aria-label="Go Back"
-            >
-                <ArrowLeft size={24} />
-            </button>
+            {/* Sticky Action Footer */}
+            <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 p-2 pb-[calc(8px+var(--tg-safe-area-bottom))] shadow-[0_-4px_20px_rgba(0,0,0,0.05)] flex gap-2 items-center">
+                {/* Store/Chat Icon */}
+                {product.seller_phone && (
+                    <a
+                        href={`tel:${product.seller_phone}`}
+                        className="flex flex-col items-center justify-center min-w-[60px] text-gray-500 active:opacity-70"
+                    >
+                        <Users size={20} />
+                        <span className="text-[10px] font-medium mt-0.5">Call</span>
+                    </a>
+                )}
+
+                {/* Add to Cart */}
+                <button
+                    disabled={isOutOfStock}
+                    onClick={() => {
+                        if (isOutOfStock) return;
+                        const finalPrice = selectedVariation ? selectedVariation.price : product.price;
+                        addToCart({ ...product, selectedVariation, price: finalPrice });
+                        setIsAdded(true);
+                        setTimeout(() => setIsAdded(false), 2000);
+                    }}
+                    className={`flex-1 py-3 rounded-full font-bold text-sm shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2 border ${isAdded ? 'bg-green-100 text-green-700 border-green-200' : 'bg-orange-100 text-orange-600 border-orange-200'
+                        } ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                    {isAdded ? <Check size={18} /> : <ShoppingBag size={18} />}
+                    {isAdded ? 'Added' : 'Add to Cart'}
+                </button>
+
+                {/* Buy Now */}
+                <button
+                    onClick={async () => {
+                        if (isOutOfStock) return;
+                        const tele = window.Telegram?.WebApp;
+                        const finalPrice = selectedVariation ? selectedVariation.price : product.price;
+                        const variationText = selectedVariation ? ` (${selectedVariation.name})` : '';
+                        const message = `Hi! I'm interested in buying: ${product.title}${variationText} for ${Math.floor(finalPrice)} Birr. is it available?`;
+                        const url = `https://t.me/${sellerUsername || 'AddisStoreSupport'}?text=${encodeURIComponent(message)}`;
+
+                        // Notify Backend
+                        try {
+                            const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+                            fetch(`${API_URL}/api/notify-order`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    product: product,
+                                    variation: selectedVariation,
+                                    price: finalPrice,
+                                    userInfo: user
+                                })
+                            }).catch(console.error);
+                        } catch (e) { }
+
+                        setShowRedirectMessage(true);
+                        if (tele?.HapticFeedback) tele.HapticFeedback.notificationOccurred('success');
+                        setTimeout(() => {
+                            if (tele) tele.openTelegramLink(url);
+                            else window.open(url, '_blank');
+                            setTimeout(() => setShowRedirectMessage(false), 1000);
+                        }, 1500);
+                    }}
+                    disabled={isOutOfStock}
+                    className={`flex-1 py-3 rounded-full font-bold text-sm shadow-md active:opacity-80 transition-opacity flex items-center justify-center gap-1 ${isOutOfStock
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-primary text-white'
+                        }`}
+                >
+                    <Zap size={18} fill="currentColor" /> {isOutOfStock ? 'Sold Out' : 'Buy Now'}
+                </button>
+            </div>
         </div >
     );
 };

@@ -191,41 +191,38 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
     };
 
     return (
-        <div className="pb-4 pt-[calc(var(--tg-content-safe-area-top)+44px)] min-h-dvh bg-[var(--tg-theme-secondary-bg-color)]">
+        <div className="pb-4 pt-[calc(var(--tg-content-safe-area-top)+110px)] min-h-dvh bg-gray-50">
 
             {/* Scroll-Aware Fixed Header Group */}
-            <div
-                className="fixed top-0 left-0 right-0 z-50 flex flex-col bg-[var(--tg-theme-bg-color)] shadow-sm pt-[var(--tg-safe-area-top)]"
-            >
-                {/* Search Bar Row - Vertically centered with native buttons */}
-                <div className="px-[110px] flex gap-2 items-center h-[var(--tg-header-buttons-height)] min-h-[44px] w-full box-border">
-                    <div className="relative flex-1 flex items-center">
+            <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm pt-[var(--tg-safe-area-top)] transition-all duration-300">
+                {/* Search Bar Row */}
+                <div className="px-3 flex gap-3 items-center h-[var(--tg-header-buttons-height)] min-h-[52px] w-full box-border pb-1">
+                    <div className="flex-1 relative">
                         <input
                             type="text"
-                            placeholder="Search products..."
+                            placeholder="Search..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-[var(--tg-theme-secondary-bg-color)]/60 text-[var(--tg-theme-text-color)] pl-9 pr-4 h-9 rounded-lg border-none outline-none placeholder:text-[var(--tg-theme-hint-color)] text-sm font-normal caret-[var(--tg-theme-button-color)] leading-normal transition-all focus:bg-[var(--tg-theme-secondary-bg-color)]"
+                            className="w-full bg-gray-100 text-gray-900 pl-10 pr-4 h-10 rounded-full border-none outline-none placeholder:text-gray-400 text-sm font-medium transition-all focus:bg-white focus:ring-2 focus:ring-primary/20"
                         />
-                        <Search className="absolute left-3 text-[var(--tg-theme-hint-color)] pointer-events-none" size={16} />
+                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
                     </div>
-
                 </div>
 
                 {/* Category Tabs */}
-                <div className="py-1.5 border-b border-[var(--tg-theme-section-separator-color)]">
+                <div className="py-2 border-b border-gray-100 bg-white">
                     <div
                         ref={tabsRef}
                         onScroll={handleTabsScroll}
-                        className="flex gap-2 overflow-x-auto px-4 no-scrollbar items-center"
+                        className="flex gap-2 overflow-x-auto px-3 no-scrollbar items-center"
                     >
                         {loopedCategories.map((cat, index) => (
                             <button
                                 key={`${cat}-${index}`}
                                 onClick={() => handleTabChange(cat)}
-                                className={`px-3.5 py-1 rounded-full text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${(selectedCategory === cat || (cat === "All" && selectedCategory === "All" && selectedDepartment === "All"))
-                                    ? 'bg-[var(--tg-theme-button-color)] text-white shadow-md'
-                                    : 'bg-[var(--tg-theme-secondary-bg-color)] text-[var(--tg-theme-text-color)]'
+                                className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all flex-shrink-0 border ${(selectedCategory === cat || (cat === "All" && selectedCategory === "All" && selectedDepartment === "All"))
+                                    ? 'bg-primary text-white border-primary shadow-sm'
+                                    : 'bg-white text-gray-600 border-gray-200 hover:border-primary/50'
                                     }`}
                             >
                                 {cat}
@@ -236,7 +233,19 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
             </div>
 
             {/* Main Scrollable Content */}
-            <div className="space-y-2">
+            <div className="space-y-3 pt-2">
+                {/* Hero Banner (Placeholder for now) */}
+                <div className="mx-2 mt-2 rounded-xl overflow-hidden relative h-36 bg-gradient-to-r from-primary to-orange-400 flex items-center px-6 shadow-sm">
+                    <div className="text-white z-10 w-2/3">
+                        <h2 className="text-xl font-bold mb-1">Super Flash Sale</h2>
+                        <p className="text-xs opacity-90 mb-3">Up to 70% off on electronics & fashion.</p>
+                        <button className="bg-white text-primary text-xs font-bold px-3 py-1.5 rounded-full shadow-sm hover:scale-105 transition-transform">
+                            Shop Now
+                        </button>
+                    </div>
+                    {/* Decorative Circle */}
+                    <div className="absolute -right-6 -bottom-10 w-32 h-32 bg-white/20 rounded-full blur-xl"></div>
+                </div>
 
 
                 {/* Pin Bot Tip Banner */}

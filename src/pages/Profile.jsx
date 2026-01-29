@@ -47,12 +47,12 @@ const Profile = () => {
     };
 
     return (
-        <div className="bg-[var(--tg-theme-secondary-bg-color)] min-h-dvh pb-24 font-sans pt-[calc(var(--tg-content-safe-area-top)+44px)]">
+        <div className="bg-gray-50 min-h-dvh pb-24 font-sans pt-[calc(var(--tg-content-safe-area-top)+44px)]">
             <NativeHeader title="Profile" />
             {/* Header / User Info */}
-            <div className="bg-[var(--tg-theme-bg-color)] p-4 border-b border-[var(--tg-theme-section-separator-color)] mb-2">
+            <div className="bg-white p-6 border-b border-gray-100 mb-2">
                 <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-[var(--tg-theme-secondary-bg-color)] rounded-full flex items-center justify-center text-2xl font-bold text-[var(--tg-theme-hint-color)] uppercase overflow-hidden">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-2xl font-bold text-gray-400 uppercase overflow-hidden border-2 border-white shadow-md">
                         {user?.photo_url ? (
                             <img src={user.photo_url} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
@@ -60,136 +60,141 @@ const Profile = () => {
                         )}
                     </div>
                     <div>
-                        <h2 className="font-semibold text-lg text-[var(--tg-theme-text-color)]">Hello, {user?.first_name || 'Guest'}</h2>
-                        <p className="text-[var(--tg-theme-hint-color)] text-sm">@{user?.username || 'user'}</p>
+                        <h2 className="font-bold text-xl text-gray-900">Hello, {user?.first_name || 'Guest'}</h2>
+                        <p className="text-gray-500 text-sm">@{user?.username || 'user'}</p>
                     </div>
                 </div>
             </div>
 
             <div className="px-3 space-y-4">
                 {/* Wallet & Rewards Card */}
-                <div className="bg-gradient-to-br from-blue-600 to-blue-500 rounded-2xl p-5 text-white shadow-lg">
-                    <div className="flex justify-between items-start mb-6">
-                        <div>
-                            <p className="text-blue-100 text-xs font-medium uppercase tracking-wider mb-1">Total Balance</p>
-                            <div className="flex items-center gap-2">
-                                <span className="text-3xl font-black">{walletBalance || 0}</span>
-                                <span className="text-sm font-bold opacity-80 uppercase">ETB</span>
+                <div className="bg-gradient-to-br from-primary to-orange-600 rounded-2xl p-5 text-white shadow-lg shadow-orange-500/20 relative overflow-hidden">
+                    <div className="relative z-10">
+                        <div className="flex justify-between items-start mb-6">
+                            <div>
+                                <p className="text-white/80 text-xs font-semibold uppercase tracking-wider mb-1">Total Balance</p>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-4xl font-black">{walletBalance || 0}</span>
+                                    <span className="text-sm font-bold opacity-80 uppercase bg-white/20 px-1.5 py-0.5 rounded">ETB</span>
+                                </div>
+                            </div>
+                            <div className="bg-white/20 p-2 rounded-full backdrop-blur-sm">
+                                <Wallet size={20} />
                             </div>
                         </div>
-                        <div className="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
-                            <Wallet size={24} />
-                        </div>
-                    </div>
 
-                    <div className="grid grid-cols-2 gap-3">
-                        <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
-                            <div className="flex items-center gap-2 mb-1">
-                                <Coins size={14} className="text-yellow-300" />
-                                <span className="text-[10px] font-bold uppercase opacity-80">Daily Streak</span>
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="bg-black/10 rounded-xl p-3 backdrop-blur-sm border border-white/10">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Coins size={14} className="text-yellow-300" />
+                                    <span className="text-[10px] font-bold uppercase opacity-80">Daily Streak</span>
+                                </div>
+                                <p className="text-lg font-bold">{checkInStreak || 0} Days</p>
                             </div>
-                            <p className="text-lg font-bold">{checkInStreak || 0} Days</p>
-                        </div>
-                        <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
-                            <div className="flex items-center gap-2 mb-1">
-                                <span className="text-lg">🎡</span>
-                                <span className="text-[10px] font-bold uppercase opacity-80">Free Spins</span>
+                            <div className="bg-black/10 rounded-xl p-3 backdrop-blur-sm border border-white/10">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="text-lg">🎡</span>
+                                    <span className="text-[10px] font-bold uppercase opacity-80">Free Spins</span>
+                                </div>
+                                <p className="text-lg font-bold">1 Available</p>
                             </div>
-                            <p className="text-lg font-bold">1 Available</p>
                         </div>
                     </div>
+                    {/* Decorative Background */}
+                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                    <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/10 to-transparent"></div>
                 </div>
 
                 {/* Spin Wheel Section */}
-                <div className="bg-[var(--tg-theme-bg-color)] rounded-2xl overflow-hidden shadow-sm border border-[var(--tg-theme-section-separator-color)]">
+                <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
                     <SpinWheel />
                 </div>
-                {/* Admin Access Button */}
-                {isAdmin && (
-                    <>
-                        <button
-                            onClick={() => navigate('/admin')}
-                            className="w-full bg-[var(--tg-theme-bg-color)] p-3 rounded-xl flex items-center justify-between active:bg-[var(--tg-theme-secondary-bg-color)] transition-colors"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                    <Settings size={18} className="text-blue-600" />
-                                </div>
-                                <span className="text-[var(--tg-theme-text-color)] font-medium text-sm">Seller Dashboard</span>
-                            </div>
-                            <span className="text-[var(--tg-theme-hint-color)] text-lg">›</span>
-                        </button>
-                    </>
-                )}
 
-                {/* Analytics Button - Super Admin Only */}
-                {isSuperAdmin && (
+                {/* Menu List */}
+                <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 divide-y divide-gray-50">
+                    {/* Wishlist Button */}
                     <button
-                        onClick={() => navigate('/analytics')}
-                        className="w-full bg-[var(--tg-theme-bg-color)] p-3 rounded-xl flex items-center justify-between active:bg-[var(--tg-theme-secondary-bg-color)] transition-colors"
+                        onClick={() => navigate('/wishlist')}
+                        className="w-full bg-white p-4 flex items-center justify-between active:bg-gray-50 transition-colors"
                     >
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
-                                <BarChart3 size={18} className="text-purple-600" />
+                            <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center">
+                                <Heart size={16} className="text-red-500" />
                             </div>
-                            <span className="text-[var(--tg-theme-text-color)] font-medium text-sm">Analytics</span>
+                            <span className="text-gray-700 font-medium text-sm">Your Wishlist</span>
                         </div>
-                        <span className="text-[var(--tg-theme-hint-color)] text-lg">›</span>
+                        <span className="text-gray-300 text-lg">›</span>
                     </button>
-                )}
 
-                {/* Wishlist Button */}
-                <button
-                    onClick={() => navigate('/wishlist')}
-                    className="w-full bg-[var(--tg-theme-bg-color)] p-3 rounded-xl flex items-center justify-between active:bg-[var(--tg-theme-secondary-bg-color)] transition-colors"
-                >
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
-                            <Heart size={18} className="text-red-500" />
-                        </div>
-                        <span className="text-[var(--tg-theme-text-color)] font-medium text-sm">Your Wishlist</span>
-                    </div>
-                    <span className="text-[var(--tg-theme-hint-color)] text-lg">›</span>
-                </button>
+                    {/* Admin Access Button */}
+                    {isAdmin && (
+                        <button
+                            onClick={() => navigate('/admin')}
+                            className="w-full bg-white p-4 flex items-center justify-between active:bg-gray-50 transition-colors"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
+                                    <Settings size={16} className="text-blue-600" />
+                                </div>
+                                <span className="text-gray-700 font-medium text-sm">Seller Dashboard</span>
+                            </div>
+                            <span className="text-gray-300 text-lg">›</span>
+                        </button>
+                    )}
+
+                    {/* Analytics Button - Super Admin Only */}
+                    {isSuperAdmin && (
+                        <button
+                            onClick={() => navigate('/analytics')}
+                            className="w-full bg-white p-4 flex items-center justify-between active:bg-gray-50 transition-colors"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center">
+                                    <BarChart3 size={16} className="text-purple-600" />
+                                </div>
+                                <span className="text-gray-700 font-medium text-sm">Analytics</span>
+                            </div>
+                            <span className="text-gray-300 text-lg">›</span>
+                        </button>
+                    )}
+                </div>
 
                 {/* Order History */}
                 <div>
-                    <h3 className="font-bold text-lg mb-3 text-[#111827]">Your Orders</h3>
+                    <h3 className="font-bold text-lg mb-3 text-gray-900 px-1">Your Orders</h3>
 
                     {loading ? (
                         <div className="text-center py-8 text-gray-500">Loading orders...</div>
                     ) : orders.length === 0 ? (
-                        <div className="text-center py-12 bg-white border border-gray-200 rounded-lg shadow-sm">
-                            <Package size={48} className="mx-auto text-gray-300 mb-3" />
-                            <p className="text-gray-500">You have no orders yet.</p>
+                        <div className="text-center py-12 bg-white border border-gray-200 rounded-xl shadow-sm">
+                            <Package size={48} className="mx-auto text-gray-200 mb-3" />
+                            <p className="text-gray-500 font-medium">You have no orders yet.</p>
+                            <button className="mt-4 text-primary text-sm font-semibold hover:underline" onClick={() => navigate('/')}>Start shopping</button>
                         </div>
                     ) : (
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             {orders.map(order => (
-                                <div key={order.id} className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-                                    <div className="bg-gray-50 p-3 border-b border-gray-100 flex justify-between text-xs text-gray-500">
-                                        <div>
-                                            <div className="uppercase">Order Placed</div>
-                                            <div className="text-gray-700 font-medium">{new Date(order.createdAt).toLocaleDateString()}</div>
+                                <div key={order.id} className="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden active:scale-[0.99] transition-transform">
+                                    <div className="bg-gray-50/50 p-3 border-b border-gray-100 flex justify-between text-xs text-gray-500">
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-medium">#{order.id}</span>
+                                            <span>•</span>
+                                            <span>{new Date(order.createdAt).toLocaleDateString()}</span>
                                         </div>
-                                        <div className="text-right">
-                                            <div className="uppercase">Total</div>
-                                            <div className="text-[var(--tg-theme-button-color)] font-bold">{Math.floor(order.total_price)} Birr</div>
-                                        </div>
+                                        <div className="text-primary font-bold">{Math.floor(order.total_price)} Birr</div>
                                     </div>
 
-                                    <div className="p-4">
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <div className="font-bold text-[#111827] capitalize text-lg flex items-center gap-2">
+                                    <div className="p-3">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <div className="font-bold text-gray-800 capitalize text-sm flex items-center gap-2 bg-gray-50 px-2 py-1 rounded">
                                                 {getStatusIcon(order.status)}
                                                 {order.status}
                                             </div>
                                         </div>
-                                        <div className="space-y-2">
+                                        <div className="space-y-1">
                                             {order.items.map((item, idx) => (
-                                                <div key={idx} className="flex justify-between text-sm">
-                                                    <span className="text-[var(--tg-theme-text-color)] hover:underline cursor-pointer">{item.quantity}x {item.title}</span>
-
+                                                <div key={idx} className="flex justify-between text-sm text-gray-600">
+                                                    <span className="truncate max-w-[200px]">{item.quantity}x {item.title}</span>
                                                 </div>
                                             ))}
                                         </div>

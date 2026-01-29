@@ -48,10 +48,10 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
     return (
         <div
             onClick={() => navigate(`/product/${product.id}`)}
-            className="group block bg-[var(--tg-theme-bg-color)] rounded-lg overflow-hidden cursor-pointer relative shadow-sm hover:shadow-md transition-shadow will-change-transform"
+            className="group block bg-[var(--tg-theme-bg-color)] rounded-lg overflow-hidden cursor-pointer relative shadow-sm hover:shadow-md transition-shadow"
         >
-            {/* Image Container - Aspect 1:1 or slightly cooler */}
-            <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
+            {/* Image Container */}
+            <div className="relative aspect-square w-full overflow-hidden bg-gray-50">
                 {product.images && product.images.length > 0 ? (
                     <img
                         src={product.images[0]}
@@ -62,43 +62,42 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
                     />
                 ) : (
                     <div className="flex h-full w-full items-center justify-center text-gray-300">
-                        <Package size={40} />
+                        <Package size={32} />
                     </div>
                 )}
 
-                {/* Overlays */}
-                {/* Discount Badge - Very Prominent */}
+                {/* Discount Badge - Temu Style (Red Flag) */}
                 {discountPercentage > 0 && (
-                    <div className="absolute top-0 right-0 bg-yellow-400 text-black text-[10px] font-extrabold px-1.5 py-1 rounded-bl-lg">
+                    <div className="absolute top-0 left-0 bg-danger text-white text-[10px] font-bold px-1.5 py-0.5 rounded-br-lg z-10 shadow-sm">
                         -{discountPercentage}%
                     </div>
                 )}
 
                 {/* Sold Out Overlay */}
                 {!product.isUnique && product.stock === 0 && (!product.variations || product.variations.length === 0) && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10 backdrop-blur-[1px]">
-                        <span className="text-white font-bold border-2 border-white px-3 py-1 text-xs uppercase tracking-widest transform -rotate-12">Sold Out</span>
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10 backdrop-blur-[1px]">
+                        <span className="text-white font-bold border border-white px-2 py-0.5 text-[10px] uppercase tracking-wider transform -rotate-12">Sold Out</span>
                     </div>
                 )}
 
-                {/* Wishlist Button - Subtle top right */}
+                {/* Wishlist Button */}
                 <button
                     onClick={handleWishlist}
-                    className="absolute top-1 left-1 p-1.5 bg-black/20 hover:bg-black/40 backdrop-blur-md rounded-full text-white transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 active:scale-90"
+                    className="absolute top-1 right-1 p-1.5 bg-white/80 hover:bg-white backdrop-blur-sm rounded-full text-gray-500 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 shadow-sm"
                 >
                     <Heart
-                        size={16}
-                        className={isWishlisted ? 'fill-red-500 text-red-500' : 'text-white'}
+                        size={14}
+                        className={isWishlisted ? 'fill-danger text-danger' : 'text-gray-500'}
                     />
                 </button>
 
                 {/* Low Stock / Flash Sale Footer Overlay */}
                 {(showFlashSale || ((product.forceLowStockDisplay || (product.stock > 0 && product.stock < 10)) && (!product.variations || product.variations.length === 0))) && (
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-6 flex items-end justify-between">
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-1.5 pt-4 flex items-end justify-between">
                         {showFlashSale && <FlashSaleTimer className="text-white scale-75 origin-bottom-left" />}
                         {(product.forceLowStockDisplay || (product.stock > 0 && product.stock < 10)) && (
-                            <span className="text-[10px] font-bold text-red-100 bg-red-600/90 px-1.5 py-0.5 rounded">
-                                Alert: Low Stock
+                            <span className="text-[9px] font-bold text-red-50 bg-red-600/90 px-1 py-0.5 rounded">
+                                Only {product.stock} left
                             </span>
                         )}
                     </div>
@@ -108,15 +107,15 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
             {/* Info Container */}
             <div className="p-2 flex flex-col gap-1">
                 {/* Title */}
-                <h3 className="text-[var(--tg-theme-text-color)] text-xs font-normal leading-snug line-clamp-2 min-h-[2.5em]">
+                <h3 className="text-gray-800 text-[11px] font-normal leading-tight line-clamp-2 min-h-[2.2em]">
                     {product.title}
                 </h3>
 
                 {/* Price Block - Temu Style */}
-                <div className="mt-1 flex items-baseline gap-1.5 flex-wrap">
+                <div className="flex items-baseline gap-1 flex-wrap mt-0.5">
                     {/* Main Price */}
-                    <div className="text-[var(--tg-theme-button-color)] font-bold text-base leading-none">
-                        <span className="text-[10px] align-top font-medium">ETB</span>
+                    <div className="text-primary font-bold text-base leading-none">
+                        <span className="text-[10px] font-medium mr-0.5">ETB</span>
                         {product.variations && product.variations.length > 0
                             ? Math.floor(Math.min(...product.variations.map(v => v.price)))
                             : Math.floor(product.price)
@@ -125,21 +124,21 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
 
                     {/* Original Price */}
                     {(product.originalPrice > product.price || (product.variations && product.variations[0]?.originalPrice)) && (
-                        <div className="text-[var(--tg-theme-hint-color)] text-[10px] line-through decoration-gray-400">
+                        <div className="text-gray-400 text-[9px] line-through">
                             ETB {Math.floor(product.originalPrice || (product.variations ? Math.max(...product.variations.map(v => v.originalPrice || 0)) : 0))}
                         </div>
                     )}
                 </div>
 
-                {/* Rating / Sold Count (Fake Social Proof for now to match style, or real logic if available) */}
-                <div className="flex items-center gap-1 mt-0.5">
-                    <span className="text-[10px] text-[var(--tg-theme-hint-color)]">
-                        {product.isUnique ? '1/1 Available' : '4.8 ★'}
+                {/* Trust / Social Proof */}
+                <div className="flex items-center justify-between mt-1">
+                    <span className="text-[9px] text-gray-500 bg-gray-100 px-1 py-0.5 rounded">
+                        {product.isUnique ? 'Unique' : '100+ sold'}
                     </span>
-                    {/* Add To Cart Button - Circle Icon bottom right */}
+                    {/* Add To Cart Button */}
                     <button
                         onClick={handleAdd}
-                        className={`ml-auto p-1.5 rounded-full shadow-sm active:scale-90 transition-all ${isAdded ? 'bg-green-500 text-white' : 'border border-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-color)] hover:bg-[var(--tg-theme-button-color)] hover:text-white'}`}
+                        className={`p-1.5 rounded-full shadow-sm active:scale-90 transition-all ${isAdded ? 'bg-success text-white' : 'border border-primary text-primary hover:bg-primary hover:text-white'}`}
                         disabled={product.stock === 0 && !product.isUnique && (!product.variations || product.variations.length === 0)}
                     >
                         {isAdded ? <CheckCircle size={14} /> : <ShoppingCart size={14} />}
