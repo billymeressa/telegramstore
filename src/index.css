@@ -16,8 +16,7 @@
   --tg-theme-section-bg-color: #ffffff;
   --tg-theme-section-separator-color: #e3e3e4;
   /* Telegram full-screen mode safe area for native buttons */
-  /* This clears both the device notch AND the Telegram UI buttons (Close/More) */
-  --tg-safe-area-top: calc(env(safe-area-inset-top, 0px) + 48px);
+  --tg-safe-area-top: env(safe-area-inset-top, 0px);
 }
 
 /* Dark Mode (Preserved for future use) - Uncomment to enable
