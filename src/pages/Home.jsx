@@ -233,7 +233,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
     };
 
     return (
-        <div className="pb-4 pt-[calc(var(--tg-safe-top,0px)+80px)] min-h-[var(--tg-viewport-height,100dvh)] bg-[var(--tg-theme-secondary-bg-color)]">
+        <div className="pb-4 pt-[100px] min-h-dvh bg-[var(--tg-theme-secondary-bg-color)]">
 
             {/* Scroll-Aware Fixed Header Group */}
             <div

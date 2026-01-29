@@ -176,14 +176,14 @@ const AnalyticsDashboard = () => {
 
     if (loading) {
         return (
-            <div className="min-h-[var(--tg-viewport-height,100dvh)] bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center">
+            <div className="min-h-dvh bg-[var(--tg-theme-secondary-bg-color)] flex items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--tg-theme-button-color)]"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-[var(--tg-viewport-height,100dvh)] bg-[var(--tg-theme-secondary-bg-color)] p-4 pb-20 pt-tg-safe">
+        <div className="min-h-dvh bg-[var(--tg-theme-secondary-bg-color)] p-4 pb-20 pt-tg-safe">
             <div className="max-w-4xl mx-auto">
                 <h1 className="text-2xl font-bold text-[var(--tg-theme-text-color)] mb-6 flex items-center gap-2">
                     <BarChart3 size={28} className="text-[var(--tg-theme-button-color)]" />

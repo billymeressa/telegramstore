@@ -14,7 +14,7 @@ const WishlistPage = ({ products }) => {
     const wishlistedProducts = products.filter(p => wishlist.includes(p.id));
 
     return (
-        <div className="min-h-[var(--tg-viewport-height,100dvh)] bg-[var(--tg-theme-secondary-bg-color)] pb-24 font-sans pt-tg-safe">
+        <div className="min-h-dvh bg-[var(--tg-theme-secondary-bg-color)] pb-24 font-sans pt-tg-safe">
             {/* Header */}
             <div className="bg-[var(--tg-theme-bg-color)] p-4 border-b border-[var(--tg-theme-section-separator-color)] sticky top-tg-safe z-10">
                 <h1 className="text-lg font-bold text-[var(--tg-theme-text-color)] flex items-center gap-2">
