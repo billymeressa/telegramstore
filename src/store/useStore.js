@@ -65,6 +65,7 @@ const useStore = create(
             },
 
             setWalletBalance: (amount) => set({ walletBalance: amount }),
+            setCheckInStreak: (streak) => set({ checkInStreak: streak }),
 
             fetchSettings: async () => {
                 try {

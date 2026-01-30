@@ -453,6 +453,84 @@ app.post('/api/daily-checkin', authenticateUser, async (req, res) => {
     }
 });
 
+// POST /api/user/slots - Play Lucky Slots
+app.post('/api/user/slots', authenticateUser, async (req, res) => {
+    try {
+        const userId = req.telegramUser.id;
+        const user = await User.findOne({ userId });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const now = new Date();
+        const lastSlots = user.lastSlotsTime ? new Date(user.lastSlotsTime) : null;
+
+        // 1. Check 12-hour Cooldown
+        if (lastSlots && (now.getTime() - lastSlots.getTime() < 12 * 60 * 60 * 1000)) {
+            const timeLeft = Math.ceil((12 * 60 * 60 * 1000 - (now.getTime() - lastSlots.getTime())) / (1000 * 60 * 60));
+            return res.json({
+                success: false,
+                message: `Next spin available in ${timeLeft} hours.`
+            });
+        }
+
+        // 2. Logic: Win Chance 30%
+        const isWin = Math.random() < 0.3;
+        let reward = null;
+        let finalReels = [];
+
+        // Icons: ['🍎', '🍋', '🍒', '💎', '7️⃣', '🔔'] -> Indices 0-5
+        const ICONS_COUNT = 6;
+
+        if (isWin) {
+            // Winning: All 3 reels match
+            const winIcon = Math.floor(Math.random() * ICONS_COUNT);
+            finalReels = [winIcon, winIcon, winIcon];
+
+            // Prize: 50% OFF Coupon
+            reward = {
+                type: 'coupon',
+                value: '50% OFF',
+                code: 'JACKPOT50'
+            };
+        } else {
+            // Losing: Ensure they don't all match
+            const r1 = Math.floor(Math.random() * ICONS_COUNT);
+            const r2 = (r1 + 1) % ICONS_COUNT; // Guaranteed different
+            const r3 = Math.floor(Math.random() * ICONS_COUNT);
+            finalReels = [r1, r2, r3];
+        }
+
+        // 3. Update User
+        user.lastSlotsTime = now;
+        if (isWin) {
+            // Log reward if we want history, checking schema first.. 
+            // Reuse 'other' type for now as 'slots_win'
+            user.rewardHistory.push({
+                type: 'other',
+                amount: 0, // Coupon has no fixed monetary value in history usually
+                timestamp: now,
+                // optional metadata if supported? Schema is strict.
+                // Just log it.
+            });
+        }
+        await user.save();
+
+        res.json({
+            success: true,
+            isWin,
+            reward,
+            reels: finalReels,
+            message: isWin ? 'YOU WON!' : 'Better luck next time!'
+        });
+
+    } catch (e) {
+        console.error("Slots Error:", e);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
 // POST /api/coupons/validate - Check coupon
 app.post('/api/coupons/validate', async (req, res) => {
     const { code, cartTotal } = req.body;

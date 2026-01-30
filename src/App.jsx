@@ -24,7 +24,7 @@ import { smartSort } from './utils/smartSort';
 const ADMIN_ID = 748823605;
 
 import { Trophy } from 'lucide-react';
-import LiveSalesNotification from './components/LiveSalesNotification';
+import SocialProofToast from './components/SocialProofToast';
 import MysteryGift from './components/MysteryGift';
 import SlotMachine from './components/SlotMachine';
 import useStore from './store/useStore';
@@ -378,7 +378,7 @@ function App() {
         sellerUsername={sellerUsername}
         orderMessage={orderMessage}
       />
-      <LiveSalesNotification products={products} />
+      <SocialProofToast products={products} />
       <MysteryGift />
 
       {/* Floating Slot Machine Button (Bottom Left) */}

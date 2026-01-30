@@ -91,7 +91,11 @@ const SpinWheel = () => {
             setResult({ tier, reward, label: SEGMENTS[targetIndex].label });
             setIsSpinning(false);
 
-            // Sync balance with store
+            // Optimistic Update: Update global store immediately
+            const currentBalance = useStore.getState().walletBalance;
+            useStore.getState().setWalletBalance(currentBalance + reward);
+
+            // Sync balance with store (background refresh)
             await fetchUserData();
 
             // Confetti for Tier 3+

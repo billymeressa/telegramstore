@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Trophy, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import useStore from '../store/useStore';
 
 const ICONS = ['🍎', '🍋', '🍒', '💎', '7️⃣', '🔔'];
 const WIN_PRIZE = { type: 'coupon', value: '50% OFF', code: 'JACKPOT50' };
@@ -12,50 +13,64 @@ const SlotMachine = ({ onClose }) => {
     const [win, setWin] = useState(false);
     const [message, setMessage] = useState("Spin to Win!");
 
-    const spin = () => {
+    const fetchUserData = useStore(state => state.fetchUserData);
+    const tele = window.Telegram?.WebApp;
+
+    const spin = async () => {
         if (isSpinning) return;
         setIsSpinning(true);
         setWin(false);
         setMessage("Spinning...");
 
-        const duration = 2000;
-        const interval = 100;
-        let elapsed = 0;
+        try {
+            // Start Visual Spark (min spin time)
+            const minDurationPromise = new Promise(resolve => setTimeout(resolve, 2000));
 
-        const timer = setInterval(() => {
-            setReels(prev => prev.map(() => Math.floor(Math.random() * ICONS.length)));
-            elapsed += interval;
-            if (elapsed >= duration) {
-                clearInterval(timer);
-                finishSpin();
+            // Backend Call
+            const apiPromise = fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/user/slots`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': tele?.initData || ''
+                }
+            }).then(res => res.json());
+
+            // Rolling Animation Interval
+            const interval = 100;
+            const rollingTimer = setInterval(() => {
+                setReels(prev => prev.map(() => Math.floor(Math.random() * ICONS.length)));
+            }, interval);
+
+            const [_, data] = await Promise.all([minDurationPromise, apiPromise]);
+
+            clearInterval(rollingTimer);
+
+            if (!data.success) {
+                // Cooldown or Error
+                setIsSpinning(false);
+                setMessage(data.message || "Error occurred");
+                return;
             }
-        }, interval);
-    };
 
-    const finishSpin = () => {
-        // Deterministic Win for Demo (or Random)
-        // Let's make it win 30% of the time for engagement
-        const shouldWin = Math.random() < 0.3;
+            // Finish Spin with Result
+            setReels(data.reels);
 
-        let finalReels;
-        if (shouldWin) {
-            const iconIndex = Math.floor(Math.random() * ICONS.length);
-            finalReels = [iconIndex, iconIndex, iconIndex];
-            setWin(true);
-            setMessage("YOU WON!");
-            triggerConfetti();
-        } else {
-            // Ensure they don't match
-            const r1 = Math.floor(Math.random() * ICONS.length);
-            const r2 = (r1 + 1) % ICONS.length;
-            const r3 = Math.floor(Math.random() * ICONS.length);
-            finalReels = [r1, r2, r3];
+            if (data.isWin) {
+                setWin(true);
+                setMessage("YOU WON!");
+                triggerConfetti();
+                // If it was a point/balance reward, we'd sync here:
+                // await fetchUserData();
+            } else {
+                setMessage("Try Again!");
+            }
+
+        } catch (e) {
+            console.error("Slots Error:", e);
+            setMessage("Network Error");
+        } finally {
             setIsSpinning(false);
-            setMessage("Try Again!");
         }
-
-        setReels(finalReels);
-        setIsSpinning(false);
     };
 
     const triggerConfetti = () => {
