@@ -10,6 +10,7 @@ import ProductList from '../components/ProductList';
 
 // Smart Sort imported
 import { smartSort } from '../utils/smartSort';
+import { throttle } from '../utils/throttle';
 
 const SUBCATEGORIES = {
     'Men': ['Shirts', 'T-Shirts', 'Pants', 'Jeans', 'Shoes', 'Suits', 'Accessories', 'Activewear', 'Other'],
@@ -130,17 +131,24 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
     const recommendedRef = useRef(null);
 
     useEffect(() => {
-        const handleScroll = () => {
+        const handleScroll = throttle(() => {
+            // Sticky Header Logic
             if (recommendedRef.current) {
                 const rect = recommendedRef.current.getBoundingClientRect();
-                // Show header when halfway through to the recommendation section 
                 setShowStickyHeader(rect.top <= 120);
             }
-        };
+
+            // Infinite Scroll Logic
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+                if (hasMore && !isFetching && loadMore) {
+                    loadMore();
+                }
+            }
+        }, 200);
 
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [hasMore, isFetching, loadMore]);
 
     useEffect(() => {
         console.log("Fetching details for Product ID:", id);
@@ -882,7 +890,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                 relatedProducts.length > 0 && (
                     <div
                         ref={recommendedRef}
-                        className="pt-6 bg-[var(--tg-theme-secondary-bg-color)] mt-4 border-t border-[var(--tg-theme-section-separator-color)] pb-32"
+                        className="pt-6 bg-[var(--tg-theme-secondary-bg-color)] mt-4 border-t border-[var(--tg-theme-section-separator-color)] pb-4"
                     >
                         <h3 className="px-4 text-lg font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center gap-2">
                             Recommended for You
@@ -891,6 +899,31 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                     </div>
                 )
             }
+
+            {/* All Products (Infinite Scroll) */}
+            <div className="pt-6 bg-[var(--tg-theme-bg-color)] border-t border-[var(--tg-theme-section-separator-color)] pb-32">
+                <h3 className="px-4 text-lg font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center gap-2">
+                    More to Explore
+                </h3>
+
+                {/* Filter out the current product from the main list so we don't show duplicates adjacent to headers, 
+                    though ProductList handles keys fine. */ }
+                <ProductList products={products.filter(p => p.id !== product.id)} />
+
+                {/* Loading Indicator */}
+                {isFetching && (
+                    <div className="flex justify-center py-6">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--tg-theme-button-color)]"></div>
+                    </div>
+                )}
+
+                {/* End of List */}
+                {!hasMore && products.length > 0 && (
+                    <div className="text-center py-8 text-[var(--tg-theme-hint-color)] text-sm">
+                        You've reached the end!
+                    </div>
+                )}
+            </div>
 
             {/* Sticky Action Footer */}
             <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 p-2 pb-[calc(8px+var(--tg-safe-area-bottom))] shadow-[0_-4px_20px_rgba(0,0,0,0.05)] flex gap-2 items-center">
