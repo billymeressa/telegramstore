@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import API_URL from '../config';
-import { Package, Clock, CheckCircle, Truck, XCircle, Settings, Heart, BarChart3 } from 'lucide-react';
+import { Package, Clock, CheckCircle, Truck, XCircle, Settings, Heart, BarChart3, Gift, Trophy } from 'lucide-react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import SpinWheel from '../components/SpinWheel';
+import SlotMachine from '../components/SlotMachine';
 import useStore from '../store/useStore';
 import { Wallet, Coins } from 'lucide-react';
 import ProductList from '../components/ProductList';
@@ -15,6 +15,7 @@ const tele = window.Telegram?.WebApp;
 const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showSlots, setShowSlots] = useState(false);
     const { isAdmin, isSuperAdmin, user } = useOutletContext();
     const navigate = useNavigate();
 
@@ -130,6 +131,34 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
                         <span className="text-gray-300 text-lg">›</span>
                     </button>
 
+                    {/* Invite Friends Button */}
+                    <button
+                        onClick={() => navigate('/rewards')}
+                        className="w-full bg-white p-3 flex items-center justify-between active:bg-gray-50 transition-colors"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center">
+                                <Gift size={16} className="text-[var(--tg-theme-button-color)]" />
+                            </div>
+                            <span className="text-gray-700 font-medium text-sm">Invite Friends & Earn</span>
+                        </div>
+                        <span className="text-gray-300 text-lg">›</span>
+                    </button>
+
+                    {/* Lucky Spin Button */}
+                    <button
+                        onClick={() => setShowSlots(true)}
+                        className="w-full bg-white p-3 flex items-center justify-between active:bg-gray-50 transition-colors"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center">
+                                <Trophy size={16} className="text-purple-600" />
+                            </div>
+                            <span className="text-gray-700 font-medium text-sm">Daily Lucky Spin</span>
+                        </div>
+                        <span className="text-gray-300 text-lg">›</span>
+                    </button>
+
                     {/* Admin Access Button */}
                     {isAdmin && (
                         <button
@@ -235,6 +264,7 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
                     )}
                 </div>
             </div>
+            {showSlots && <SlotMachine onClose={() => setShowSlots(false)} />}
         </div>
     );
 };

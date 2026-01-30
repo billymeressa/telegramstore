@@ -218,7 +218,10 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                         </div>
 
                         {/* Wallet Badge */}
-                        <div className="flex items-center gap-1.5 bg-orange-50 px-3 py-2.5 rounded-xl border border-orange-100 flex-shrink-0">
+                        <div
+                            onClick={() => navigate('/profile')}
+                            className="flex items-center gap-1.5 bg-orange-50 px-3 py-2.5 rounded-xl border border-orange-100 flex-shrink-0 cursor-pointer active:scale-95 transition-transform"
+                        >
                             <Wallet size={16} className="text-primary" />
                             <span className="text-sm font-bold text-primary">{walletBalance || 0}</span>
                         </div>

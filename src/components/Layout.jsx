@@ -34,8 +34,8 @@ const Layout = ({ cartCount, isAdmin, isSuperAdmin, user }) => {
         <div className="min-h-dvh bg-[var(--tg-theme-secondary-bg-color)] pb-[calc(50px+var(--tg-safe-area-bottom))] font-sans">
             <Outlet context={{ isAdmin, isSuperAdmin, user }} />
 
-            {/* Bottom Navigation (Hidden on ProductDetails) */}
-            {!location.pathname.startsWith('/product/') && (
+            {/* Bottom Navigation (Hidden on ProductDetails & Rewards) */}
+            {!location.pathname.startsWith('/product/') && location.pathname !== '/rewards' && (
                 <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 pt-1 pb-[var(--tg-safe-area-bottom)] px-2 flex justify-around items-center z-[9999] shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
                     <button
                         onClick={() => navigate('/')}
@@ -68,13 +68,7 @@ const Layout = ({ cartCount, isAdmin, isSuperAdmin, user }) => {
                         <span className="text-[10px] font-medium">Profile</span>
                     </button>
 
-                    <button
-                        onClick={() => navigate('/rewards')}
-                        className={`flex flex-col items-center justify-center w-full py-1.5 gap-0.5 active:scale-95 transition-transform ${location.pathname === '/rewards' ? 'text-primary' : 'text-gray-400'}`}
-                    >
-                        <Gift size={24} strokeWidth={location.pathname === '/rewards' ? 2.5 : 1.5} />
-                        <span className="text-[10px] font-medium">Rewards</span>
-                    </button>
+
 
                     {isAdmin && (
                         <button

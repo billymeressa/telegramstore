@@ -23,6 +23,9 @@ import { smartSort } from './utils/smartSort';
 
 const ADMIN_ID = 748823605;
 
+// Celebration Modal
+import OrderSuccessModal from './components/OrderSuccessModal';
+
 import { Trophy } from 'lucide-react';
 import SocialProofToast from './components/SocialProofToast';
 import MysteryGift from './components/MysteryGift';
@@ -65,6 +68,10 @@ function App() {
   const [showContactModal, setShowContactModal] = useState(false);
   const [sellerUsername, setSellerUsername] = useState('AddisStoreSupport');
   const [orderMessage, setOrderMessage] = useState('');
+
+  // Celebration State
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [lastOrderSavings, setLastOrderSavings] = useState(0);
 
   useEffect(() => {
     const tele = window.Telegram?.WebApp;
@@ -311,10 +318,14 @@ function App() {
       const data = await res.json();
 
       if (data.success) {
-        // Send data to Bot and Close WebApp
-        if (tele && tele.sendData) {
-          tele.sendData(JSON.stringify(data.order)); // Send the created order object
-        }
+        // Send data to Bot (Optional now, we handle UI first)
+        // if (tele && tele.sendData) {
+        //   tele.sendData(JSON.stringify(data.order)); 
+        // }
+
+        // Trigger Celebration
+        setLastOrderSavings(0); // You can calculate actual savings here if tracked
+        setShowSuccessModal(true);
 
         // Only clear cart if we checked out the MAIN cart
         if (itemsToCheckout === cart) {
@@ -379,16 +390,14 @@ function App() {
       />
       <SocialProofToast products={products} />
       <MysteryGift />
+      <OrderSuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        savings={lastOrderSavings}
+      />
       {/* <FullScreenPromo /> */}
 
-      {/* Floating Slot Machine Button (Bottom Left) */}
-      <button
-        onClick={() => setShowSlots(true)}
-        className="fixed bottom-24 left-4 z-40 bg-purple-600 text-white p-3 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-transform border-2 border-yellow-400 animate-bounce"
-        style={{ animationDuration: '3s' }}
-      >
-        <Trophy size={24} className="text-yellow-300" />
-      </button>
+
 
       {showSlots && <SlotMachine onClose={() => setShowSlots(false)} />}
     </BrowserRouter>

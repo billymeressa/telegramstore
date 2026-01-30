@@ -36,7 +36,7 @@ const Rewards = () => {
     };
 
     return (
-        <div className="min-h-dvh bg-[var(--tg-theme-secondary-bg-color)] pb-32 pt-[var(--tg-content-safe-area-top)] font-sans">
+        <div className="min-h-dvh bg-[var(--tg-theme-secondary-bg-color)] pb-10 pt-[var(--tg-content-safe-area-top)] font-sans">
             {/* Header */}
             <div className="bg-[var(--tg-theme-bg-color)] p-4 rounded-b-3xl shadow-sm text-center mb-4">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
