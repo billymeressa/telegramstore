@@ -449,7 +449,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
             </div>
 
             {/* Content Container */}
-            <div className="px-4 py-5 bg-white rounded-t-3xl -mt-6 relative z-10 shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
+            <div className="px-4 py-3 bg-white rounded-t-3xl -mt-6 relative z-10 shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
 
                 {isEditMode ? (
                     /* Edit Mode Form */
@@ -890,7 +890,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                 relatedProducts.length > 0 && (
                     <div
                         ref={recommendedRef}
-                        className="pt-6 bg-[var(--tg-theme-secondary-bg-color)] mt-4 border-t border-[var(--tg-theme-section-separator-color)] pb-4"
+                        className="pt-2 bg-white mt-2 border-t border-[var(--tg-theme-section-separator-color)] pb-4"
                     >
                         <h3 className="px-4 text-lg font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center gap-2">
                             Recommended for You
@@ -901,7 +901,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
             }
 
             {/* All Products (Infinite Scroll) */}
-            <div className="pt-6 bg-[var(--tg-theme-bg-color)] border-t border-[var(--tg-theme-section-separator-color)] pb-32">
+            <div className="pt-2 bg-white border-t border-[var(--tg-theme-section-separator-color)] pb-32">
                 <h3 className="px-4 text-lg font-bold text-[var(--tg-theme-text-color)] mb-4 flex items-center gap-2">
                     More to Explore
                 </h3>

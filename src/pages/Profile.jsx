@@ -66,7 +66,7 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
     return (
         <div className="bg-gray-50 min-h-dvh pb-24 font-sans pt-[var(--tg-content-safe-area-top)]">
             {/* Header / User Info */}
-            <div className="bg-white p-6 border-b border-gray-100 mb-2">
+            <div className="bg-white p-4 border-b border-gray-100 mb-2">
                 <div className="flex items-center gap-4">
                     <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-2xl font-bold text-gray-400 uppercase overflow-hidden border-2 border-white shadow-md">
                         {user?.photo_url ? (
@@ -82,9 +82,9 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
                 </div>
             </div>
 
-            <div className="px-3 space-y-4">
+            <div className="px-3 space-y-2">
                 {/* Wallet & Rewards Card */}
-                <div className="bg-gradient-to-br from-primary to-orange-600 rounded-2xl p-5 text-white shadow-lg shadow-orange-500/20 relative overflow-hidden">
+                <div className="bg-gradient-to-br from-primary to-orange-600 rounded-2xl p-3 text-white shadow-lg shadow-orange-500/20 relative overflow-hidden">
                     <div className="relative z-10">
                         <div className="flex justify-between items-start mb-6">
                             <div>
@@ -131,7 +131,7 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
                     {/* Wishlist Button */}
                     <button
                         onClick={() => navigate('/wishlist')}
-                        className="w-full bg-white p-4 flex items-center justify-between active:bg-gray-50 transition-colors"
+                        className="w-full bg-white p-3 flex items-center justify-between active:bg-gray-50 transition-colors"
                     >
                         <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center">
@@ -146,7 +146,7 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
                     {isAdmin && (
                         <button
                             onClick={() => navigate('/admin')}
-                            className="w-full bg-white p-4 flex items-center justify-between active:bg-gray-50 transition-colors"
+                            className="w-full bg-white p-3 flex items-center justify-between active:bg-gray-50 transition-colors"
                         >
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
@@ -162,7 +162,7 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
                     {isSuperAdmin && (
                         <button
                             onClick={() => navigate('/analytics')}
-                            className="w-full bg-white p-4 flex items-center justify-between active:bg-gray-50 transition-colors"
+                            className="w-full bg-white p-3 flex items-center justify-between active:bg-gray-50 transition-colors"
                         >
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center">
@@ -222,7 +222,7 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
                 </div>
 
                 {/* Recommended Section (More for You) */}
-                <div className="pt-6 pb-4">
+                <div className="pt-2 pb-4">
                     <h3 className="px-1 text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
                         More for You
                     </h3>

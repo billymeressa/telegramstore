@@ -194,7 +194,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
 
             {/* Fixed Header */}
             <div className="sticky top-[var(--tg-content-safe-area-top)] z-30 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-300">
-                <div className="px-4 py-3 pb-0">
+                <div className="px-3 py-2 pb-0">
                     {/* Compact Header: Search & Wallet */}
                     <div className="flex items-center gap-3 mb-3">
                         {/* Search Bar */}
@@ -233,7 +233,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                         <button
                             key={cat}
                             onClick={() => handleTabChange(cat)}
-                            className={`whitespace-nowrap px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors ${selectedCategory === cat
+                            className={`whitespace-nowrap px-3 py-1.5 text-sm font-semibold border-b-2 transition-colors ${selectedCategory === cat
                                 ? 'border-primary text-primary'
                                 : 'border-transparent text-gray-500 hover:text-black'
                                 }`}
@@ -245,9 +245,9 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
             </div>
 
             {/* Main Scrollable Content */}
-            <div className="space-y-3 pt-2">
+            <div className="space-y-1 pt-1">
                 {/* Dynamic Banner Carousel */}
-                <div className="px-2 mt-2">
+                <div className="px-2 mt-1">
                     <BannerCarousel banners={banners} />
                 </div>
 
