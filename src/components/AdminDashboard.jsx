@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import API_URL from '../config';
-import { LayoutDashboard, Package, Truck, CheckCircle, XCircle, Settings } from 'lucide-react';
+import { LayoutDashboard, Package, Truck, CheckCircle, XCircle, Settings, Calculator, BarChart2 } from 'lucide-react';
+import SalesSimulator from './SalesSimulator';
+import AnalyticsDashboard from '../pages/AnalyticsDashboard';
 
 
 const SUBCATEGORIES = {
@@ -315,6 +317,18 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                 >
                     Engine
                 </button>
+                <button
+                    onClick={() => setActiveTab('simulator')}
+                    className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'simulator' ? 'bg-white border-t-2 border-primary text-black font-bold' : 'text-gray-500 hover:text-black'}`}
+                >
+                    Simulator
+                </button>
+                <button
+                    onClick={() => setActiveTab('analytics')}
+                    className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'analytics' ? 'bg-white border-t-2 border-primary text-black font-bold' : 'text-gray-500 hover:text-black'}`}
+                >
+                    Analytics
+                </button>
             </div>
 
             <div className="p-6">
@@ -513,7 +527,89 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                 </div>
                             </div>
                         </div>
+
+                        {/* Gamification Settings */}
+                        <div className="bg-white p-4 rounded border border-gray-200 shadow-sm">
+                            <h3 className="font-bold text-[#0F1111] mb-4 flex items-center gap-2">
+                                <span className="text-xl">🎮</span> Gamification & Rewards
+                            </h3>
+
+                            {/* Slots */}
+                            <div className="mb-4 bg-purple-50 p-3 rounded border border-purple-100">
+                                <h4 className="font-bold text-sm text-purple-900 mb-2">🎰 Slot Machine</h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-700 mb-1">Win Probability</label>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="range" min="0" max="100" step="5"
+                                                value={(globalSettings.slots_win_rate || 0.3) * 100}
+                                                onChange={e => updateLocalSetting('slots_win_rate', Number(e.target.value) / 100)}
+                                                onMouseUp={e => persistSetting('slots_win_rate', Number(e.target.value) / 100)}
+                                                className="flex-1"
+                                            />
+                                            <span className="text-xs font-bold text-purple-700 w-8">{Math.round((globalSettings.slots_win_rate || 0.3) * 100)}%</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-700 mb-1">Prize Label</label>
+                                        <input
+                                            type="text"
+                                            value={globalSettings.slots_prize_label || '50% OFF'}
+                                            onChange={e => updateAndPersist('slots_prize_label', e.target.value)}
+                                            className="w-full border border-purple-200 rounded px-2 py-1 text-xs"
+                                            placeholder="e.g. 50% OFF"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-700 mb-1">Prize Code</label>
+                                        <input
+                                            type="text"
+                                            value={globalSettings.slots_prize_code || 'JACKPOT50'}
+                                            onChange={e => updateAndPersist('slots_prize_code', e.target.value)}
+                                            className="w-full border border-purple-200 rounded px-2 py-1 text-xs font-mono"
+                                            placeholder="e.g. JACKPOT50"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Mystery Gift */}
+                            <div className="bg-orange-50 p-3 rounded border border-orange-100">
+                                <h4 className="font-bold text-sm text-orange-900 mb-2">🎁 Mystery Gift</h4>
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="text-xs font-medium text-orange-800">Enable Daily Gift?</span>
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={globalSettings.mystery_gift_enabled !== false}
+                                            onChange={e => updateAndPersist('mystery_gift_enabled', e.target.checked)}
+                                            className="sr-only peer"
+                                        />
+                                        <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-orange-500"></div>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-700 mb-1">Reward Pool (JSON)</label>
+                                    <textarea
+                                        value={typeof globalSettings.mystery_gift_pool === 'string' ? globalSettings.mystery_gift_pool : JSON.stringify(globalSettings.mystery_gift_pool || [
+                                            { type: 'coupon', value: '10% OFF', code: 'LUCKY10' },
+                                            { type: 'shipping', value: 'Free Shipping', code: 'SHIPFREE' }
+                                        ])}
+                                        onChange={e => updateLocalSetting('mystery_gift_pool', e.target.value)}
+                                        onBlur={e => persistSetting('mystery_gift_pool', e.target.value)} // Save on blur to allow typing valid JSON
+                                        className="w-full border border-orange-200 rounded px-2 py-1 text-[10px] font-mono h-16"
+                                        placeholder='[{"type":"coupon", "value":"10% OFF", "code":"LUCKY10"}]'
+                                    />
+                                    <p className="text-[9px] text-orange-600 mt-1">*Must be valid JSON array</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                ) : activeTab === 'simulator' ? (
+                    <SalesSimulator />
+                ) : activeTab === 'analytics' ? (
+                    <AnalyticsDashboard />
                 ) : activeTab === 'products' ? (
                     <>
                         {/* Add/Edit Form */}

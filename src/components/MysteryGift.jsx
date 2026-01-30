@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Gift } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import useStore from '../store/useStore';
 
 const MysteryGift = () => {
+    const { settings } = useStore();
     const [isVisible, setIsVisible] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [reward, setReward] = useState(null);
 
     useEffect(() => {
+        // Check if disabled globally
+        if (settings.mystery_gift_enabled === false) return;
+
         // Check if user has already claimed a daily mystery gift
         const lastClaimed = localStorage.getItem('mystery_gift_claimed_date');
         const today = new Date().toDateString();
@@ -17,16 +22,32 @@ const MysteryGift = () => {
             const tm = setTimeout(() => setIsVisible(true), 3000);
             return () => clearTimeout(tm);
         }
-    }, []);
+    }, [settings.mystery_gift_enabled]);
 
     const handleOpen = () => {
         setIsOpen(true);
-        // Determine reward
-        const rewards = [
+        // Determine reward from settings or default
+        let rewards = [
             { type: 'coupon', value: '10% OFF', code: 'LUCKY10' },
             { type: 'shipping', value: 'Free Shipping', code: 'SHIPFREE' },
             { type: 'points', value: '50 Points', code: 'BONUS50' }
         ];
+
+        // Try to parse from settings
+        if (settings.mystery_gift_pool) {
+            try {
+                const pool = typeof settings.mystery_gift_pool === 'string'
+                    ? JSON.parse(settings.mystery_gift_pool)
+                    : settings.mystery_gift_pool;
+
+                if (Array.isArray(pool) && pool.length > 0) {
+                    rewards = pool;
+                }
+            } catch (e) {
+                console.error("Invalid Mystery Gift Pool setting:", e);
+            }
+        }
+
         const randomReward = rewards[Math.floor(Math.random() * rewards.length)];
         setReward(randomReward);
 
@@ -38,6 +59,8 @@ const MysteryGift = () => {
         setIsVisible(false);
         setIsOpen(false);
     };
+
+    if (settings.mystery_gift_enabled === false) return null;
 
     return (
         <AnimatePresence>

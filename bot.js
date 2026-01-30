@@ -475,8 +475,16 @@ app.post('/api/user/slots', authenticateUser, async (req, res) => {
             });
         }
 
-        // 2. Logic: Win Chance 30%
-        const isWin = Math.random() < 0.3;
+        // 2. Logic: Dynamic Win Chance & Prizes
+        const winRateSetting = await SystemSetting.findOne({ key: 'slots_win_rate' });
+        const winRate = winRateSetting ? parseFloat(winRateSetting.value) : 0.3;
+
+        const prizeLabelSetting = await SystemSetting.findOne({ key: 'slots_prize_label' });
+        const prizeCodeSetting = await SystemSetting.findOne({ key: 'slots_prize_code' });
+        const prizeLabel = prizeLabelSetting ? prizeLabelSetting.value : '50% OFF';
+        const prizeCode = prizeCodeSetting ? prizeCodeSetting.value : 'JACKPOT50';
+
+        const isWin = Math.random() < winRate;
         let reward = null;
         let finalReels = [];
 
@@ -488,11 +496,11 @@ app.post('/api/user/slots', authenticateUser, async (req, res) => {
             const winIcon = Math.floor(Math.random() * ICONS_COUNT);
             finalReels = [winIcon, winIcon, winIcon];
 
-            // Prize: 50% OFF Coupon
+            // Prize: Dynamic Coupon
             reward = {
                 type: 'coupon',
-                value: '50% OFF',
-                code: 'JACKPOT50'
+                value: prizeLabel,
+                code: prizeCode
             };
         } else {
             // Losing: Ensure they don't all match
