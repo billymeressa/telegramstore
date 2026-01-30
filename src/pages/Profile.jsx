@@ -40,8 +40,8 @@ const Profile = ({ products = [] }) => {
     const getStatusIcon = (status) => {
         switch (status) {
             case 'pending': return <Clock size={16} className="text-yellow-500" />;
-            case 'shipped': return <Truck size={16} className="text-[var(--tg-theme-link-color)]" />;
-            case 'delivered': return <CheckCircle size={16} className="text-[var(--tg-theme-button-color)]" />;
+            case 'shipped': return <Truck size={16} className="text-primary" />;
+            case 'delivered': return <CheckCircle size={16} className="text-green-500" />;
             case 'cancelled': return <XCircle size={16} className="text-red-500" />;
             default: return <Package size={16} className="text-gray-500" />;
         }

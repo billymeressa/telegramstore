@@ -7,13 +7,13 @@ const NativeHeader = ({ title, children, onBack }) => {
 
     // Use children if provided (custom content like search bar), otherwise use title
     const content = children || (
-        <span className="font-semibold text-lg truncate text-[var(--tg-theme-text-color)]">
+        <span className="font-semibold text-lg truncate text-black">
             {title}
         </span>
     );
 
     return (
-        <div className="fixed top-0 left-0 right-0 z-50 flex flex-col bg-[var(--tg-theme-bg-color)] shadow-sm pt-[var(--tg-safe-area-top)] transition-all duration-200">
+        <div className="fixed top-0 left-0 right-0 z-50 flex flex-col bg-white shadow-sm pt-[var(--tg-safe-area-top)] transition-all duration-200">
             <div className="px-[100px] flex items-center justify-center h-[var(--tg-header-buttons-height)] min-h-[44px] w-full box-border relative">
 
                 {/* Optional Back Button (if not relying entirely on Telegram's native back button) 

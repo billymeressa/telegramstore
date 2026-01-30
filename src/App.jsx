@@ -160,14 +160,6 @@ function App() {
     };
 
     if (tele) {
-      document.documentElement.style.setProperty('--tg-theme-bg-color', '#ffffff');
-      document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', '#f4f4f5');
-      document.documentElement.style.setProperty('--tg-theme-text-color', '#000000');
-      document.documentElement.style.setProperty('--tg-theme-hint-color', '#999999');
-      document.documentElement.style.setProperty('--tg-theme-link-color', '#2481cc');
-      document.documentElement.style.setProperty('--tg-theme-button-color', '#3390ec');
-      document.documentElement.style.setProperty('--tg-theme-button-text-color', '#ffffff');
-      document.documentElement.style.setProperty('--tg-theme-section-separator-color', '#e3e3e4');
       document.body.style.backgroundColor = '#ffffff';
     }
 

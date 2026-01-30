@@ -247,7 +247,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                     {filteredProducts.length > 0 ? (
                         <ProductList products={filteredProducts} />
                     ) : (
-                        <div className="flex flex-col items-center justify-center py-20 text-[var(--tg-theme-hint-color)]">
+                        <div className="flex flex-col items-center justify-center py-20 text-gray-500">
                             <ShoppingBag size={48} className="mb-4 opacity-50" />
                             <p className="text-lg font-medium">No products found</p>
                             <p className="text-sm">Try using different filters</p>
@@ -256,7 +256,7 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                                     handleTabChange("All");
                                     setSearchQuery("");
                                 }}
-                                className="mt-4 text-[var(--tg-theme-link-color)]"
+                                className="mt-4 text-primary"
                             >
                                 Clear Filters
                             </button>
@@ -267,12 +267,12 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                 {/* Loading Indicator for Infinite Scroll */}
                 {isFetching && (
                     <div className="flex justify-center py-4">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--tg-theme-button-color)]"></div>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                     </div>
                 )}
 
                 {!hasMore && filteredProducts.length > 0 && (
-                    <div className="text-center py-8 text-[var(--tg-theme-hint-color)] text-sm">
+                    <div className="text-center py-8 text-gray-500 text-sm">
                         You've reached the end!
                     </div>
                 )}

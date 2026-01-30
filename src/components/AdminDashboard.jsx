@@ -288,8 +288,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
 
     return (
         <div className="bg-white rounded-md shadow-sm border border-gray-200 mt-4 overflow-hidden pt-[var(--tg-content-safe-area-top)]">
-            <div className="bg-[var(--tg-theme-button-color)] p-4">
-                <h2 className="text-xl font-bold text-[var(--tg-theme-button-text-color)] flex items-center gap-2">
+            <div className="bg-primary p-4">
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
                     <LayoutDashboard size={24} />
                     Addis Seller Dashboard
                 </h2>
@@ -299,19 +299,19 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             <div className="flex border-b border-gray-200 bg-gray-50">
                 <button
                     onClick={() => setActiveTab('products')}
-                    className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'products' ? 'bg-[var(--tg-theme-bg-color)] border-t-2 border-[var(--tg-theme-button-color)] text-[var(--tg-theme-text-color)] font-bold' : 'text-[var(--tg-theme-hint-color)] hover:text-[var(--tg-theme-text-color)]'}`}
+                    className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'products' ? 'bg-white border-t-2 border-primary text-black font-bold' : 'text-gray-500 hover:text-black'}`}
                 >
                     Inventory
                 </button>
                 <button
                     onClick={() => setActiveTab('orders')}
-                    className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'orders' ? 'bg-[var(--tg-theme-bg-color)] border-t-2 border-[var(--tg-theme-button-color)] text-[var(--tg-theme-text-color)] font-bold' : 'text-[var(--tg-theme-hint-color)] hover:text-[var(--tg-theme-text-color)]'}`}
+                    className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'orders' ? 'bg-white border-t-2 border-primary text-black font-bold' : 'text-gray-500 hover:text-black'}`}
                 >
                     Orders
                 </button>
                 <button
                     onClick={() => setActiveTab('settings')}
-                    className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'settings' ? 'bg-[var(--tg-theme-bg-color)] border-t-2 border-[var(--tg-theme-button-color)] text-[var(--tg-theme-text-color)] font-bold' : 'text-[var(--tg-theme-hint-color)] hover:text-[var(--tg-theme-text-color)]'}`}
+                    className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'settings' ? 'bg-white border-t-2 border-primary text-black font-bold' : 'text-gray-500 hover:text-black'}`}
                 >
                     Engine
                 </button>
@@ -345,7 +345,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                             key={level}
                                             onClick={() => updateAndPersist('global_sale_intensity', level)}
                                             className={`py-3 px-4 rounded-lg border text-sm font-bold capitalize transition-all ${globalSettings.global_sale_intensity === level
-                                                ? 'bg-[var(--tg-theme-button-color)] text-white border-transparent shadow'
+                                                ? 'bg-primary text-white border-transparent shadow'
                                                 : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
                                                 }`}
                                         >
@@ -507,7 +507,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                         onChange={e => setNewBanner({ ...newBanner, image: e.target.value })}
                                         className="w-full text-xs border border-gray-300 rounded px-2 py-1.5"
                                     />
-                                    <button onClick={addBanner} disabled={!newBanner.title} className="w-full bg-[var(--tg-theme-button-color)] text-white py-2 rounded text-xs font-bold disabled:opacity-50">
+                                    <button onClick={addBanner} disabled={!newBanner.title} className="w-full bg-primary text-white py-2 rounded text-xs font-bold disabled:opacity-50">
                                         + Add Banner
                                     </button>
                                 </div>
@@ -524,7 +524,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                 <input
                                     value={newProduct.title}
                                     onChange={e => setNewProduct({ ...newProduct, title: e.target.value })}
-                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white text-[#0F1111] placeholder-gray-400"
+                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-white text-[#0F1111] placeholder-gray-400"
                                     placeholder="Product Name"
                                 />
                             </div>
@@ -540,7 +540,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                         step="0.01"
                                         value={newProduct.price}
                                         onChange={e => setNewProduct({ ...newProduct, price: e.target.value })}
-                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white text-[#0F1111] placeholder-gray-400"
+                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-white text-[#0F1111] placeholder-gray-400"
                                         placeholder={newProduct.variations && newProduct.variations.length > 0 ? "Base price (optional)" : "0.00"}
                                     />
                                     {newProduct.variations && newProduct.variations.length > 0 && (
@@ -560,7 +560,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                             type="checkbox"
                                             checked={newProduct.isUnique}
                                             onChange={e => setNewProduct({ ...newProduct, isUnique: e.target.checked, stock: e.target.checked ? 1 : newProduct.stock })}
-                                            className="w-4 h-4 rounded text-[var(--tg-theme-button-color)]"
+                                            className="w-4 h-4 rounded text-primary"
                                         />
                                         <span className="text-xs font-bold text-[#0F1111]">✨ One of a Kind?</span>
                                     </label>
@@ -599,7 +599,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                 <select
                                     value={newProduct.department}
                                     onChange={e => setNewProduct({ ...newProduct, department: e.target.value })}
-                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white text-[#0F1111]"
+                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-white text-[#0F1111]"
                                 >
                                     <option value="Men">Men</option>
                                     <option value="Women">Women</option>
@@ -618,7 +618,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                 <select
                                     value={newProduct.category}
                                     onChange={e => setNewProduct({ ...newProduct, category: e.target.value })}
-                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white text-[#0F1111]"
+                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-white text-[#0F1111]"
                                 >
                                     <option value="">Select Category</option>
                                     {(SUBCATEGORIES[newProduct.department] || []).map(cat => (
@@ -632,7 +632,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                 <textarea
                                     value={newProduct.description}
                                     onChange={e => setNewProduct({ ...newProduct, description: e.target.value })}
-                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none h-20 bg-white text-[#0F1111] placeholder-gray-400"
+                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none h-20 bg-white text-[#0F1111] placeholder-gray-400"
                                     placeholder="Product details..."
                                 />
                             </div>
@@ -652,7 +652,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                         type="text"
                                         value={variationType}
                                         onChange={e => setVariationType(e.target.value)}
-                                        className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:border-[var(--tg-theme-button-color)] focus:ring-1 focus:ring-[var(--tg-theme-button-color)] outline-none bg-white"
+                                        className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-white"
                                         placeholder="e.g., Storage, Size, Color"
                                     />
                                     {variationType && (
@@ -729,7 +729,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                             variations: [...newProduct.variations, { name: '', price: '', stock: '' }]
                                         });
                                     }}
-                                    className="bg-[var(--tg-theme-button-color)] text-white px-4 py-2 rounded text-sm font-medium hover:opacity-90 transition-opacity"
+                                    className="bg-primary text-white px-4 py-2 rounded text-sm font-medium hover:opacity-90 transition-opacity"
                                 >
                                     + Add {variationType || 'Variation'} Option
                                 </button>
@@ -765,7 +765,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                         type="file"
                                         accept="image/*"
                                         onChange={e => setMainImageFile(e.target.files[0])}
-                                        className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[var(--tg-theme-button-color)] file:text-[var(--tg-theme-button-text-color)] hover:file:opacity-90"
+                                        className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:opacity-90"
                                     />
                                     <p className="text-[10px] text-gray-500 mt-1">This will be the primary thumbnail.</p>
                                 </div>
@@ -791,7 +791,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                         Cancel
                                     </button>
                                 )}
-                                <button type="submit" disabled={isSubmitting} className="flex-1 bg-[var(--tg-theme-button-color)] text-[var(--tg-theme-button-text-color)] font-medium py-2 rounded-md shadow-sm active:opacity-80 disabled:opacity-50">
+                                <button type="submit" disabled={isSubmitting} className="flex-1 bg-primary text-white font-medium py-2 rounded-md shadow-sm active:opacity-80 disabled:opacity-50">
                                     {isSubmitting ? 'Saving...' : (editId ? 'Save Changes' : 'Add Product')}
                                 </button>
                             </div>

@@ -9,7 +9,7 @@ function Cart({ cartItems, onRemove }) {
 
     if (cartItems.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center h-64 text-[var(--tg-theme-hint-color)]">
+            <div className="flex flex-col items-center justify-center h-64 text-gray-400">
                 <span className="text-4xl mb-2 opacity-50">🛒</span>
                 <p>Your cart is empty</p>
             </div>

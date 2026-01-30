@@ -8,20 +8,20 @@ export default {
     extend: {
       colors: {
         tg: {
-          bg: 'var(--tg-theme-bg-color)',
-          text: 'var(--tg-theme-text-color)',
-          hint: 'var(--tg-theme-hint-color)',
-          link: 'var(--tg-theme-link-color)',
-          button: 'var(--tg-theme-button-color)',
-          'button-text': 'var(--tg-theme-button-text-color)',
-          'secondary-bg': 'var(--tg-theme-secondary-bg-color)',
+          bg: '#ffffff',
+          text: '#000000',
+          hint: '#999999',
+          link: '#ff6600',
+          button: '#ff6600',
+          'button-text': '#ffffff',
+          'secondary-bg': '#f5f5f5',
         },
         primary: {
-          DEFAULT: '#fb7701', // Temu Orange
-          dark: '#e06600',
-          light: '#ff8c2b',
-          50: '#fff5eb',
-          100: '#feeacc',
+          DEFAULT: '#ff6600', // Fruit Orange
+          dark: '#e65c00',    // Slightly Darker
+          light: '#ff8533',   // Lighter Orange
+          50: '#fff0e6',
+          100: '#ffe0cc',
         },
         danger: {
           DEFAULT: '#e02f2f', // Urgent Red

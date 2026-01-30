@@ -301,13 +301,13 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
 
 
     return (
-        <div className="bg-[var(--tg-theme-bg-color)] min-h-dvh relative font-sans pt-[var(--tg-content-safe-area-top)]">
+        <div className="bg-white min-h-dvh relative font-sans pt-[var(--tg-content-safe-area-top)]">
             {/* Native Header for Title (Removed) */}
 
             {/* Sticky Recommended Header */}
             {showStickyHeader && (
                 <div
-                    className="fixed top-0 left-0 right-0 z-40 bg-[var(--tg-theme-bg-color)] border-b border-[var(--tg-theme-section-separator-color)] shadow-sm pt-tg-safe pb-2 px-4 flex items-center"
+                    className="fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-100 shadow-sm pt-tg-safe pb-2 px-4 flex items-center"
                 >
                     <div className="flex gap-2 overflow-x-auto no-scrollbar items-center w-full">
                         <button className="px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all flex-shrink-0 border bg-primary text-white border-primary shadow-sm">
@@ -337,7 +337,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
 
             {/* Product Title & Brand */}
             {/* Image Area */}
-            <div className="w-full bg-[var(--tg-theme-secondary-bg-color)] relative">
+            <div className="w-full bg-gray-100 relative">
                 {/* Admin Edit Button */}
                 {isAdmin && product && !isEditMode && (
                     <button
@@ -354,7 +354,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                     onClick={() => {
                         if (toggleWishlist && product) toggleWishlist(product.id);
                     }}
-                    className="absolute top-4 right-4 p-3 bg-[var(--tg-theme-bg-color)] rounded-full shadow-md z-10 hover:bg-[var(--tg-theme-secondary-bg-color)] active:scale-95 transition-transform"
+                    className="absolute top-4 right-4 p-3 bg-white rounded-full shadow-md z-10 hover:bg-gray-50 active:scale-95 transition-transform"
                 >
                     <div>
                         <Heart
@@ -437,7 +437,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                                 key={idx}
                                 onClick={() => setSelectedImage(img)}
                                 className={`w-14 h-14 rounded-lg flex items-center justify-center p-0.5 cursor-pointer flex-shrink-0 transition-all ${(selectedImage || product.images[0]) === img
-                                    ? 'border-2 border-[var(--tg-theme-button-color)]'
+                                    ? 'border-2 border-primary'
                                     : 'border border-transparent opacity-70'
                                     }`}
                             >
@@ -449,32 +449,32 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
             </div>
 
             {/* Content Container */}
-            <div className="px-4 py-5 bg-[var(--tg-theme-bg-color)] rounded-t-3xl -mt-6 relative z-10 shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
+            <div className="px-4 py-5 bg-white rounded-t-3xl -mt-6 relative z-10 shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
 
                 {isEditMode ? (
                     /* Edit Mode Form */
                     <div className="space-y-4 mb-6">
-                        <h2 className="text-xl font-bold text-[var(--tg-theme-text-color)] mb-4">Edit Product</h2>
+                        <h2 className="text-xl font-bold text-black mb-4">Edit Product</h2>
 
                         {/* Title Input */}
                         <div>
-                            <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">Title</label>
+                            <label className="block text-sm font-medium text-gray-500 mb-1">Title</label>
                             <input
                                 type="text"
                                 value={editFormData.title}
                                 onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-black bg-white"
                             />
                         </div>
 
                         {/* Image Management */}
                         <div className="border border-gray-200 rounded-lg p-3">
-                            <label className="block text-sm font-medium text-[var(--tg-theme-text-color)] mb-2">Product Images</label>
+                            <label className="block text-sm font-medium text-black mb-2">Product Images</label>
 
                             {/* Existing Images */}
                             {editFormData.existingImages.length > 0 && (
                                 <div className="mb-3">
-                                    <p className="text-xs text-[var(--tg-theme-hint-color)] mb-2">Current Images:</p>
+                                    <p className="text-xs text-gray-500 mb-2">Current Images:</p>
                                     <div className="grid grid-cols-3 gap-2">
                                         {editFormData.existingImages.map((img, index) => (
                                             <div key={index} className="relative group">
@@ -501,7 +501,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
 
                             {/* New Image Upload */}
                             <div>
-                                <p className="text-xs text-[var(--tg-theme-hint-color)] mb-2">Add New Images:</p>
+                                <p className="text-xs text-gray-500 mb-2">Add New Images:</p>
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -510,7 +510,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                                         const files = Array.from(e.target.files);
                                         setEditFormData({ ...editFormData, newImages: [...editFormData.newImages, ...files] });
                                     }}
-                                    className="w-full text-sm text-[var(--tg-theme-text-color)] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[var(--tg-theme-button-color)] file:text-white hover:file:opacity-80"
+                                    className="w-full text-sm text-black file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:opacity-80"
                                 />
                                 {editFormData.newImages.length > 0 && (
                                     <div className="mt-2">
@@ -547,34 +547,34 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                                         type="checkbox"
                                         checked={editFormData.isUnique}
                                         onChange={e => setEditFormData({ ...editFormData, isUnique: e.target.checked, stock: e.target.checked ? 1 : editFormData.stock })}
-                                        className="w-4 h-4 rounded text-[var(--tg-theme-button-color)]"
+                                        className="w-4 h-4 rounded text-primary"
                                     />
-                                    <span className="text-sm font-bold text-[var(--tg-theme-text-color)]">✨ Unique?</span>
+                                    <span className="text-sm font-bold text-black">✨ Unique?</span>
                                 </label>
                             </div>
                             {editFormData.isUnique ? (
                                 <div className="col-span-2">
-                                    <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">
+                                    <label className="block text-sm font-medium text-gray-500 mb-1">
                                         Status Label <span className="text-xs font-normal opacity-70">(e.g. "Vintage")</span>
                                     </label>
                                     <input
                                         type="text"
                                         value={editFormData.stockStatus}
                                         onChange={e => setEditFormData({ ...editFormData, stockStatus: e.target.value })}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-black bg-white"
                                         placeholder="Unique"
                                     />
                                 </div>
                             ) : (
                                 <div>
-                                    <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">
+                                    <label className="block text-sm font-medium text-gray-500 mb-1">
                                         Stock Qty
                                     </label>
                                     <input
                                         type="number"
                                         value={editFormData.stock}
                                         onChange={e => setEditFormData({ ...editFormData, stock: e.target.value })}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-black bg-white"
                                         placeholder="0"
                                     />
                                 </div>
@@ -583,33 +583,33 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
 
                         {/* Price Input */}
                         <div>
-                            <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">Price (Birr)</label>
+                            <label className="block text-sm font-medium text-gray-500 mb-1">Price (Birr)</label>
                             <input
                                 type="number"
                                 value={editFormData.price}
                                 onChange={(e) => setEditFormData({ ...editFormData, price: e.target.value })}
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-black bg-white"
                             />
                         </div>
 
                         {/* Description Input */}
                         <div>
-                            <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">Description</label>
+                            <label className="block text-sm font-medium text-gray-500 mb-1">Description</label>
                             <textarea
                                 value={editFormData.description}
                                 onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
                                 rows={4}
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-black bg-white"
                             />
                         </div>
 
                         {/* Department Select */}
                         <div>
-                            <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">Department</label>
+                            <label className="block text-sm font-medium text-gray-500 mb-1">Department</label>
                             <select
                                 value={editFormData.department}
                                 onChange={(e) => setEditFormData({ ...editFormData, department: e.target.value, category: '' })}
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-black bg-white"
                             >
                                 <option value="">Select Department</option>
                                 {Object.keys(SUBCATEGORIES).map(dept => (
@@ -620,11 +620,11 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
 
                         {/* Category Select */}
                         <div>
-                            <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">Category</label>
+                            <label className="block text-sm font-medium text-gray-500 mb-1">Category</label>
                             <select
                                 value={editFormData.category}
                                 onChange={(e) => setEditFormData({ ...editFormData, category: e.target.value })}
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-black bg-white"
                                 disabled={!editFormData.department}
                             >
                                 <option value="">Select Category</option>
@@ -636,18 +636,18 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
 
                         {/* Variations Section */}
                         <div className="border-t border-gray-200 pt-4 mt-4">
-                            <h3 className="text-sm font-medium text-[var(--tg-theme-text-color)] mb-3">Product Variations (Optional)</h3>
+                            <h3 className="text-sm font-medium text-black mb-3">Product Variations (Optional)</h3>
 
                             {/* Variation Type */}
                             <div className="mb-3">
-                                <label className="block text-sm font-medium text-[var(--tg-theme-hint-color)] mb-1">
+                                <label className="block text-sm font-medium text-gray-500 mb-1">
                                     Variation Type (e.g., Size, Color, Storage)
                                 </label>
                                 <input
                                     type="text"
                                     value={editFormData.variationType}
                                     onChange={(e) => setEditFormData({ ...editFormData, variationType: e.target.value })}
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-black bg-white"
                                     placeholder="e.g., Storage, Size, Color"
                                 />
                             </div>
@@ -663,7 +663,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                                             newVariations[index].name = e.target.value;
                                             setEditFormData({ ...editFormData, variations: newVariations });
                                         }}
-                                        className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                        className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-black bg-white"
                                         placeholder={`${editFormData.variationType || 'Option'} name`}
                                     />
                                     <input
@@ -674,7 +674,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                                             newVariations[index].price = e.target.value;
                                             setEditFormData({ ...editFormData, variations: newVariations });
                                         }}
-                                        className="w-24 border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                        className="w-24 border border-gray-300 rounded-lg px-3 py-2 text-black bg-white"
                                         placeholder="Price"
                                     />
                                     <input
@@ -685,7 +685,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                                             newVariations[index].stock = e.target.value;
                                             setEditFormData({ ...editFormData, variations: newVariations });
                                         }}
-                                        className="w-20 border border-gray-300 rounded-lg px-3 py-2 text-[var(--tg-theme-text-color)] bg-[var(--tg-theme-bg-color)]"
+                                        className="w-20 border border-gray-300 rounded-lg px-3 py-2 text-black bg-white"
                                         placeholder="Stock"
                                     />
                                     <button
@@ -710,7 +710,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                                         variations: [...editFormData.variations, { name: '', price: '' }]
                                     });
                                 }}
-                                className="w-full mt-2 py-2 border-2 border-dashed border-gray-300 rounded-lg text-[var(--tg-theme-hint-color)] active:opacity-80"
+                                className="w-full mt-2 py-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 active:opacity-80"
                             >
                                 + Add {editFormData.variationType || 'Variation'} Option
                             </button>
@@ -729,7 +729,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                                 <button
                                     onClick={handleSaveEdit}
                                     disabled={isSaving}
-                                    className="flex-1 bg-[var(--tg-theme-button-color)] text-white py-3 rounded-xl font-semibold active:opacity-80 disabled:opacity-50"
+                                    className="flex-1 bg-primary text-white py-3 rounded-xl font-semibold active:opacity-80 disabled:opacity-50"
                                 >
                                     {isSaving ? 'Saving...' : 'Save Changes'}
                                 </button>
@@ -781,14 +781,14 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
                     <>
                         {/* Title & Price */}
                         <div className="mb-4">
-                            <h1 className="text-2xl font-bold text-[var(--tg-theme-text-color)] leading-snug mb-2">
+                            <h1 className="text-2xl font-bold text-black leading-snug mb-2">
                                 {product.title}
                             </h1>
 
                             {/* Variation Selector */}
                             {product.variations && product.variations.length > 0 && (
                                 <div className="mb-3">
-                                    <h3 className="text-xs font-medium text-[var(--tg-theme-hint-color)] uppercase tracking-wide mb-2">
+                                    <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
                                         Select Option
                                     </h3>
                                     <div className="flex flex-wrap gap-2">
