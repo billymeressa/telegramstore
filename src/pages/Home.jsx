@@ -46,41 +46,8 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
         return ["All", ...sorted.filter(c => c !== "All")];
     }, [products]);
 
-    // Infinite Scroll Logic for Tabs
-    const tabsRef = useRef(null);
-    // Create 3 sets for seamless looping
-    const loopedCategories = useMemo(() => {
-        if (popularCategories.length === 0) return [];
-        return [...popularCategories, ...popularCategories, ...popularCategories];
-    }, [popularCategories]);
+    // Infinite Scroll Logic for Tabs - REMOVED
 
-    // Handle Tab Scroll Loop
-    const handleTabsScroll = (e) => {
-        const container = e.target;
-        const scrollWidth = container.scrollWidth;
-        const clientWidth = container.clientWidth;
-        const scrollLeft = container.scrollLeft;
-
-        const singleSetWidth = scrollWidth / 3;
-
-        // If we scroll too far left (into first set), jump to middle set
-        if (scrollLeft < singleSetWidth * 0.5) {
-            container.scrollLeft += singleSetWidth;
-        }
-        // If we scroll too far right (into third set), jump to middle set
-        else if (scrollLeft + clientWidth > singleSetWidth * 2.5) {
-            container.scrollLeft -= singleSetWidth;
-        }
-    };
-
-    // Initialize Scroll Position to Middle Set
-    useEffect(() => {
-        if (tabsRef.current && popularCategories.length > 0) {
-            const container = tabsRef.current;
-            const singleSetWidth = container.scrollWidth / 3;
-            container.scrollLeft = singleSetWidth; // Jump to start of middle set
-        }
-    }, [popularCategories]);
 
     const [selectedDepartment, setSelectedDepartment] = useState("All");
     const [selectedCategory, setSelectedCategory] = useState("All");
@@ -209,51 +176,43 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
             {/* Fixed Header */}
             <div className="sticky top-[var(--tg-content-safe-area-top)] z-30 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-300">
                 <div className="px-4 py-3 pb-0">
-                    {/* Top Bar: Brand & Wallet */}
-                    <div className="flex justify-between items-center mb-3">
-                        <div className="flex items-center gap-2">
-                            <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent">
-                                Addis Store
-                            </h1>
+                    {/* Compact Header: Search & Wallet */}
+                    <div className="flex items-center gap-3 mb-3">
+                        {/* Search Bar */}
+                        <div className="relative flex-1">
+                            <input
+                                type="text"
+                                placeholder="Search products..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full bg-gray-100 text-black placeholder-gray-400 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all border-none outline-none"
+                            />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            {searchQuery && (
+                                <button
+                                    onClick={() => setSearchQuery('')}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 p-1"
+                                >
+                                    <X size={16} />
+                                </button>
+                            )}
                         </div>
 
                         {/* Wallet Badge */}
-                        <div className="flex items-center gap-1.5 bg-orange-50 px-2.5 py-1 rounded-full border border-orange-100">
-                            <Wallet size={14} className="text-primary" />
+                        <div className="flex items-center gap-1.5 bg-orange-50 px-3 py-2.5 rounded-xl border border-orange-100 flex-shrink-0">
+                            <Wallet size={16} className="text-primary" />
                             <span className="text-sm font-bold text-primary">{walletBalance || 0}</span>
                         </div>
-                    </div>
-
-                    {/* Search Bar */}
-                    <div className="relative mb-3">
-                        <input
-                            type="text"
-                            placeholder="Search products..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-gray-100 text-black placeholder-gray-400 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all border-none outline-none"
-                        />
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                        {searchQuery && (
-                            <button
-                                onClick={() => setSearchQuery('')}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 p-1"
-                            >
-                                <X size={16} />
-                            </button>
-                        )}
                     </div>
                 </div>
 
                 {/* Categories Tabs */}
                 <div
-                    ref={tabsRef}
-                    onScroll={handleTabsScroll}
                     className="flex overflow-x-auto no-scrollbar pb-0 px-2 gap-2 scroll-smooth"
                 >
-                    {loopedCategories.map((cat, index) => (
+                    {popularCategories.map((cat, index) => (
                         <button
-                            key={`${cat}-${index}`}
+                            key={cat}
                             onClick={() => handleTabChange(cat)}
                             className={`whitespace-nowrap px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors ${selectedCategory === cat
                                     ? 'border-primary text-primary'

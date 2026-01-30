@@ -372,6 +372,7 @@ function App() {
       />
       <SocialProofToast products={products} />
       <MysteryGift />
+      <FullScreenPromo />
 
       {/* Floating Slot Machine Button (Bottom Left) */}
       <button
