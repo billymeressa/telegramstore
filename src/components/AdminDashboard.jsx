@@ -254,8 +254,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className={`flex items-center gap-2 py-4 border-b-2 text-sm font-medium transition-colors whitespace-nowrap ${activeTab === tab.id
-                                ? 'border-[#fb7701] text-[#fb7701]'
-                                : 'border-transparent text-gray-500 hover:text-gray-700'
+                            ? 'border-[#fb7701] text-[#fb7701]'
+                            : 'border-transparent text-gray-500 hover:text-gray-700'
                             }`}
                     >
                         <tab.icon size={16} />
@@ -285,8 +285,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                             key={level}
                                             onClick={() => updateAndPersist('global_sale_intensity', level)}
                                             className={`px-4 py-2 rounded-lg text-sm font-medium capitalize border ${globalSettings.global_sale_intensity === level
-                                                    ? 'bg-[#fff0e0] border-[#fb7701] text-[#fb7701]'
-                                                    : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+                                                ? 'bg-[#fff0e0] border-[#fb7701] text-[#fb7701]'
+                                                : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
                                                 }`}
                                         >
                                             {level}
@@ -343,7 +343,33 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                 <div>
                                     <h5 className="text-sm font-bold text-gray-900 mb-2">Slot Machine</h5>
                                     <div className="space-y-3">
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                className="rounded text-purple-600"
+                                                checked={globalSettings.enable_slots_popup !== false}
+                                                onChange={e => updateAndPersist('enable_slots_popup', e.target.checked)}
+                                            />
+                                            <span className="text-xs font-medium">Auto-Popup Enabled</span>
+                                        </label>
+
                                         <div>
+                                            <label className="text-xs text-gray-500">Popup Frequency (Hours)</label>
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    className="w-full border rounded px-2 py-1 text-sm"
+                                                    placeholder="24"
+                                                    value={globalSettings.slots_popup_frequency ?? 24}
+                                                    onChange={e => updateLocalSetting('slots_popup_frequency', parseFloat(e.target.value))}
+                                                    onBlur={e => persistSetting('slots_popup_frequency', parseFloat(e.target.value))}
+                                                />
+                                                <span className="text-xs text-gray-400">0=Always</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="pt-2 border-t border-gray-100">
                                             <label className="text-xs text-gray-500">Win Rate</label>
                                             <input
                                                 type="range"
@@ -355,16 +381,17 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                             />
                                             <div className="text-xs text-right font-bold">{Math.round((globalSettings.slots_win_rate || 0.3) * 100)}%</div>
                                         </div>
+
                                         <div className="grid grid-cols-2 gap-2">
                                             <input
                                                 className="border rounded px-2 py-1 text-sm"
-                                                placeholder="Prize Label (e.g. 50% OFF)"
+                                                placeholder="Prize Label"
                                                 value={globalSettings.slots_prize_label || '50% OFF'}
                                                 onChange={e => updateAndPersist('slots_prize_label', e.target.value)}
                                             />
                                             <input
                                                 className="border rounded px-2 py-1 text-sm"
-                                                placeholder="Code (e.g. JACKPOT50)"
+                                                placeholder="Code"
                                                 value={globalSettings.slots_prize_code || 'JACKPOT50'}
                                                 onChange={e => updateAndPersist('slots_prize_code', e.target.value)}
                                             />
@@ -392,6 +419,23 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                     />
                                 </div>
                             </div>
+                        </div>
+
+                        {/* SAVE BUTTON */}
+                        <div className="flex justify-end pt-4 pb-8">
+                            <button
+                                onClick={() => {
+                                    // Save all relevant settings in batch
+                                    Object.entries(globalSettings).forEach(([key, value]) => {
+                                        persistSetting(key, value);
+                                    });
+                                    alert("All configurations saved successfully!");
+                                }}
+                                className="flex items-center gap-2 bg-[#fb7701] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#e06900] transition-all shadow-lg hover:shadow-xl active:scale-95"
+                            >
+                                <Save size={20} />
+                                Save Configurations
+                            </button>
                         </div>
                     </div>
                 )}
@@ -527,8 +571,8 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                                 <div className="text-xs text-gray-500">{new Date(order.createdAt || Date.now()).toLocaleDateString()}</div>
                                             </div>
                                             <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${order.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                                                    order.status === 'sold' ? 'bg-green-100 text-green-700' :
-                                                        'bg-red-100 text-red-700'
+                                                order.status === 'sold' ? 'bg-green-100 text-green-700' :
+                                                    'bg-red-100 text-red-700'
                                                 }`}>
                                                 {order.status}
                                             </span>
