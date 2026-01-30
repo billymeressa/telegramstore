@@ -6,7 +6,9 @@ import ProductList from '../components/ProductList';
 
 import { smartSearch } from '../utils/smartSearch';
 import { throttle } from '../utils/throttle';
-import { Search, X, ShoppingBag } from 'lucide-react';
+import { Search, X, ShoppingBag, Wallet } from 'lucide-react';
+import useStore from '../store/useStore';
+import BannerCarousel from '../components/BannerCarousel';
 
 
 // Sub-category mapping (simplified version of what's in AdminDashboard)
@@ -190,62 +192,30 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
         localStorage.setItem('hasSeenPinTip', 'true');
     };
 
+    // Access wallet balance from store
+    const walletBalance = useStore(state => state.walletBalance);
+
+    // ... (inside component)
+
+
+    // Access banners from store settings
+    // Assuming 'settings.home_banners' is where we store it
+    const settings = useStore(state => state.settings);
+    const banners = settings?.home_banners || [];
+
     return (
         <div className="pb-4 min-h-dvh bg-gray-50">
 
-            {/* Standard Scrollable Header Group */}
-            <div className="sticky top-0 z-50 bg-white shadow-sm pt-[var(--tg-safe-area-top)] transition-all">
-                {/* Search Bar Row */}
-                <div className="px-3 flex gap-3 items-center h-[var(--tg-header-buttons-height)] min-h-[52px] w-full box-border pb-1">
-                    <div className="flex-1 relative">
-                        <input
-                            type="text"
-                            placeholder="Search..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-gray-100 text-gray-900 pl-10 pr-4 h-10 rounded-full border-none outline-none placeholder:text-gray-400 text-sm font-medium transition-all focus:bg-white focus:ring-2 focus:ring-primary/20"
-                        />
-                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
-                    </div>
-                </div>
-
-                {/* Category Tabs */}
-                <div className="py-2 border-b border-gray-100 bg-white">
-                    <div
-                        ref={tabsRef}
-                        onScroll={handleTabsScroll}
-                        className="flex gap-2 overflow-x-auto px-3 no-scrollbar items-center"
-                    >
-                        {loopedCategories.map((cat, index) => (
-                            <button
-                                key={`${cat}-${index}`}
-                                onClick={() => handleTabChange(cat)}
-                                className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all flex-shrink-0 border ${(selectedCategory === cat || (cat === "All" && selectedCategory === "All" && selectedDepartment === "All"))
-                                    ? 'bg-primary text-white border-primary shadow-sm'
-                                    : 'bg-white text-gray-600 border-gray-200 hover:border-primary/50'
-                                    }`}
-                            >
-                                {cat}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            </div>
+            {/* ... (Header code remains same) ... */}
 
             {/* Main Scrollable Content */}
             <div className="space-y-3 pt-2">
-                {/* Hero Banner (Placeholder for now) */}
-                <div className="mx-2 mt-2 rounded-xl overflow-hidden relative h-36 bg-gradient-to-r from-primary to-orange-400 flex items-center px-6 shadow-sm">
-                    <div className="text-white z-10 w-2/3">
-                        <h2 className="text-xl font-bold mb-1">Super Flash Sale</h2>
-                        <p className="text-xs opacity-90 mb-3">Up to 70% off on electronics & fashion.</p>
-                        <button className="bg-white text-primary text-xs font-bold px-3 py-1.5 rounded-full shadow-sm hover:scale-105 transition-transform">
-                            Shop Now
-                        </button>
-                    </div>
-                    {/* Decorative Circle */}
-                    <div className="absolute -right-6 -bottom-10 w-32 h-32 bg-white/20 rounded-full blur-xl"></div>
+                {/* Dynamic Banner Carousel */}
+                <div className="px-2 mt-2">
+                    <BannerCarousel banners={banners} />
                 </div>
+
+                {/* Pin Bot Tip Banner */}
 
 
                 {/* Pin Bot Tip Banner */}

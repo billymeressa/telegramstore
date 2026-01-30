@@ -26,7 +26,30 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
     const fileInputRef = useRef(null);
     const [orders, setOrders] = useState([]);
     const [variationType, setVariationType] = useState(''); // e.g., "Storage", "Size", "Color"
-    const [globalSettings, setGlobalSettings] = useState({ global_sale_intensity: 'medium' });
+    const [globalSettings, setGlobalSettings] = useState({ global_sale_intensity: 'medium', home_banners: [] });
+
+    // Banner Logic
+    const [newBanner, setNewBanner] = useState({ title: '', description: '', buttonText: 'Shop Now', gradient: 'from-primary to-orange-400', image: '' });
+
+    const addBanner = () => {
+        const updatedBanners = [...(globalSettings.home_banners || []), newBanner];
+        updateAndPersist('home_banners', updatedBanners);
+        setNewBanner({ title: '', description: '', buttonText: 'Shop Now', gradient: 'from-primary to-orange-400', image: '' });
+    };
+
+    const removeBanner = (index) => {
+        const updatedBanners = [...(globalSettings.home_banners || [])];
+        updatedBanners.splice(index, 1);
+        updateAndPersist('home_banners', updatedBanners);
+    };
+
+    const GRADIENTS = [
+        { label: 'Blue (Default)', value: 'from-primary to-blue-500' },
+        { label: 'Orange Sunset', value: 'from-primary to-orange-400' },
+        { label: 'Purple Haze', value: 'from-purple-500 to-indigo-600' },
+        { label: 'Green Energy', value: 'from-green-400 to-emerald-600' },
+        { label: 'Red Alert', value: 'from-red-500 to-pink-600' }
+    ];
 
     useEffect(() => {
         if (activeTab === 'settings') {
@@ -414,6 +437,79 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                     <span className="text-sm font-bold w-12 text-right">
                                         {globalSettings.system_social_proof_mult || 1.5}x
                                     </span>
+                                </div>
+                            </div>
+
+                            {/* Banner Management */}
+                            <div className="bg-white p-4 rounded border border-gray-200 shadow-sm">
+                                <label className="block text-sm font-bold text-[#0F1111] mb-2">
+                                    Home Screen Banners
+                                </label>
+                                <p className="text-xs text-gray-500 mb-3">
+                                    Add custom banners to the home carousel.
+                                </p>
+
+                                {/* List Existing Banners */}
+                                <div className="space-y-2 mb-4">
+                                    {(!globalSettings.home_banners || globalSettings.home_banners.length === 0) && (
+                                        <div className="text-xs text-center p-3 bg-gray-50 rounded text-gray-400">
+                                            No custom banners. Showing default "Super Flash Sale".
+                                        </div>
+                                    )}
+                                    {(globalSettings.home_banners || []).map((b, idx) => (
+                                        <div key={idx} className={`p-3 rounded-lg text-white bg-gradient-to-r ${b.gradient} relative overflow-hidden group`}>
+                                            {b.image && <img src={b.image} className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none" />}
+                                            <div className="relative z-10">
+                                                <div className="font-bold text-sm">{b.title}</div>
+                                                <div className="text-[10px] opacity-90">{b.description}</div>
+                                            </div>
+                                            <button onClick={() => removeBanner(idx)} className="absolute top-2 right-2 bg-white/20 hover:bg-white/40 rounded-full w-6 h-6 flex items-center justify-center text-xs backdrop-blur-sm transition-colors">
+                                                &times;
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Add New Banner Form */}
+                                <div className="bg-gray-50 p-3 rounded border border-gray-100 space-y-2">
+                                    <input
+                                        placeholder="Title (e.g., Summer Sale)"
+                                        value={newBanner.title}
+                                        onChange={e => setNewBanner({ ...newBanner, title: e.target.value })}
+                                        className="w-full text-xs border border-gray-300 rounded px-2 py-1.5"
+                                    />
+                                    <input
+                                        placeholder="Description"
+                                        value={newBanner.description}
+                                        onChange={e => setNewBanner({ ...newBanner, description: e.target.value })}
+                                        className="w-full text-xs border border-gray-300 rounded px-2 py-1.5"
+                                    />
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <input
+                                            placeholder="Button Text"
+                                            value={newBanner.buttonText}
+                                            onChange={e => setNewBanner({ ...newBanner, buttonText: e.target.value })}
+                                            className="w-full text-xs border border-gray-300 rounded px-2 py-1.5"
+                                        />
+                                        <select
+                                            value={newBanner.gradient}
+                                            onChange={e => setNewBanner({ ...newBanner, gradient: e.target.value })}
+                                            className="w-full text-xs border border-gray-300 rounded px-2 py-1.5"
+                                        >
+                                            {GRADIENTS.map(g => (
+                                                <option key={g.value} value={g.value}>{g.label}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <input
+                                        placeholder="Image URL (Optional)"
+                                        value={newBanner.image}
+                                        onChange={e => setNewBanner({ ...newBanner, image: e.target.value })}
+                                        className="w-full text-xs border border-gray-300 rounded px-2 py-1.5"
+                                    />
+                                    <button onClick={addBanner} disabled={!newBanner.title} className="w-full bg-[var(--tg-theme-button-color)] text-white py-2 rounded text-xs font-bold disabled:opacity-50">
+                                        + Add Banner
+                                    </button>
                                 </div>
                             </div>
                         </div>

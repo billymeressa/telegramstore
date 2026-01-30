@@ -846,24 +846,16 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, sellerUserna
 
                             {/* Stock Status Badge */}
                             <div className="mt-2 flex items-center gap-2 flex-wrap">
-                                {product.isUnique ? (
-                                    <span className="inline-block px-2 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded border border-purple-200">
-                                        ✨ {product.stockStatus || 'One of a Kind'}
+                                {isOutOfStock ? (
+                                    <span className="inline-block px-2 py-1 bg-gray-100 text-gray-500 text-xs font-bold rounded border border-gray-200">
+                                        Sold Out
                                     </span>
                                 ) : (
-                                    <>
-                                        {isOutOfStock ? (
-                                            <span className="inline-block px-2 py-1 bg-gray-100 text-gray-500 text-xs font-bold rounded border border-gray-200">
-                                                Sold Out
-                                            </span>
-                                        ) : (
-                                            currentStock < 10 && (
-                                                <span className="inline-block px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded border border-red-200 animate-pulse">
-                                                    Almost Gone! Only {currentStock} left
-                                                </span>
-                                            )
-                                        )}
-                                    </>
+                                    currentStock < 10 && (
+                                        <span className="inline-block px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded border border-red-200 animate-pulse">
+                                            Almost Gone! Only {currentStock} left
+                                        </span>
+                                    )
                                 )}
                             </div>
                         </div>

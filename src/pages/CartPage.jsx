@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Cart from '../components/Cart';
+import CartProgress from '../components/CartProgress';
 import { Phone, MessageSquare, X, CheckCircle, Send, Tag } from 'lucide-react';
 import API_URL from '../config';
 import useStore from '../store/useStore';
