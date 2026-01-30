@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import API_URL from '../config';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShoppingCart, Heart, Share2, ChevronRight, ShieldCheck, Zap, Clock, Star } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Heart, Share2, ChevronRight, ShieldCheck, Zap, Star, AlertCircle } from 'lucide-react';
 import useStore from '../store/useStore';
 import ProductList from '../components/ProductList';
 import { smartSort } from '../utils/smartSort';
@@ -14,6 +14,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false }) => {
     // State
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [selectedVariation, setSelectedVariation] = useState(null);
     const [activeImageIndex, setActiveImageIndex] = useState(0);
     const [showFullDesc, setShowFullDesc] = useState(false);
@@ -43,14 +44,30 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false }) => {
 
     // Fetch Product
     useEffect(() => {
+        if (!id) return;
         setLoading(true);
+        setError(null);
+
+        console.log(`Fetching product: ${API_URL}/api/products/${id}`);
+
         fetch(`${API_URL}/api/products/${id}`)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP Error: ${res.status}`);
+                }
+                return res.json();
+            })
             .then(data => {
+                if (!data || data.error) {
+                    throw new Error(data?.error || "Product data is empty");
+                }
                 setProduct(data);
                 if (data.variations?.length > 0) setSelectedVariation(data.variations[0]);
             })
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error("Fetch Error:", err);
+                setError(err.message);
+            })
             .finally(() => setLoading(false));
     }, [id]);
 
@@ -68,18 +85,37 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false }) => {
             price: selectedVariation ? selectedVariation.price : product.price
         };
         addToCart(itemToAdd);
+        if (window.Telegram?.WebApp?.HapticFeedback) {
+            window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+        }
         alert("Added to Cart!"); // Replace with toast later
     };
 
-    if (loading || !product) return (
-        <div className="flex items-center justify-center min-h-screen bg-[#f5f5f5]">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#fb7701]"></div>
+    if (loading) return (
+        <div className="flex flex-col items-center justify-center min-h-screen bg-[#f5f5f5]">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#fb7701] mb-4"></div>
+            <p className="text-gray-500 text-xs">Loading product...</p>
+        </div>
+    );
+
+    if (error || !product) return (
+        <div className="flex flex-col items-center justify-center min-h-screen bg-[#f5f5f5] p-6 text-center">
+            <div className="bg-red-100 p-4 rounded-full mb-4">
+                <AlertCircle size={32} className="text-red-500" />
+            </div>
+            <h2 className="text-lg font-bold text-gray-800 mb-2">Product Not Found</h2>
+            <p className="text-sm text-gray-500 mb-6">{error || "We couldn't find the product you're looking for."}</p>
+            <button
+                onClick={() => navigate('/')}
+                className="bg-[#fb7701] text-white px-6 py-2 rounded-full font-bold text-sm shadow-md"
+            >
+                Back to Store
+            </button>
         </div>
     );
 
     const currentPrice = selectedVariation ? selectedVariation.price : product.price;
     const originalPrice = product.originalPrice || currentPrice * 1.4;
-    const discount = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
 
     return (
         <div className="bg-[#f5f5f5] min-h-screen pb-[80px]">
@@ -87,13 +123,13 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false }) => {
             <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-3 py-2 bg-transparent pointer-events-none">
                 <button
                     onClick={() => navigate(-1)}
-                    className="w-8 h-8 bg-black/40 rounded-full flex items-center justify-center text-white backdrop-blur-sm pointer-events-auto"
+                    className="w-8 h-8 bg-black/40 rounded-full flex items-center justify-center text-white backdrop-blur-sm pointer-events-auto active:scale-90 transition-transform"
                 >
                     <ArrowLeft size={18} />
                 </button>
                 <button
                     onClick={() => navigate('/cart')}
-                    className="w-8 h-8 bg-black/40 rounded-full flex items-center justify-center text-white backdrop-blur-sm pointer-events-auto"
+                    className="w-8 h-8 bg-black/40 rounded-full flex items-center justify-center text-white backdrop-blur-sm pointer-events-auto active:scale-90 transition-transform"
                 >
                     <ShoppingCart size={18} />
                 </button>
@@ -116,7 +152,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false }) => {
             {/* Flash Sale Bar */}
             <div className="bg-gradient-to-r from-[#be0000] to-[#ff4500] text-white px-3 py-2 flex items-center justify-between">
                 <div className="flex items-baseline gap-1.5">
-                    <span className="text-lg font-bold">ETB {currentPrice}</span>
+                    <span className="text-lg font-bold">ETB {Math.floor(currentPrice)}</span>
                     <span className="text-xs line-through opacity-80">ETB {Math.floor(originalPrice)}</span>
                 </div>
                 <div className="flex flex-col items-end">
@@ -152,7 +188,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false }) => {
                 {/* Urgency Message */}
                 {product.stock < 20 && (
                     <div className="flex items-center gap-1 text-[#be0000] text-[10px] font-medium bg-[#fff0e0] px-2 py-1 rounded inline-block">
-                        <Flame size={10} fill="currentColor" />
+                        <div className="animate-pulse"><Zap size={10} fill="currentColor" /></div>
                         Almost sold out! Only {product.stock} items left
                     </div>
                 )}
