@@ -91,9 +91,6 @@ const Home = ({ products, hasMore, loadMore, isFetching }) => {
             {/* Sticky Header */}
             <div className="sticky top-0 z-40 bg-white shadow-md">
                 <div className="px-3 py-2 flex items-center gap-3">
-                    {/* Brand Logo */}
-                    <img src="/logo.png" alt="Birtukan" className="w-8 h-8 object-contain" />
-
                     {/* Search Bar - Temu Style */}
                     <div className="flex-1 relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />

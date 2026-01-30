@@ -8,16 +8,16 @@ const LoadingScreen = () => {
             <div className="flex flex-col items-center gap-6">
 
                 <div className="relative">
-                    <div className="w-24 h-24 mb-4 relative drop-shadow-md">
-                        <img src="/logo.png" alt="Birtukan Logo" className="w-full h-full object-contain animate-bounce-slight" />
-                    </div>
-                    {/* <Loader2 className="text-[#fb7701] animate-spin" size={48} strokeWidth={2.5} /> */}
+                    <Loader2 className="text-[#fb7701] animate-spin" size={48} strokeWidth={2.5} />
+                    <div className="absolute inset-0 bg-[#fb7701]/20 blur-xl rounded-full"></div>
                 </div>
 
                 <div className="space-y-1">
-                    <h1 className="text-2xl font-black text-[#fb7701] tracking-tight">Birtukan</h1>
+                    <h3 className="text-xl font-bold text-gray-900">
+                        {firstName ? `Welcome, ${firstName}` : 'Welcome'}
+                    </h3>
                     <p className="text-gray-400 text-sm font-medium">
-                        {firstName ? `Welcome, ${firstName}` : 'Loading...'}
+                        Loading Addis Store...
                     </p>
                 </div>
             </div>
