@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import useStore from '../store/useStore';
 import { useNavigate } from 'react-router-dom';
 import { User, Package, MapPin, Heart, Settings, ChevronRight, Gift, LogOut, MessageCircle, Wallet } from 'lucide-react';
+import ProductList from '../components/ProductList';
+import InfiniteScrollTrigger from '../components/InfiniteScrollTrigger';
 
-const Profile = () => {
+const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
     const { user, walletBalance } = useStore();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('orders');
@@ -85,6 +87,19 @@ const Profile = () => {
                         <ChevronRight size={16} className="text-gray-300" />
                     </button>
                 ))}
+            </div>
+
+            {/* Just For You (Infinite Feed) */}
+            <div className="mt-4 bg-white px-3 py-4">
+                <h3 className="text-sm font-bold mb-3 text-center flex items-center justify-center gap-2">
+                    <Heart size={14} className="text-[#fb7701] fill-[#fb7701]" /> Just For You
+                </h3>
+                <ProductList products={products} />
+                <InfiniteScrollTrigger
+                    onIntersect={loadMore}
+                    isLoading={isFetching}
+                    hasMore={hasMore}
+                />
             </div>
 
             {/* Logout/Footer */}

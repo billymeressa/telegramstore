@@ -3,19 +3,22 @@ import useStore from '../store/useStore';
 import { useNavigate } from 'react-router-dom';
 import { Trash2, Plus, Minus, ArrowLeft, ShieldCheck, CreditCard } from 'lucide-react';
 import ProductList from '../components/ProductList'; // For "You might also like"
+import InfiniteScrollTrigger from '../components/InfiniteScrollTrigger';
 
-const CartPage = () => {
-    const { cart, removeFromCart, updateQuantity, cartTotal } = useStore();
+const CartPage = ({ onCheckout, sellerUsername, products = [], hasMore, loadMore, isFetching }) => {
+    const { cart, removeFromCart, updateQuantity, cartTotal, clearCart } = useStore();
     const navigate = useNavigate();
     const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-    const handleCheckout = () => {
+    const handleCheckout = async () => {
         setIsCheckingOut(true);
-        // Simulate checkout process or navigate to checkout page
-        setTimeout(() => {
-            alert("Proceeding to Payment...");
-            setIsCheckingOut(false);
-        }, 1000);
+        if (onCheckout) {
+            await onCheckout(cart);
+        } else {
+            // Fallback if prop missing (dev mode)
+            alert("Checkout function not connected");
+        }
+        setIsCheckingOut(false);
     };
 
     if (cart.length === 0) {
@@ -116,6 +119,17 @@ const CartPage = () => {
                 <div className="text-center text-[10px] text-gray-400 mt-2 flex items-center justify-center gap-1">
                     <ShieldCheck size={10} /> Secure Layout
                 </div>
+            </div>
+
+            {/* Recommended (Infinite Feed) */}
+            <div className="mt-4 bg-white px-3 py-4">
+                <h3 className="text-sm font-bold mb-3 text-center">You might also like</h3>
+                <ProductList products={products} />
+                <InfiniteScrollTrigger
+                    onIntersect={loadMore}
+                    isLoading={isFetching}
+                    hasMore={hasMore}
+                />
             </div>
 
             {/* Sticky Order Summary Footer */}

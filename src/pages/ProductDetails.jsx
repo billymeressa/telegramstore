@@ -5,8 +5,9 @@ import { ArrowLeft, ShoppingCart, Heart, Share2, ChevronRight, ShieldCheck, Zap,
 import useStore from '../store/useStore';
 import ProductList from '../components/ProductList';
 import { smartSort } from '../utils/smartSort';
+import InfiniteScrollTrigger from '../components/InfiniteScrollTrigger';
 
-const ProductDetails = ({ onBuyNow, products = [], isAdmin = false }) => {
+const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, hasMore, loadMore, isFetching }) => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { addToCart, wishlist, toggleWishlist } = useStore();
@@ -204,8 +205,8 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false }) => {
                                 key={i}
                                 onClick={() => setSelectedVariation(v)}
                                 className={`px-3 py-1.5 rounded-full text-[11px] border ${selectedVariation === v
-                                        ? 'border-[#fb7701] text-[#fb7701] bg-[#fff0e0]'
-                                        : 'border-gray-200 text-gray-600'
+                                    ? 'border-[#fb7701] text-[#fb7701] bg-[#fff0e0]'
+                                    : 'border-gray-200 text-gray-600'
                                     }`}
                             >
                                 {v.name}
@@ -247,17 +248,47 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false }) => {
                 )}
             </div>
 
-            {/* Recommended */}
+            {/* Recommended (Category Match) */}
             {relatedProducts.length > 0 && (
-                <div className="bg-white px-3 py-3">
+                <div className="bg-white px-3 py-3 mb-2">
                     <h3 className="text-[12px] font-bold mb-2">You May Also Like</h3>
                     <ProductList products={relatedProducts} />
                 </div>
             )}
 
+            {/* More to Love (Infinite Feed) */}
+            <div className="bg-white px-3 py-3 min-h-[500px]">
+                <h3 className="text-[12px] font-bold mb-2 text-[#fb7701] flex items-center justify-center gap-2">
+                    <Star size={12} fill="#fb7701" /> More to Love
+                </h3>
+                {/* Filter out current product and maybe limit initial render if needed, but products list usually grows */}
+                <ProductList products={products.filter(p => p.id !== product.id)} />
+
+                <InfiniteScrollTrigger
+                    onIntersect={loadMore}
+                    hasMore={hasMore}
+                    isLoading={isFetching}
+                />
+            </div>
+
             {/* Sticky Action Footer */}
             <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-3 py-2 flex items-center gap-2 pb-[calc(10px+var(--tg-safe-area-bottom))] z-50">
-                <button className="flex-col items-center justify-center px-2 hidden sm:flex">
+                <button
+                    onClick={() => {
+                        if (navigator.share) {
+                            navigator.share({
+                                title: product.title,
+                                text: `Check out this ${product.title} on Addis Store!`,
+                                url: window.location.href
+                            }).catch(console.error);
+                        } else {
+                            // Fallback
+                            navigator.clipboard.writeText(window.location.href);
+                            alert("Link copied to clipboard!");
+                        }
+                    }}
+                    className="flex-col items-center justify-center px-2 hidden sm:flex active:opacity-60"
+                >
                     <Share2 size={18} />
                     <span className="text-[9px]">Share</span>
                 </button>
@@ -269,6 +300,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false }) => {
                     Add to Cart
                 </button>
                 <button
+                    onClick={() => onBuyNow ? onBuyNow(product) : alert("Buy Now function missing")}
                     className="flex-1 bg-[#be0000] text-white font-bold text-sm py-2.5 rounded-full active:scale-95 transition-transform"
                 >
                     Buy Now

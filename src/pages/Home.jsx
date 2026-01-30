@@ -2,12 +2,12 @@ import { useState, useMemo, useEffect } from 'react';
 import ProductList from '../components/ProductList';
 import { useNavigate } from 'react-router-dom';
 import { smartSearch } from '../utils/smartSearch';
-import { throttle } from '../utils/throttle';
 import { Search, X, ShieldCheck } from 'lucide-react';
 import useStore from '../store/useStore';
 import BannerCarousel from '../components/BannerCarousel';
 import DailyRewardModal from '../components/DailyRewardModal';
 import GamificationProgressBar from '../components/GamificationProgressBar';
+import InfiniteScrollTrigger from '../components/InfiniteScrollTrigger';
 
 // Sub-category mapping
 const SUBCATEGORIES = {
@@ -80,19 +80,8 @@ const Home = ({ products, hasMore, loadMore, isFetching }) => {
         }
     };
 
-    // Infinite Scroll Listener
-    useEffect(() => {
-        const handleScroll = throttle(() => {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
-                if (hasMore && !isFetching && loadMore) {
-                    loadMore();
-                }
-            }
-        }, 200);
+    // Infinite Scroll via Component now
 
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [hasMore, isFetching, loadMore]);
 
     const nextRewardTarget = 500;
     const currentProgress = walletBalance || 0;
@@ -100,41 +89,36 @@ const Home = ({ products, hasMore, loadMore, isFetching }) => {
     return (
         <div className="bg-[#f5f5f5] min-h-screen">
             {/* Sticky Header */}
-            <div className="sticky top-0 z-40 bg-white shadow-sm">
+            <div className="sticky top-0 z-40 bg-white shadow-md">
                 <div className="px-3 py-2 flex items-center gap-3">
                     {/* Search Bar - Temu Style */}
                     <div className="flex-1 relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                         <input
                             type="text"
                             placeholder="iphone 15 pro max"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-[#f0f0f0] rounded-full py-2 pl-9 pr-8 text-sm focus:outline-none focus:ring-1 focus:ring-[#fb7701]"
+                            className="w-full bg-[#f0f0f0] rounded-full py-2.5 pl-9 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#fb7701]/20 transition-all font-medium text-gray-700 placeholder:text-gray-400"
                         />
                         {searchQuery && (
                             <button
                                 onClick={() => setSearchQuery('')}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-gray-200 rounded-full p-0.5"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 bg-gray-200 rounded-full p-0.5 hover:bg-gray-300 transition-colors"
                             >
                                 <X size={14} className="text-gray-500" />
                             </button>
                         )}
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                            <Search className="opacity-0" size={18} />
-                        </span>
                     </div>
-
-                    {/* Categories / Menu button placeholder if needed, or keeping it clean */}
                 </div>
 
                 {/* Categories Scroll */}
-                <div className="flex overflow-x-auto no-scrollbar px-2 pb-2 gap-4">
+                <div className="flex overflow-x-auto no-scrollbar px-3 pb-2 gap-4 border-b border-gray-100">
                     {popularCategories.map((cat) => (
                         <button
                             key={cat}
                             onClick={() => handleTabChange(cat)}
-                            className={`whitespace-nowrap pb-1 text-sm font-medium border-b-2 transition-colors ${selectedCategory === cat ? 'border-[#fb7701] text-[#fb7701]' : 'border-transparent text-gray-600'}`}
+                            className={`whitespace-nowrap pb-1.5 text-sm font-bold border-b-2 transition-all ${selectedCategory === cat ? 'border-[#fb7701] text-[#fb7701]' : 'border-transparent text-gray-600 hover:text-gray-900'}`}
                         >
                             {cat}
                         </button>
@@ -177,7 +161,14 @@ const Home = ({ products, hasMore, loadMore, isFetching }) => {
                 {/* Product Grid */}
                 <div className="min-h-[50vh]">
                     {filteredProducts.length > 0 ? (
-                        <ProductList products={filteredProducts} />
+                        <>
+                            <ProductList products={filteredProducts} />
+                            <InfiniteScrollTrigger
+                                onIntersect={loadMore}
+                                isLoading={isFetching}
+                                hasMore={hasMore}
+                            />
+                        </>
                     ) : (
                         <div className="flex flex-col items-center justify-center py-20 text-gray-400">
                             <p className="mb-4">No products found</p>
@@ -194,14 +185,8 @@ const Home = ({ products, hasMore, loadMore, isFetching }) => {
                     )}
                 </div>
 
-                {isFetching && (
-                    <div className="flex justify-center py-4">
-                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#fb7701]"></div>
-                    </div>
-                )}
-
                 {!hasMore && filteredProducts.length > 0 && (
-                    <div className="text-center py-6 text-gray-400 text-xs">
+                    <div className="text-center py-6 text-gray-400 text-xs text-black">
                         You've reached the end!
                     </div>
                 )}

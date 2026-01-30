@@ -17,6 +17,8 @@ const ProductDetails = lazy(() => import('./pages/ProductDetails'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 const AnalyticsDashboard = lazy(() => import('./pages/AnalyticsDashboard'));
 const Rewards = lazy(() => import('./pages/Rewards'));
+const OrdersPage = lazy(() => import('./pages/OrdersPage'));
+const PlaceholderPage = lazy(() => import('./pages/PlaceholderPage'));
 
 // Smart Sort Algorithm (Personalized)
 import { smartSort } from './utils/smartSort';
@@ -363,6 +365,10 @@ function App() {
               <CartPage
                 onCheckout={onCheckout}
                 sellerUsername={sellerUsername}
+                products={products}
+                hasMore={hasMore}
+                loadMore={loadMore}
+                isFetching={isFetching}
               />
             } />
             <Route path="/profile" element={
@@ -378,6 +384,13 @@ function App() {
             <Route path="/admin" element={isAdmin ? <AdminDashboard products={products} onProductUpdate={setProducts} /> : <Navigate to="/" />} />
             <Route path="/analytics" element={isSuperAdmin ? <AnalyticsDashboard /> : <Navigate to="/" />} />
             <Route path="/rewards" element={<Rewards />} />
+
+            {/* Functional Polish Routes */}
+            <Route path="/orders" element={<OrdersPage />} />
+            <Route path="/addresses" element={<PlaceholderPage />} />
+            <Route path="/support" element={<PlaceholderPage />} />
+            <Route path="/settings" element={<PlaceholderPage />} />
+            <Route path="/coupons" element={<PlaceholderPage />} />
           </Route>
         </Routes>
       </Suspense>

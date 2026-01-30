@@ -4,18 +4,26 @@ const LoadingScreen = () => {
     const firstName = window.Telegram?.WebApp?.initDataUnsafe?.user?.first_name;
 
     return (
-        <div className="fixed inset-0 bg-[var(--tg-theme-secondary-bg-color)] z-50 flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-300">
-            <div className="bg-[var(--tg-theme-bg-color)] p-6 rounded-2xl shadow-sm border border-[var(--tg-theme-section-separator-color)] w-full max-w-[280px] flex flex-col items-center gap-4">
-                <Loader2 className="text-[var(--tg-theme-button-color)] animate-spin" size={40} />
+        <div className="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-300">
+            <div className="flex flex-col items-center gap-6">
+
+                <div className="relative">
+                    <Loader2 className="text-[#fb7701] animate-spin" size={48} strokeWidth={2.5} />
+                    <div className="absolute inset-0 bg-[#fb7701]/20 blur-xl rounded-full"></div>
+                </div>
 
                 <div className="space-y-1">
-                    <h3 className="text-lg font-bold text-[var(--tg-theme-text-color)]">
-                        {firstName ? `Welcome, ${firstName}!` : 'Welcome!'}
+                    <h3 className="text-xl font-bold text-gray-900">
+                        {firstName ? `Welcome, ${firstName}` : 'Welcome'}
                     </h3>
-                    <p className="text-[var(--tg-theme-hint-color)] text-sm">
-                        Getting the store ready for you...
+                    <p className="text-gray-400 text-sm font-medium">
+                        Loading Addis Store...
                     </p>
                 </div>
+            </div>
+
+            <div className="absolute bottom-8 text-[10px] text-gray-300 font-mono">
+                SECURE STORE v2.1
             </div>
         </div>
     );
