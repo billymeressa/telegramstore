@@ -86,11 +86,24 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
         };
     }, [product.id]);
 
+    // Maximalist: Random loud badges for that "busy" feel
+    const randomBadge = useMemo(() => {
+        const badges = [
+            { text: 'BEST SELLER', color: 'bg-yellow-400 text-black' },
+            { text: 'HOT PICK', color: 'bg-red-500 text-white' },
+            { text: 'LOW STOCK', color: 'bg-orange-500 text-white' },
+            { text: '90% OFF', color: 'bg-pink-500 text-white' },
+            null // Some cards have no top badge for variety
+        ];
+        // Deterministic based on ID
+        return badges[product.id % badges.length];
+    }, [product.id]);
+
     return (
         <div
             id={`product-card-${product.id}`}
             onClick={() => navigate(`/product/${product.id}`)}
-            className="group block bg-[var(--tg-theme-bg-color)] rounded-lg overflow-hidden cursor-pointer relative shadow-sm hover:shadow-md transition-shadow"
+            className="group block bg-white rounded-xl overflow-hidden cursor-pointer relative shadow-sm hover:shadow-xl hover:ring-2 hover:ring-primary transition-all duration-300"
         >
             {/* Image Container */}
             <div className="relative aspect-square w-full overflow-hidden bg-gray-50">
@@ -105,6 +118,21 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
                 ) : (
                     <div className="flex h-full w-full items-center justify-center text-gray-300">
                         <Package size={32} />
+                    </div>
+                )}
+
+                {/* Maximalist Loud Badge */}
+                {randomBadge && (
+                    <div className={`absolute top-0 left-0 z-20 px-2 py-0.5 text-[9px] font-black uppercase tracking-tighter ${randomBadge.color} rounded-br-lg shadow-sm`}>
+                        {randomBadge.text}
+                    </div>
+                )}
+
+                {/* Fire Icon for "Hot" items */}
+                {(product.id % 3 === 0) && (
+                    <div className="absolute bottom-1 left-1 z-20 bg-black/60 backdrop-blur-md rounded-full px-1.5 py-0.5 flex items-center gap-0.5">
+                        <span className="text-xs">🔥</span>
+                        <span className="text-[8px] font-bold text-white uppercase">Trending</span>
                     </div>
                 )}
 
@@ -127,54 +155,64 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
                 </button>
             </div>
 
-            {/* Info Container */}
-            <div className="p-1.5 flex flex-col gap-0.5">
+            {/* Info Container - Maximalist Density */}
+            <div className="p-2 flex flex-col gap-1.5 bg-gradient-to-b from-white to-gray-50/50">
                 {/* Title */}
-                <h3 className="text-gray-900 text-[10px] font-medium leading-tight line-clamp-2 min-h-[2.4em]">
+                <h3 className="text-gray-900 text-xs font-bold leading-tight line-clamp-2 min-h-[2.5em]">
                     {product.title}
                 </h3>
 
-                {/* Unified Metadata Row - Inline */}
-                <div className="flex flex-wrap items-center gap-1 mt-0.5">
-                    {/* Main Price */}
-                    <div className="text-primary font-bold text-sm leading-none">
-                        <span className="text-[9px] font-medium mr-0.5">ETB</span>
+                {/* Price Row - SUPER LOUD */}
+                <div className="flex items-baseline gap-1.5 mt-0.5">
+                    <span className="text-red-600 font-black text-lg leading-none tracking-tight">
+                        <span className="text-[10px] align-top relative top-0.5 mr-0.5">ETB</span>
                         {product.variations && product.variations.length > 0
                             ? Math.floor(Math.min(...product.variations.map(v => v.price)))
                             : Math.floor(product.price)
                         }
-                    </div>
-
-                    {/* Original Price */}
+                    </span>
                     {(product.originalPrice > product.price || (product.variations && product.variations[0]?.originalPrice)) && (
-                        <div className="text-gray-400 text-[8px] line-through">
-                            {Math.floor(product.originalPrice || (product.variations ? Math.max(...product.variations.map(v => v.originalPrice || 0)) : 0))}
-                        </div>
+                        <span className="text-gray-400 text-[9px] font-medium line-through decoration-red-400/50">
+                            ETB {Math.floor(product.originalPrice || (product.variations ? Math.max(...product.variations.map(v => v.originalPrice || 0)) : 0))}
+                        </span>
                     )}
-
-                    {/* Discount Badge */}
-                    {discountPercentage > 0 && (
-                        <div className="text-[8px] font-bold text-red-600 bg-red-50 border border-red-100 px-1 py-0 rounded-[3px]">
-                            -{discountPercentage}%
-                        </div>
-                    )}
-
-                    {/* Sales Timer */}
-                    {showFlashSale && <FlashSaleTimer className="scale-75 origin-left" />}
                 </div>
 
-                {/* Trust / Social Proof */}
-                <div className="flex items-center justify-between mt-0.5">
-                    <span className="text-[8px] text-gray-400 font-medium h-[10px]">
-                        {product.isUnique ? '100+ similar sold' : '100+ sold'}
+                {/* Badges Row - Visual Chaos */}
+                <div className="flex flex-wrap items-center gap-1">
+                    {discountPercentage > 0 && (
+                        <span className="bg-red-100 text-red-700 border border-red-200 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md">
+                            -{discountPercentage}%
+                        </span>
+                    )}
+                    <span className="bg-yellow-100 text-yellow-800 border border-yellow-200 text-[8px] font-bold px-1 py-0.5 rounded-sm uppercase">
+                        Free Ship
                     </span>
-                    {/* Add To Cart Button */}
+                </div>
+
+                {/* Sales Timer if active - Flashing */}
+                {showFlashSale && (
+                    <div className="animate-pulse">
+                        <FlashSaleTimer className="scale-90 origin-left text-orange-600 font-bold" />
+                    </div>
+                )}
+
+                {/* Social Proof & CTA */}
+                <div className="flex items-center justify-between pt-1 border-t border-gray-100 mt-1">
+                    <span className="text-[9px] text-gray-500 font-bold bg-gray-100 px-1.5 py-0.5 rounded-full">
+                        {product.isUnique ? '100+ sold' : '5k+ sold'}
+                    </span>
+
+                    {/* Add To Cart Button - High Contrast */}
                     <button
                         onClick={handleAdd}
-                        className={`p-1 rounded-full shadow-sm active:scale-90 transition-all ${isAdded ? 'bg-success text-white' : 'border border-gray-200 text-primary hover:bg-primary hover:text-white'}`}
+                        className={`p-1.5 rounded-full shadow-md active:scale-90 transition-all ${isAdded
+                                ? 'bg-green-500 text-white ring-2 ring-green-200'
+                                : 'bg-primary text-white hover:bg-orange-700 ring-2 ring-orange-100'
+                            }`}
                         disabled={product.stock === 0 && !product.isUnique && (!product.variations || product.variations.length === 0)}
                     >
-                        {isAdded ? <CheckCircle size={12} /> : <ShoppingCart size={12} />}
+                        {isAdded ? <CheckCircle size={14} className="animate-bounce" /> : <ShoppingCart size={14} />}
                     </button>
                 </div>
             </div>

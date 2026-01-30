@@ -4,11 +4,14 @@ import ProductList from '../components/ProductList';
 
 
 
+import { useNavigate } from 'react-router-dom';
 import { smartSearch } from '../utils/smartSearch';
 import { throttle } from '../utils/throttle';
 import { Search, X, ShoppingBag, Wallet } from 'lucide-react';
 import useStore from '../store/useStore';
 import BannerCarousel from '../components/BannerCarousel';
+import DailyRewardModal from '../components/DailyRewardModal';
+import GamificationProgressBar from '../components/GamificationProgressBar';
 
 
 // Sub-category mapping (simplified version of what's in AdminDashboard)
@@ -30,8 +33,18 @@ const SUBCATEGORIES = {
 
 
 const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, isFetching }) => {
+    const navigate = useNavigate();
 
-    // Dynamic Popular Categories based on product count
+    // ... existing code ...
+
+    {/* Wallet Badge */ }
+    <div
+        onClick={() => navigate('/profile')}
+        className="flex items-center gap-1.5 bg-orange-50 px-3 py-2.5 rounded-xl border border-orange-100 flex-shrink-0 cursor-pointer active:scale-95 transition-transform"
+    >
+        <Wallet size={16} className="text-primary" />
+        <span className="text-sm font-bold text-primary">{walletBalance || 0}</span>
+    </div>
     const popularCategories = useMemo(() => {
         const counts = {};
         products.forEach(p => {
@@ -170,6 +183,12 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
     const settings = useStore(state => state.settings);
     const banners = settings?.home_banners || [];
 
+    // Gamification State (mocked or from store if available)
+    // We'll use walletBalance as "Current Progress" for now, and a fixed target
+    // In a real app, this would be `userPoints` vs `nextLevelThreshold`
+    const nextRewardTarget = 500; // Example target
+    const currentProgress = walletBalance || 0;
+
     return (
         <div className="pb-4 min-h-dvh bg-gray-50">
 
@@ -215,8 +234,8 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                             key={cat}
                             onClick={() => handleTabChange(cat)}
                             className={`whitespace-nowrap px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors ${selectedCategory === cat
-                                    ? 'border-primary text-primary'
-                                    : 'border-transparent text-gray-500 hover:text-black'
+                                ? 'border-primary text-primary'
+                                : 'border-transparent text-gray-500 hover:text-black'
                                 }`}
                         >
                             {cat}
@@ -231,6 +250,18 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
                 <div className="px-2 mt-2">
                     <BannerCarousel banners={banners} />
                 </div>
+
+                {/* Gamification Progress Bar */}
+                <div className="mt-2">
+                    <GamificationProgressBar
+                        current={currentProgress}
+                        target={nextRewardTarget}
+                        label="Next Free Gift"
+                    />
+                </div>
+
+                {/* Daily Reward Modal - Auto-triggers on mount based on internal logic */}
+                <DailyRewardModal />
 
                 {/* Pin Bot Tip Banner */}
 

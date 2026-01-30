@@ -37,6 +37,11 @@ const useStore = create(
             walletBalance: 0,
             checkInStreak: 0,
 
+            // Gamification
+            userPoints: 0, // Separate from walletBalance if we want a "Loyalty Point" system
+            currentLevel: 1,
+            nextLevelThreshold: 1000,
+
             // Actions
             fetchUserData: async () => {
                 try {
@@ -55,7 +60,11 @@ const useStore = create(
                             set({
                                 user: data.user,
                                 walletBalance: data.user.walletBalance,
-                                checkInStreak: data.user.checkInStreak
+                                checkInStreak: data.user.checkInStreak,
+                                // Fallback to 0/defaults if backend doesn't have these yet
+                                userPoints: data.user.points || 0,
+                                currentLevel: data.user.level || 1,
+                                nextLevelThreshold: data.user.nextLevelThreshold || 1000
                             });
                         }
                     }
