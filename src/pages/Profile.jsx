@@ -1,272 +1,106 @@
-import { useState, useEffect } from 'react';
-import API_URL from '../config';
-import { Package, Clock, CheckCircle, Truck, XCircle, Settings, Heart, BarChart3, Gift, Trophy } from 'lucide-react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
-import SlotMachine from '../components/SlotMachine';
+import React, { useState, useEffect } from 'react';
 import useStore from '../store/useStore';
-import { Wallet, Coins } from 'lucide-react';
-import ProductList from '../components/ProductList';
+import { useNavigate } from 'react-router-dom';
+import { User, Package, MapPin, Heart, Settings, ChevronRight, Gift, LogOut, MessageCircle, Wallet } from 'lucide-react';
 
-
-import { throttle } from '../utils/throttle';
-
-const tele = window.Telegram?.WebApp;
-
-const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
-    const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [showSlots, setShowSlots] = useState(false);
-    const { isAdmin, isSuperAdmin, user } = useOutletContext();
+const Profile = () => {
+    const { user, walletBalance } = useStore();
     const navigate = useNavigate();
+    const [activeTab, setActiveTab] = useState('orders');
 
-    // Store data
-    const walletBalance = useStore(state => state.walletBalance);
-    const checkInStreak = useStore(state => state.checkInStreak);
-    const fetchUserData = useStore(state => state.fetchUserData);
-
-    useEffect(() => {
-        if (user?.id) {
-            fetch(`${API_URL}/api/orders?userId=${user.id}`)
-                .then(res => res.json())
-                .then(data => {
-                    // Sort by newest first
-                    const sorted = data.sort((a, b) => b.id - a.id);
-                    setOrders(sorted);
-                })
-                .catch(err => console.error(err))
-                .finally(() => setLoading(false));
-        } else {
-            setLoading(false);
-        }
-    }, [user?.id]);
-
-    // Infinite Scroll Listener
-    useEffect(() => {
-        const handleScroll = throttle(() => {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
-                if (hasMore && !isFetching && loadMore) {
-                    loadMore();
-                }
-            }
-        }, 200);
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [hasMore, isFetching, loadMore]);
-
-    const getStatusIcon = (status) => {
-        switch (status) {
-            case 'pending': return <Clock size={16} className="text-yellow-500" />;
-            case 'shipped': return <Truck size={16} className="text-primary" />;
-            case 'delivered': return <CheckCircle size={16} className="text-green-500" />;
-            case 'cancelled': return <XCircle size={16} className="text-red-500" />;
-            default: return <Package size={16} className="text-gray-500" />;
-        }
-    };
+    // Menu Items
+    const MENU_ITEMS = [
+        { icon: Package, label: "My Orders", path: "/orders" },
+        { icon: Heart, label: "Wishlist", path: "/wishlist" },
+        { icon: MapPin, label: "Addresses", path: "/addresses" },
+        { icon: Gift, label: "Coupons & Rewards", path: "/rewards" },
+        { icon: MessageCircle, label: "Support Messages", path: "/support" },
+        { icon: Settings, label: "Settings", path: "/settings" },
+    ];
 
     return (
-        <div className="bg-gray-50 min-h-dvh pb-24 font-sans pt-[var(--tg-content-safe-area-top)]">
-            {/* Header / User Info */}
-            <div className="bg-white p-4 border-b border-gray-100 mb-2">
-                <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-2xl font-bold text-gray-400 uppercase overflow-hidden border-2 border-white shadow-md">
-                        {user?.photo_url ? (
-                            <img src={user.photo_url} alt="Profile" className="w-full h-full object-cover" />
-                        ) : (
-                            user?.first_name?.charAt(0) || 'U'
-                        )}
-                    </div>
-                    <div>
-                        <h2 className="font-bold text-xl text-gray-900">Hello, {user?.first_name || 'Guest'}</h2>
-                        <p className="text-gray-500 text-sm">@{user?.username || 'user'}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div className="px-3 space-y-2">
-                {/* Wallet & Rewards Card */}
-                <div className="bg-gradient-to-br from-primary to-orange-600 rounded-2xl p-3 text-white shadow-lg shadow-orange-500/20 relative overflow-hidden">
-                    <div className="relative z-10">
-                        <div className="flex justify-between items-start mb-6">
-                            <div>
-                                <p className="text-white/80 text-xs font-semibold uppercase tracking-wider mb-1">Total Balance</p>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-4xl font-black">{walletBalance || 0}</span>
-                                    <span className="text-sm font-bold opacity-80 uppercase bg-white/20 px-1.5 py-0.5 rounded">ETB</span>
-                                </div>
-                            </div>
-                            <div className="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                                <Wallet size={20} />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 gap-3">
-                            <div className="bg-black/10 rounded-xl p-3 backdrop-blur-sm border border-white/10">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <Coins size={14} className="text-yellow-300" />
-                                    <span className="text-[10px] font-bold uppercase opacity-80">Daily Streak</span>
-                                </div>
-                                <p className="text-lg font-bold">{checkInStreak || 0} Days</p>
-                            </div>
-                        </div>
-                    </div>
-                    {/* Decorative Background */}
-                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
-                    <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/10 to-transparent"></div>
-                </div>
-
-                {/* Menu List */}
-                <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 divide-y divide-gray-50">
-                    {/* Wishlist Button */}
-                    <button
-                        onClick={() => navigate('/wishlist')}
-                        className="w-full bg-white p-3 flex items-center justify-between active:bg-gray-50 transition-colors"
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center">
-                                <Heart size={16} className="text-red-500" />
-                            </div>
-                            <span className="text-gray-700 font-medium text-sm">Your Wishlist</span>
-                        </div>
-                        <span className="text-gray-300 text-lg">›</span>
-                    </button>
-
-                    {/* Invite Friends Button */}
-                    <button
-                        onClick={() => navigate('/rewards')}
-                        className="w-full bg-white p-3 flex items-center justify-between active:bg-gray-50 transition-colors"
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center">
-                                <Gift size={16} className="text-[var(--tg-theme-button-color)]" />
-                            </div>
-                            <span className="text-gray-700 font-medium text-sm">Invite Friends & Earn</span>
-                        </div>
-                        <span className="text-gray-300 text-lg">›</span>
-                    </button>
-
-                    {/* Lucky Spin Button */}
-                    <button
-                        onClick={() => setShowSlots(true)}
-                        className="w-full bg-white p-3 flex items-center justify-between active:bg-gray-50 transition-colors"
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center">
-                                <Trophy size={16} className="text-purple-600" />
-                            </div>
-                            <span className="text-gray-700 font-medium text-sm">Daily Lucky Spin</span>
-                        </div>
-                        <span className="text-gray-300 text-lg">›</span>
-                    </button>
-
-                    {/* Admin Access Button */}
-                    {isAdmin && (
-                        <button
-                            onClick={() => navigate('/admin')}
-                            className="w-full bg-white p-3 flex items-center justify-between active:bg-gray-50 transition-colors"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
-                                    <Settings size={16} className="text-blue-600" />
-                                </div>
-                                <span className="text-gray-700 font-medium text-sm">Seller Dashboard</span>
-                            </div>
-                            <span className="text-gray-300 text-lg">›</span>
-                        </button>
-                    )}
-
-                    {/* Analytics Button - Super Admin Only */}
-                    {isSuperAdmin && (
-                        <button
-                            onClick={() => navigate('/analytics')}
-                            className="w-full bg-white p-3 flex items-center justify-between active:bg-gray-50 transition-colors"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center">
-                                    <BarChart3 size={16} className="text-purple-600" />
-                                </div>
-                                <span className="text-gray-700 font-medium text-sm">Analytics</span>
-                            </div>
-                            <span className="text-gray-300 text-lg">›</span>
-                        </button>
-                    )}
-                </div>
-
-                {/* Order History */}
-                <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-3">
-                    <h3 className="font-bold text-lg mb-3 text-gray-900 px-1 border-b border-gray-50 pb-2">Your Orders</h3>
-
-                    {loading ? (
-                        <div className="text-center py-8 text-gray-500">Loading orders...</div>
-                    ) : orders.length === 0 ? (
-                        <div className="text-center py-8">
-                            <Package size={32} className="mx-auto text-gray-200 mb-2" />
-                            <p className="text-gray-400 font-medium text-sm">No orders yet</p>
-                            <button className="mt-2 text-primary text-xs font-bold hover:underline" onClick={() => navigate('/')}>Start shopping</button>
-                        </div>
+        <div className="bg-[#f5f5f5] min-h-screen pb-[80px]">
+            {/* User Header */}
+            <div className="bg-white px-5 pt-8 pb-6 flex items-center gap-4 border-b border-gray-100">
+                <div className="w-16 h-16 bg-gray-200 rounded-full overflow-hidden border-2 border-white shadow-sm">
+                    {user?.photo_url ? (
+                        <img src={user.photo_url} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
-                        <div className="space-y-3">
-                            {orders.map(order => (
-                                <div key={order.id} className="bg-gray-50 border border-gray-100 rounded-xl overflow-hidden active:scale-[0.99] transition-transform">
-                                    <div className="bg-white p-2 border-b border-gray-100 flex justify-between text-[10px] text-gray-400 font-medium uppercase tracking-wide">
-                                        <div className="flex items-center gap-2">
-                                            <span>#{order.id}</span>
-                                            <span>•</span>
-                                            <span>{new Date(order.createdAt).toLocaleDateString()}</span>
-                                        </div>
-                                        <div className="text-primary font-bold">{Math.floor(order.total_price)} Birr</div>
-                                    </div>
-
-                                    <div className="p-2">
-                                        <div className="flex items-center gap-2 mb-1.5">
-                                            <div className="font-bold text-gray-800 capitalize text-xs flex items-center gap-1.5 bg-white border border-gray-100 px-1.5 py-0.5 rounded shadow-sm">
-                                                {getStatusIcon(order.status)}
-                                                {order.status}
-                                            </div>
-                                        </div>
-                                        <div className="space-y-1">
-                                            {order.items.map((item, idx) => (
-                                                <div key={idx} className="text-xs text-gray-600 truncate">
-                                                    {item.quantity}x {item.title}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
+                            <User size={32} />
                         </div>
                     )}
                 </div>
-
-                {/* Recommended Section (More for You) */}
-                <div className="pt-2 pb-4 bg-white mt-2 rounded-t-2xl shadow-sm">
-                    <h3 className="px-3 text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
-                        More for You
-                    </h3>
-
-                    {/* Product Grid */}
-                    <div className="min-h-[20vh]">
-                        <ProductList products={products} />
-                    </div>
-
-                    {/* Loading Indicator */}
-                    {isFetching && (
-                        <div className="flex justify-center py-6">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                        </div>
-                    )}
-
-                    {/* End of List */}
-                    {!hasMore && products.length > 0 && (
-                        <div className="text-center py-8 text-gray-500 text-sm">
-                            You've reached the end!
-                        </div>
-                    )}
+                <div>
+                    <h2 className="text-xl font-bold text-black">{user?.first_name || "Guest User"}</h2>
+                    <p className="text-xs text-gray-500">ID: {user?.id || "N/A"}</p>
                 </div>
             </div>
-            {showSlots && <SlotMachine onClose={() => setShowSlots(false)} />}
+
+            {/* Wallet / Stats */}
+            <div className="bg-white mt-2 px-4 py-4 flex justify-around">
+                <div className="text-center">
+                    <div className="text-lg font-bold text-[#black]">0</div>
+                    <div className="text-[11px] text-gray-500">Coupons</div>
+                </div>
+                <div className="text-center border-l w-[1px] h-8 bg-gray-100 mx-2"></div>
+                <div className="text-center">
+                    <div className="text-lg font-bold text-[#black]">{walletBalance || 0}</div>
+                    <div className="text-[11px] text-gray-500">Credits (ETB)</div>
+                </div>
+                <div className="text-center border-l w-[1px] h-8 bg-gray-100 mx-2"></div>
+                <div className="text-center">
+                    <div className="text-lg font-bold text-[#black]">0</div>
+                    <div className="text-[11px] text-gray-500">Points</div>
+                </div>
+            </div>
+
+            {/* Order Status Bar */}
+            <div className="bg-white mt-2 px-4 py-4">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="font-bold text-sm">My Orders</h3>
+                    <button className="text-xs text-gray-500 flex items-center">View All <ChevronRight size={12} /></button>
+                </div>
+                <div className="flex justify-between px-2">
+                    <OrderStatusItem icon={Wallet} label="Unpaid" />
+                    <OrderStatusItem icon={Package} label="Processing" />
+                    <OrderStatusItem icon={Package} label="Shipped" />
+                    <OrderStatusItem icon={MessageCircle} label="Review" />
+                    <OrderStatusItem icon={LogOut} label="Returns" />
+                </div>
+            </div>
+
+            {/* Menu List */}
+            <div className="bg-white mt-2">
+                {MENU_ITEMS.map((item, idx) => (
+                    <button
+                        key={idx}
+                        onClick={() => item.path && navigate(item.path)}
+                        className="w-full flex items-center justify-between px-4 py-4 border-b border-gray-50 active:bg-gray-50"
+                    >
+                        <div className="flex items-center gap-3 text-gray-700">
+                            <item.icon size={20} strokeWidth={1.5} />
+                            <span className="text-sm font-medium">{item.label}</span>
+                        </div>
+                        <ChevronRight size={16} className="text-gray-300" />
+                    </button>
+                ))}
+            </div>
+
+            {/* Logout/Footer */}
+            <div className="mt-8 px-4 text-center">
+                <button className="text-xs text-gray-400 underline">Log Out</button>
+                <p className="text-[10px] text-gray-300 mt-2">v1.2.0 • Addis Seller App</p>
+            </div>
         </div>
     );
 };
+
+const OrderStatusItem = ({ icon: Icon, label }) => (
+    <div className="flex flex-col items-center gap-1.5 opacity-80 active:opacity-100">
+        <Icon size={22} className="text-gray-600" strokeWidth={1.5} />
+        <span className="text-[10px] text-gray-500">{label}</span>
+    </div>
+);
 
 export default Profile;

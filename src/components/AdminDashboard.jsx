@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import API_URL from '../config';
 import SalesSimulator from './SalesSimulator';
 import AnalyticsDashboard from '../pages/AnalyticsDashboard';
+import { Package, ShoppingBag, Settings, Activity, BarChart2, Plus, Trash2, Edit2, Image as ImageIcon, Save, X } from 'lucide-react';
 
 const SUBCATEGORIES = {
     'Men': ['Shirts', 'T-Shirts', 'Pants', 'Jeans', 'Shoes', 'Suits', 'Accessories', 'Activewear', 'Other'],
@@ -186,6 +187,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
             variations: product.variations || []
         });
         setEditId(product.id);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const cancelEdit = () => {
@@ -227,146 +229,344 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
         }
     };
 
-    return (
-        <div>
-            <h2>Addis Seller Dashboard</h2>
+    const Tabs = [
+        { id: 'products', label: 'Inventory', icon: Package },
+        { id: 'orders', label: 'Orders', icon: ShoppingBag },
+        { id: 'settings', label: 'Engine', icon: Settings },
+        { id: 'simulator', label: 'Simulator', icon: Activity },
+        { id: 'analytics', label: 'Analytics', icon: BarChart2 },
+    ];
 
-            <div>
-                <button onClick={() => setActiveTab('products')} style={{ fontWeight: activeTab === 'products' ? 'bold' : 'normal' }}>Inventory</button>
-                <button onClick={() => setActiveTab('orders')} style={{ fontWeight: activeTab === 'orders' ? 'bold' : 'normal' }}>Orders</button>
-                <button onClick={() => setActiveTab('settings')} style={{ fontWeight: activeTab === 'settings' ? 'bold' : 'normal' }}>Engine</button>
-                <button onClick={() => setActiveTab('simulator')} style={{ fontWeight: activeTab === 'simulator' ? 'bold' : 'normal' }}>Simulator</button>
-                <button onClick={() => setActiveTab('analytics')} style={{ fontWeight: activeTab === 'analytics' ? 'bold' : 'normal' }}>Analytics</button>
+    return (
+        <div className="bg-gray-50 min-h-screen font-sans text-gray-800">
+            {/* Header */}
+            <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    <Settings className="text-[#fb7701]" /> Addis Admin
+                </h2>
+                <div className="text-xs text-gray-500">v2.0 Pro</div>
             </div>
 
-            <hr />
+            {/* Navigation Tabs */}
+            <div className="bg-white border-b border-gray-200 px-6 flex gap-6 overflow-x-auto no-scrollbar">
+                {Tabs.map(tab => (
+                    <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`flex items-center gap-2 py-4 border-b-2 text-sm font-medium transition-colors whitespace-nowrap ${activeTab === tab.id
+                                ? 'border-[#fb7701] text-[#fb7701]'
+                                : 'border-transparent text-gray-500 hover:text-gray-700'
+                            }`}
+                    >
+                        <tab.icon size={16} />
+                        {tab.label}
+                    </button>
+                ))}
+            </div>
 
-            <div>
-                {activeTab === 'settings' ? (
-                    <div>
-                        <h3>Automated Sales & Promotion Engine</h3>
-                        <div>
-                            <h4>Global Sale Intensity</h4>
-                            {['low', 'medium', 'high'].map((level) => (
-                                <button key={level} onClick={() => updateAndPersist('global_sale_intensity', level)}>
-                                    {level} {globalSettings.global_sale_intensity === level && '(Selected)'}
-                                </button>
-                            ))}
-                        </div>
-                        <br />
-                        <div>
-                            <h4>Automatic Discount Range</h4>
-                            <label>Min % <input type="number" value={(globalSettings.system_discount_min || 0.15) * 100} onChange={(e) => updateAndPersist('system_discount_min', parseFloat(e.target.value) / 100)} /></label>
-                            <label>Max % <input type="number" value={(globalSettings.system_discount_max || 0.35) * 100} onChange={(e) => updateAndPersist('system_discount_max', parseFloat(e.target.value) / 100)} /></label>
-                        </div>
-                        <br />
-                        <div>
-                            <h4>Flash Sale Frequency</h4>
-                            <input type="range" min="0" max="100" value={(globalSettings.system_flash_sale_prob || 0.2) * 100} onChange={(e) => updateLocalSetting('system_flash_sale_prob', parseFloat(e.target.value) / 100)} onMouseUp={(e) => persistSetting('system_flash_sale_prob', parseFloat(e.target.value) / 100)} />
-                            <span>{Math.round((globalSettings.system_flash_sale_prob || 0.2) * 100)}%</span>
-                        </div>
-                        <br />
-                        <div>
-                            <h4>Social Proof Multiplier</h4>
-                            <input type="range" min="1" max="10" step="0.1" value={globalSettings.system_social_proof_mult || 1.5} onChange={(e) => updateLocalSetting('system_social_proof_mult', parseFloat(e.target.value))} onMouseUp={(e) => persistSetting('system_social_proof_mult', parseFloat(e.target.value))} />
-                            <span>{globalSettings.system_social_proof_mult || 1.5}x</span>
-                        </div>
-                        <br />
-                        <div>
-                            <h4>Home Screen Banners</h4>
-                            <div>
-                                {(globalSettings.home_banners || []).map((b, idx) => (
-                                    <div key={idx}>
-                                        <b>{b.title}</b> - {b.description} <button onClick={() => removeBanner(idx)}>Remove</button>
+            {/* Main Content Area */}
+            <div className="p-6 max-w-6xl mx-auto">
+
+                {/* SETTINGS ENGINE */}
+                {activeTab === 'settings' && (
+                    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                                <Activity className="text-[#fb7701]" size={20} />
+                                Automated Sales Engine
+                            </h3>
+
+                            {/* Sale Intensity */}
+                            <div className="mb-6">
+                                <h4 className="text-sm font-semibold text-gray-700 mb-2">Global Sale Intensity</h4>
+                                <div className="flex gap-2">
+                                    {['low', 'medium', 'high'].map((level) => (
+                                        <button
+                                            key={level}
+                                            onClick={() => updateAndPersist('global_sale_intensity', level)}
+                                            className={`px-4 py-2 rounded-lg text-sm font-medium capitalize border ${globalSettings.global_sale_intensity === level
+                                                    ? 'bg-[#fff0e0] border-[#fb7701] text-[#fb7701]'
+                                                    : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+                                                }`}
+                                        >
+                                            {level}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Sliders Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                                <div>
+                                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Flash Sale Probability</h4>
+                                    <div className="flex items-center gap-4">
+                                        <input
+                                            type="range"
+                                            min="0"
+                                            max="100"
+                                            className="w-full accent-[#fb7701]"
+                                            value={(globalSettings.system_flash_sale_prob || 0.2) * 100}
+                                            onChange={(e) => updateLocalSetting('system_flash_sale_prob', parseFloat(e.target.value) / 100)}
+                                            onMouseUp={(e) => persistSetting('system_flash_sale_prob', parseFloat(e.target.value) / 100)}
+                                        />
+                                        <span className="text-sm font-mono font-bold w-12 text-right">{Math.round((globalSettings.system_flash_sale_prob || 0.2) * 100)}%</span>
                                     </div>
-                                ))}
-                            </div>
-                            <div>
-                                <input placeholder="Title" value={newBanner.title} onChange={e => setNewBanner({ ...newBanner, title: e.target.value })} />
-                                <input placeholder="Description" value={newBanner.description} onChange={e => setNewBanner({ ...newBanner, description: e.target.value })} />
-                                <input placeholder="Button Text" value={newBanner.buttonText} onChange={e => setNewBanner({ ...newBanner, buttonText: e.target.value })} />
-                                <select value={newBanner.gradient} onChange={e => setNewBanner({ ...newBanner, gradient: e.target.value })}>
-                                    {GRADIENTS.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
-                                </select>
-                                <button onClick={addBanner}>+ Add Banner</button>
+                                </div>
+
+                                <div>
+                                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Social Proof Multiplier</h4>
+                                    <div className="flex items-center gap-4">
+                                        <input
+                                            type="range"
+                                            min="1"
+                                            max="10"
+                                            step="0.1"
+                                            className="w-full accent-[#fb7701]"
+                                            value={globalSettings.system_social_proof_mult || 1.5}
+                                            onChange={(e) => updateLocalSetting('system_social_proof_mult', parseFloat(e.target.value))}
+                                            onMouseUp={(e) => persistSetting('system_social_proof_mult', parseFloat(e.target.value))}
+                                        />
+                                        <span className="text-sm font-mono font-bold w-12 text-right">{globalSettings.system_social_proof_mult || 1.5}x</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <br />
-                        <div>
-                            <h4>Gamification & Rewards</h4>
-                            <div>
-                                <h5>Slot Machine</h5>
-                                <label>Win Probability: <input type="range" min="0" max="100" step="5" value={(globalSettings.slots_win_rate || 0.3) * 100} onChange={e => updateLocalSetting('slots_win_rate', Number(e.target.value) / 100)} onMouseUp={e => persistSetting('slots_win_rate', Number(e.target.value) / 100)} /> {Math.round((globalSettings.slots_win_rate || 0.3) * 100)}%</label>
-                                <br />
-                                <label>Prize Label: <input value={globalSettings.slots_prize_label || '50% OFF'} onChange={e => updateAndPersist('slots_prize_label', e.target.value)} /></label>
-                                <br />
-                                <label>Prize Code: <input value={globalSettings.slots_prize_code || 'JACKPOT50'} onChange={e => updateAndPersist('slots_prize_code', e.target.value)} /></label>
-                            </div>
-                            <br />
-                            <div>
-                                <h5>Mystery Gift</h5>
-                                <label><input type="checkbox" checked={globalSettings.mystery_gift_enabled !== false} onChange={e => updateAndPersist('mystery_gift_enabled', e.target.checked)} /> Enable Daily Gift</label>
-                                <br />
-                                <label>Reward Pool (JSON): <textarea value={typeof globalSettings.mystery_gift_pool === 'string' ? globalSettings.mystery_gift_pool : JSON.stringify(globalSettings.mystery_gift_pool || [{ type: 'coupon', value: '10% OFF', code: 'LUCKY10' }])} onChange={e => updateLocalSetting('mystery_gift_pool', e.target.value)} onBlur={e => persistSetting('mystery_gift_pool', e.target.value)} /></label>
+
+                        {/* GAMIFICATION */}
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                                <Gift className="text-purple-600" size={20} />
+                                Gamification & Rewards
+                            </h3>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <h5 className="text-sm font-bold text-gray-900 mb-2">Slot Machine</h5>
+                                    <div className="space-y-3">
+                                        <div>
+                                            <label className="text-xs text-gray-500">Win Rate</label>
+                                            <input
+                                                type="range"
+                                                min="0" max="100" step="5"
+                                                className="w-full accent-purple-600"
+                                                value={(globalSettings.slots_win_rate || 0.3) * 100}
+                                                onChange={e => updateLocalSetting('slots_win_rate', Number(e.target.value) / 100)}
+                                                onMouseUp={e => persistSetting('slots_win_rate', Number(e.target.value) / 100)}
+                                            />
+                                            <div className="text-xs text-right font-bold">{Math.round((globalSettings.slots_win_rate || 0.3) * 100)}%</div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <input
+                                                className="border rounded px-2 py-1 text-sm"
+                                                placeholder="Prize Label (e.g. 50% OFF)"
+                                                value={globalSettings.slots_prize_label || '50% OFF'}
+                                                onChange={e => updateAndPersist('slots_prize_label', e.target.value)}
+                                            />
+                                            <input
+                                                className="border rounded px-2 py-1 text-sm"
+                                                placeholder="Code (e.g. JACKPOT50)"
+                                                value={globalSettings.slots_prize_code || 'JACKPOT50'}
+                                                onChange={e => updateAndPersist('slots_prize_code', e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h5 className="text-sm font-bold text-gray-900 mb-2">Mystery Gift</h5>
+                                    <label className="flex items-center gap-2 mb-2 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            className="rounded text-purple-600"
+                                            checked={globalSettings.mystery_gift_enabled !== false}
+                                            onChange={e => updateAndPersist('mystery_gift_enabled', e.target.checked)}
+                                        />
+                                        <span className="text-sm">Enable Daily Gift</span>
+                                    </label>
+                                    <textarea
+                                        className="w-full border rounded p-2 text-xs font-mono h-20"
+                                        placeholder="JSON Rewards Pool"
+                                        value={typeof globalSettings.mystery_gift_pool === 'string' ? globalSettings.mystery_gift_pool : JSON.stringify(globalSettings.mystery_gift_pool || [{ type: 'coupon', value: '10% OFF', code: 'LUCKY10' }])}
+                                        onChange={e => updateLocalSetting('mystery_gift_pool', e.target.value)}
+                                        onBlur={e => persistSetting('mystery_gift_pool', e.target.value)}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
-                ) : activeTab === 'simulator' ? (
-                    <SalesSimulator />
-                ) : activeTab === 'analytics' ? (
-                    <AnalyticsDashboard />
-                ) : activeTab === 'products' ? (
-                    <>
-                        <form onSubmit={handleAdd}>
-                            <h3>{editId ? 'Edit Product' : 'Add New Product'}</h3>
-                            <div><label>Title <input value={newProduct.title} onChange={e => setNewProduct({ ...newProduct, title: e.target.value })} /></label></div>
-                            <div><label>Price <input type="number" step="0.01" value={newProduct.price} onChange={e => setNewProduct({ ...newProduct, price: e.target.value })} /></label></div>
-                            <div><label>Stock <input type="number" value={newProduct.stock} onChange={e => setNewProduct({ ...newProduct, stock: e.target.value })} /></label></div>
-                            <div><label><input type="checkbox" checked={newProduct.isUnique} onChange={e => setNewProduct({ ...newProduct, isUnique: e.target.checked })} /> One of a Kind?</label></div>
-                            <div><label>Category <select value={newProduct.category} onChange={e => setNewProduct({ ...newProduct, category: e.target.value })}>
-                                <option value="">Select</option>
-                                {(SUBCATEGORIES[newProduct.department] || []).map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                            </select></label></div>
-                            <div><label>Description <textarea value={newProduct.description} onChange={e => setNewProduct({ ...newProduct, description: e.target.value })} /></label></div>
+                )}
 
-                            <div>
-                                <label>Images: <input type="file" onChange={e => setMainImageFile(e.target.files[0])} /></label>
-                                {mainImageFile && <span>Selected</span>}
+                {/* SIMULATOR */}
+                {activeTab === 'simulator' && <SalesSimulator />}
+
+                {/* ANALYTICS */}
+                {activeTab === 'analytics' && <AnalyticsDashboard />}
+
+                {/* PRODUCTS (INVENTORY) */}
+                {activeTab === 'products' && (
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in">
+                        {/* Form Column */}
+                        <div className="lg:col-span-1">
+                            <form onSubmit={handleAdd} className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sticky top-24">
+                                <h3 className="font-bold text-gray-800 mb-4">{editId ? 'Edit Product' : 'Add New Product'}</h3>
+
+                                <div className="space-y-3">
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Title</label>
+                                        <input className="w-full border border-gray-300 rounded-lg p-2 text-sm" value={newProduct.title} onChange={e => setNewProduct({ ...newProduct, title: e.target.value })} required />
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Price</label>
+                                            <input type="number" step="0.01" className="w-full border border-gray-300 rounded-lg p-2 text-sm" value={newProduct.price} onChange={e => setNewProduct({ ...newProduct, price: e.target.value })} required />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Stock</label>
+                                            <input type="number" className="w-full border border-gray-300 rounded-lg p-2 text-sm" value={newProduct.stock} onChange={e => setNewProduct({ ...newProduct, stock: e.target.value })} />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Category</label>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <select className="border border-gray-300 rounded-lg p-2 text-sm" value={newProduct.department} onChange={e => setNewProduct({ ...newProduct, department: e.target.value })}>
+                                                {Object.keys(SUBCATEGORIES).map(d => <option key={d} value={d}>{d}</option>)}
+                                            </select>
+                                            <select className="border border-gray-300 rounded-lg p-2 text-sm" value={newProduct.category} onChange={e => setNewProduct({ ...newProduct, category: e.target.value })}>
+                                                <option value="">Sub-Category</option>
+                                                {(SUBCATEGORIES[newProduct.department] || []).map(c => <option key={c} value={c}>{c}</option>)}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="flex items-center gap-2 cursor-pointer py-2">
+                                            <input type="checkbox" checked={newProduct.isUnique} onChange={e => setNewProduct({ ...newProduct, isUnique: e.target.checked })} />
+                                            <span className="text-sm font-medium">Unique Item (One-of-a-kind)</span>
+                                        </label>
+                                    </div>
+
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Images</label>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <label className="flex-1 cursor-pointer bg-gray-50 border border-dashed border-gray-300 rounded-lg p-3 flex flex-col items-center justify-center hover:bg-gray-100 transition-colors">
+                                                <ImageIcon size={20} className="text-gray-400 mb-1" />
+                                                <span className="text-xs text-gray-500">Main Image</span>
+                                                <input type="file" className="hidden" onChange={e => setMainImageFile(e.target.files[0])} />
+                                            </label>
+                                            {mainImageFile && <div className="text-xs text-green-600 font-bold">Selected</div>}
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-2 flex gap-2">
+                                        <button type="submit" disabled={isSubmitting} className="flex-1 bg-[#fb7701] text-white py-2 rounded-lg font-bold text-sm hover:bg-[#e06900] transition-colors shadow-sm">
+                                            {isSubmitting ? 'Saving...' : (editId ? 'Update Product' : 'Add Product')}
+                                        </button>
+                                        {editId && (
+                                            <button type="button" onClick={cancelEdit} className="bg-gray-200 text-gray-700 px-3 rounded-lg font-bold text-sm hover:bg-gray-300">
+                                                Cancel
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        {/* List Column */}
+                        <div className="lg:col-span-2 space-y-3">
+                            <div className="flex justify-between items-center mb-2">
+                                <h3 className="font-bold text-gray-700">{products.length} Products</h3>
                             </div>
 
-                            <button type="submit">{editId ? 'Save' : 'Add'}</button>
-                            {editId && <button type="button" onClick={cancelEdit}>Cancel</button>}
-                        </form>
-
-                        <hr />
-
-                        <div>
                             {products.map(p => (
-                                <div key={p.id}>
-                                    <hr />
-                                    <b>{p.title}</b> - {p.price} Birr
-                                    <button onClick={() => startEdit(p)}>Edit</button>
-                                    <button onClick={() => handleDelete(p.id)}>Delete</button>
+                                <div key={p.id} className="bg-white rounded-lg border border-gray-200 p-3 flex items-center justify-between hover:shadow-sm transition-shadow">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
+                                            {p.images && p.images[0] ? (
+                                                <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-gray-400"><ImageIcon size={16} /></div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <div className="font-bold text-sm text-gray-900">{p.title}</div>
+                                            <div className="text-xs text-gray-500">
+                                                {p.price} ETB • {p.stock} units
+                                                {p.isUnique && <span className="ml-2 text-purple-600 font-bold bg-purple-50 px-1 rounded">Unique</span>}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-2">
+                                        <button onClick={() => startEdit(p)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-full">
+                                            <Edit2 size={16} />
+                                        </button>
+                                        <button onClick={() => handleDelete(p.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-full">
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
                         </div>
-                    </>
-                ) : (
-                    <div>
-                        {orders.map(order => (
-                            <div key={order.id}>
-                                <hr />
-                                <b>Order #{order.id}</b> - {order.status}
-                                <div>Total: {order.total_price}</div>
-                                <button onClick={() => handleUpdateStatus(order.id, 'sold')}>Mark Sold</button>
-                                <button onClick={() => handleUpdateStatus(order.id, 'cancelled')}>Cancel</button>
+                    </div>
+                )}
+
+                {/* ORDERS */}
+                {activeTab === 'orders' && (
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        {orders.length === 0 ? (
+                            <div className="p-8 text-center text-gray-500">No orders found.</div>
+                        ) : (
+                            <div className="divide-y divide-gray-100">
+                                {orders.map(order => (
+                                    <div key={order.id} className="p-4 hover:bg-gray-50 transition-colors">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <div>
+                                                <h4 className="font-bold text-sm text-[#fb7701]">Order #{order.id}</h4>
+                                                <div className="text-xs text-gray-500">{new Date(order.createdAt || Date.now()).toLocaleDateString()}</div>
+                                            </div>
+                                            <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${order.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                                                    order.status === 'sold' ? 'bg-green-100 text-green-700' :
+                                                        'bg-red-100 text-red-700'
+                                                }`}>
+                                                {order.status}
+                                            </span>
+                                        </div>
+
+                                        <div className="text-sm font-bold mb-3 flex justify-between">
+                                            <span>{order.items?.length || 0} Items</span>
+                                            <span>{Math.floor(order.total_price)} ETB</span>
+                                        </div>
+
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => handleUpdateStatus(order.id, 'sold')}
+                                                className="flex-1 bg-green-50 text-green-700 border border-green-200 py-1.5 rounded text-xs font-bold hover:bg-green-100"
+                                            >
+                                                Mark Sold
+                                            </button>
+                                            <button
+                                                onClick={() => handleUpdateStatus(order.id, 'cancelled')}
+                                                className="flex-1 bg-red-50 text-red-700 border border-red-200 py-1.5 rounded text-xs font-bold hover:bg-red-100"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+                        )}
                     </div>
                 )}
             </div>
         </div>
     );
 };
+
+// Helper for sub-components
+const Gift = ({ size, className }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
+);
 
 export default AdminDashboard;

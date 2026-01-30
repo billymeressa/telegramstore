@@ -1,24 +1,34 @@
-import { useNavigate } from 'react-router-dom';
 import ProductCard from './ProductCard';
 import useStore from '../store/useStore';
 
 function ProductList({ products }) {
-    const navigate = useNavigate();
     const addToCart = useStore(state => state.addToCart);
-    const wishlist = useStore(state => state.wishlist);
-    const toggleWishlist = useStore(state => state.toggleWishlist);
+
+    // Masonry-ish 2 Column Layout using simple flex col split
+    // (This is often more performant than grid for variable height cards)
+    const leftCol = products.filter((_, i) => i % 2 === 0);
+    const rightCol = products.filter((_, i) => i % 2 === 1);
 
     return (
-        <div>
-            {products.map((product) => (
-                <ProductCard
-                    key={product.id}
-                    product={product}
-                    onAdd={() => addToCart(product)}
-                    isWishlisted={wishlist.includes(product.id)}
-                    onToggleWishlist={() => toggleWishlist(product.id)}
-                />
-            ))}
+        <div className="flex gap-2 px-2 pb-2">
+            <div className="flex-1 flex flex-col gap-2">
+                {leftCol.map(product => (
+                    <ProductCard
+                        key={product.id}
+                        product={product}
+                        onAdd={addToCart}
+                    />
+                ))}
+            </div>
+            <div className="flex-1 flex flex-col gap-2">
+                {rightCol.map(product => (
+                    <ProductCard
+                        key={product.id}
+                        product={product}
+                        onAdd={addToCart}
+                    />
+                ))}
+            </div>
         </div>
     );
 }

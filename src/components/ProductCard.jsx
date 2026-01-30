@@ -1,83 +1,116 @@
 import { useNavigate } from 'react-router-dom';
+import { ShoppingCart } from 'lucide-react';
 import React, { useState, useMemo } from 'react';
 import useStore from '../store/useStore';
 
-function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
+function ProductCard({ product, onAdd }) {
     const navigate = useNavigate();
     const [isAdded, setIsAdded] = useState(false);
     const settings = useStore(state => state.settings);
 
-    // Logic for flash sale (functional, not visual)
-    const intensity = settings.global_sale_intensity || 'medium';
-    const showFlashSale = useMemo(() => {
-        if (product.isFlashSale) return true;
-        const prob = settings.system_flash_sale_prob !== undefined
-            ? settings.system_flash_sale_prob
-            : (intensity === 'low' ? 0 : intensity === 'high' ? 0.5 : 0.2);
-        if (prob === 0) return false;
+    // Flash Sale Logic (Mocked randomness for "Temu" feel)
+    const isFlashSale = useMemo(() => {
+        // Simple hash to consistently show sale on same products
+        const hash = product.id % 3 === 0;
+        return product.isFlashSale || hash;
+    }, [product.id]);
 
-        let hash = 0;
-        const str = String(product.id || product.title);
-        for (let i = 0; i < str.length; i++) {
-            hash = ((hash << 5) - hash) + str.charCodeAt(i);
-            hash |= 0;
+    const discount = useMemo(() => {
+        if (product.originalPrice > product.price) {
+            return Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
         }
-        const rand = Math.abs(hash) % 100;
-        return rand < (prob * 100);
-    }, [intensity, settings.system_flash_sale_prob, product.id, product.title, product.isFlashSale]);
+        return isFlashSale ? 50 + (product.id % 40) : 0; // Fake discount if needed for visual
+    }, [product]);
 
     const handleAdd = (e) => {
         e.stopPropagation();
         onAdd(product);
         setIsAdded(true);
-        setTimeout(() => setIsAdded(false), 2000);
+        setTimeout(() => setIsAdded(false), 1000);
     };
 
-    const handleWishlist = (e) => {
-        e.stopPropagation();
-        onToggleWishlist();
-    };
+    const formattedPrice = product.variations && product.variations.length > 0
+        ? Math.min(...product.variations.map(v => v.price))
+        : product.price;
 
     return (
-        <div onClick={() => navigate(`/product/${product.id}`)}>
-            {product.images && product.images.length > 0 ? (
-                <img src={product.images[0]} alt={product.title} width="100" />
-            ) : (
-                <div style={{ width: 100, height: 100, background: '#ccc' }}>No Image</div>
-            )}
+        <div
+            onClick={() => navigate(`/product/${product.id}`)}
+            className="flex flex-col bg-white rounded-lg overflow-hidden border border-gray-100 hover:shadow-md transition-shadow relative"
+        >
+            {/* Image */}
+            <div className="relative aspect-square bg-gray-100">
+                {product.images && product.images.length > 0 ? (
+                    <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" loading="lazy" />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">No Img</div>
+                )}
 
-            <h3>{product.title}</h3>
+                {/* Flash Deal Badge */}
+                {isFlashSale && (
+                    <div className="absolute left-0 bottom-0 bg-[#fb7701] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-tr-lg">
+                        ⚡ Lightning Deal
+                    </div>
+                )}
 
-            <div>
-                <span>
-                    ETB {product.variations && product.variations.length > 0
-                        ? Math.min(...product.variations.map(v => v.price))
-                        : product.price
-                    }
-                </span>
-                {(product.originalPrice > product.price) && (
-                    <span style={{ textDecoration: 'line-through', marginLeft: 5 }}>
-                        {product.originalPrice}
-                    </span>
+                {/* Almost Sold Out Badge (Random) */}
+                {product.stock < 10 && (
+                    <div className="absolute top-0 right-0 bg-[#be0000]/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-bl-lg">
+                        Almost Sold Out
+                    </div>
                 )}
             </div>
 
-            {showFlashSale && <div>Flesh Sale Active!</div>}
+            {/* Content */}
+            <div className="p-2 flex-col flex-1 flex justify-between">
+                <div>
+                    <h3 className="text-xs text-[#191919] line-clamp-2 leading-tight mb-1 font-normal h-[2.5em]">
+                        {product.title}
+                    </h3>
 
-            <div>
-                <button onClick={handleAdd}>
-                    {isAdded ? 'Added' : 'Add to Cart'}
-                </button>
-                <button onClick={handleWishlist}>
-                    {isWishlisted ? 'Un-Wishlist' : 'Wishlist'}
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1 mb-1.5">
+                        <span className="text-[9px] text-[#fb7701] bg-[#fff0e0] border border-[#fb7701]/20 px-1 rounded-sm">
+                            Free shipping
+                        </span>
+                        {discount > 0 && (
+                            <span className="text-[9px] text-[#be0000] border border-[#be0000]/20 px-1 rounded-sm">
+                                -{discount}%
+                            </span>
+                        )}
+                    </div>
+                </div>
+
+                <div className="mt-1">
+                    {/* Price Block */}
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-[10px] text-[#fb7701] font-bold">ETB</span>
+                        <span className="text-lg font-bold text-[#fb7701] leading-none">
+                            {Math.floor(formattedPrice)}
+                        </span>
+                    </div>
+                    {/* Original Price */}
+                    <div className="text-[10px] text-gray-400 line-through leading-tight">
+                        ETB {Math.floor(formattedPrice * (1 + (discount || 20) / 100))}
+                    </div>
+
+                    {/* Sold Count */}
+                    <div className="text-[10px] text-gray-500 mt-0.5">
+                        {product.isUnique ? '10 sold' : '5k+ sold'}
+                    </div>
+                </div>
+
+                {/* Cart Button Overlay */}
+                <button
+                    onClick={handleAdd}
+                    className={`absolute bottom-2 right-2 w-7 h-7 rounded-full flex items-center justify-center border transition-all ${isAdded ? 'bg-green-500 border-green-500 text-white' : 'bg-white border-gray-200 text-[#fb7701] hover:border-[#fb7701]'}`}
+                >
+                    <ShoppingCart size={14} />
                 </button>
             </div>
-
-            {product.stock === 0 && !product.isUnique && (
-                <div>Sold Out</div>
-            )}
         </div>
     );
 }
 
+// Memoize to optimize grid rendering
 export default React.memo(ProductCard);
