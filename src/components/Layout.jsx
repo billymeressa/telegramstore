@@ -1,6 +1,8 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Store, ShoppingCart, User, LayoutDashboard, Search } from 'lucide-react';
 import { useEffect, useCallback } from 'react';
+import InstallGuide from './InstallGuide';
+
 
 const tele = window.Telegram?.WebApp;
 
@@ -51,6 +53,7 @@ const Layout = ({ cartCount, isAdmin, isSuperAdmin, user }) => {
 
     return (
         <div className="min-h-screen bg-[#f5f5f5] pb-[60px]">
+            <InstallGuide />
             <Outlet context={{ isAdmin, isSuperAdmin, user }} />
 
             {/* Bottom Navigation Temu Style */}
