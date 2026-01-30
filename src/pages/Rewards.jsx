@@ -38,7 +38,7 @@ const Rewards = () => {
     return (
         <div className="min-h-dvh bg-[var(--tg-theme-secondary-bg-color)] pb-32 pt-[var(--tg-content-safe-area-top)] font-sans">
             {/* Header */}
-            <div className="bg-[var(--tg-theme-bg-color)] p-6 rounded-b-3xl shadow-sm text-center mb-6">
+            <div className="bg-[var(--tg-theme-bg-color)] p-4 rounded-b-3xl shadow-sm text-center mb-4">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Gift size={32} className="text-[var(--tg-theme-button-color)]" />
                 </div>
@@ -51,7 +51,7 @@ const Rewards = () => {
             </div>
 
             {/* Stats Card */}
-            <div className="px-4 mb-6">
+            <div className="px-4 mb-4">
                 <div className="bg-[var(--tg-theme-bg-color)] rounded-2xl p-4 shadow-sm flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="bg-yellow-100 p-2 rounded-full">
@@ -69,7 +69,7 @@ const Rewards = () => {
             </div>
 
             {/* Referral Link Section */}
-            <div className="px-4 mb-6">
+            <div className="px-4 mb-4">
                 <h3 className="text-sm font-semibold text-[var(--tg-theme-text-color)] mb-3 ml-1">Your Referral Link</h3>
                 <div className="bg-[var(--tg-theme-bg-color)] rounded-xl p-2 flex items-center gap-2 shadow-sm border border-[var(--tg-theme-section-separator-color)]">
                     <div className="flex-1 px-3 py-2 overflow-hidden">

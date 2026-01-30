@@ -150,7 +150,7 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
 
             {/* Header / Subtotal - Clean Card Style */}
             {cart.length > 0 && (
-                <div className="bg-white p-4 mb-2 shadow-sm border-b border-gray-100">
+                <div className="bg-white p-3 mb-1 shadow-sm border-b border-gray-100">
                     <div className="flex justify-between text-gray-600 text-sm mb-1">
                         <span>Subtotal</span>
                         <span>{Math.floor(totalPrice)} Birr</span>
@@ -177,7 +177,7 @@ const CartPage = ({ onCheckout, sellerUsername }) => {
 
             {/* Bottom Checkout Bar */}
             {cart.length > 0 && (
-                <div className="fixed bottom-[calc(60px+var(--tg-safe-area-bottom))] left-0 right-0 bg-white border-t border-gray-100 p-3 z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.05)]">
+                <div className="fixed bottom-[calc(60px+var(--tg-safe-area-bottom))] left-0 right-0 bg-white border-t border-gray-100 p-2 z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.05)]">
                     {/* Promo Code Input */}
                     <div className="flex gap-2 mb-3">
                         <div className="relative flex-1">

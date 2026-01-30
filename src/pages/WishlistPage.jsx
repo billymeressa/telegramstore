@@ -19,7 +19,7 @@ const WishlistPage = ({ products }) => {
             {/* Header */}
 
             {wishlistedProducts.length === 0 ? (
-                <div className="flex flex-col items-center justify-center pt-32 px-6 text-center">
+                <div className="flex flex-col items-center justify-center pt-20 px-6 text-center">
                     <div className="bg-white p-5 rounded-full mb-4">
                         <Heart size={40} className="text-gray-400/50" />
                     </div>
@@ -35,7 +35,7 @@ const WishlistPage = ({ products }) => {
                     </button>
                 </div>
             ) : (
-                <div className="mt-2 grid grid-cols-2 gap-4 p-4">
+                <div className="mt-2 grid grid-cols-2 gap-2 p-2">
                     {wishlistedProducts.map(product => (
                         <ProductCard
                             key={product.id}

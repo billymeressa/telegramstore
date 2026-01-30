@@ -43,9 +43,30 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  /* Temu-style Scroll Physics */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+  /* Prevents browser pull-to-refresh rubber banding */
 }
 
-/* Custom Scrollbar Styles */
+/* Global Scrollbar Hiding (But Keep Functionality) */
+html {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+}
+
+html::-webkit-scrollbar {
+  display: none;
+  /* Chrome/Safari/Brave */
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -57,7 +78,8 @@ body {
   /* Firefox */
 }
 
-/* Default scrollbar styling for other elements */
+/* Removing old scrollbar styles to enforce hidden look */
+/* 
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -70,7 +92,8 @@ body {
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.1);
   border-radius: 3px;
-}
+} 
+*/
 
 #root {
   width: 100%;

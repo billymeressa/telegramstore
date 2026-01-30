@@ -99,7 +99,7 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 gap-3">
                             <div className="bg-black/10 rounded-xl p-3 backdrop-blur-sm border border-white/10">
                                 <div className="flex items-center gap-2 mb-1">
                                     <Coins size={14} className="text-yellow-300" />
@@ -107,23 +107,11 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
                                 </div>
                                 <p className="text-lg font-bold">{checkInStreak || 0} Days</p>
                             </div>
-                            <div className="bg-black/10 rounded-xl p-3 backdrop-blur-sm border border-white/10">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <span className="text-lg">🎡</span>
-                                    <span className="text-[10px] font-bold uppercase opacity-80">Free Spins</span>
-                                </div>
-                                <p className="text-lg font-bold">1 Available</p>
-                            </div>
                         </div>
                     </div>
                     {/* Decorative Background */}
                     <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
                     <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/10 to-transparent"></div>
-                </div>
-
-                {/* Spin Wheel Section */}
-                <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-                    <SpinWheel />
                 </div>
 
                 {/* Menu List */}
@@ -176,41 +164,41 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
                 </div>
 
                 {/* Order History */}
-                <div>
-                    <h3 className="font-bold text-lg mb-3 text-gray-900 px-1">Your Orders</h3>
+                <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-3">
+                    <h3 className="font-bold text-lg mb-3 text-gray-900 px-1 border-b border-gray-50 pb-2">Your Orders</h3>
 
                     {loading ? (
                         <div className="text-center py-8 text-gray-500">Loading orders...</div>
                     ) : orders.length === 0 ? (
-                        <div className="text-center py-12 bg-white border border-gray-200 rounded-xl shadow-sm">
-                            <Package size={48} className="mx-auto text-gray-200 mb-3" />
-                            <p className="text-gray-500 font-medium">You have no orders yet.</p>
-                            <button className="mt-4 text-primary text-sm font-semibold hover:underline" onClick={() => navigate('/')}>Start shopping</button>
+                        <div className="text-center py-8">
+                            <Package size={32} className="mx-auto text-gray-200 mb-2" />
+                            <p className="text-gray-400 font-medium text-sm">No orders yet</p>
+                            <button className="mt-2 text-primary text-xs font-bold hover:underline" onClick={() => navigate('/')}>Start shopping</button>
                         </div>
                     ) : (
                         <div className="space-y-3">
                             {orders.map(order => (
-                                <div key={order.id} className="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden active:scale-[0.99] transition-transform">
-                                    <div className="bg-gray-50/50 p-3 border-b border-gray-100 flex justify-between text-xs text-gray-500">
+                                <div key={order.id} className="bg-gray-50 border border-gray-100 rounded-xl overflow-hidden active:scale-[0.99] transition-transform">
+                                    <div className="bg-white p-2 border-b border-gray-100 flex justify-between text-[10px] text-gray-400 font-medium uppercase tracking-wide">
                                         <div className="flex items-center gap-2">
-                                            <span className="font-medium">#{order.id}</span>
+                                            <span>#{order.id}</span>
                                             <span>•</span>
                                             <span>{new Date(order.createdAt).toLocaleDateString()}</span>
                                         </div>
                                         <div className="text-primary font-bold">{Math.floor(order.total_price)} Birr</div>
                                     </div>
 
-                                    <div className="p-3">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <div className="font-bold text-gray-800 capitalize text-sm flex items-center gap-2 bg-gray-50 px-2 py-1 rounded">
+                                    <div className="p-2">
+                                        <div className="flex items-center gap-2 mb-1.5">
+                                            <div className="font-bold text-gray-800 capitalize text-xs flex items-center gap-1.5 bg-white border border-gray-100 px-1.5 py-0.5 rounded shadow-sm">
                                                 {getStatusIcon(order.status)}
                                                 {order.status}
                                             </div>
                                         </div>
                                         <div className="space-y-1">
                                             {order.items.map((item, idx) => (
-                                                <div key={idx} className="flex justify-between text-sm text-gray-600">
-                                                    <span className="truncate max-w-[200px]">{item.quantity}x {item.title}</span>
+                                                <div key={idx} className="text-xs text-gray-600 truncate">
+                                                    {item.quantity}x {item.title}
                                                 </div>
                                             ))}
                                         </div>
@@ -222,8 +210,8 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
                 </div>
 
                 {/* Recommended Section (More for You) */}
-                <div className="pt-2 pb-4">
-                    <h3 className="px-1 text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <div className="pt-2 pb-4 bg-white mt-2 rounded-t-2xl shadow-sm">
+                    <h3 className="px-3 text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
                         More for You
                     </h3>
 
