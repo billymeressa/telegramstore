@@ -206,7 +206,65 @@ const Home = ({ products, onAdd, wishlist, toggleWishlist, hasMore, loadMore, is
     return (
         <div className="pb-4 min-h-dvh bg-gray-50">
 
-            {/* ... (Header code remains same) ... */}
+            {/* Fixed Header */}
+            <div className="sticky top-[var(--tg-content-safe-area-top)] z-30 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-300">
+                <div className="px-4 py-3 pb-0">
+                    {/* Top Bar: Brand & Wallet */}
+                    <div className="flex justify-between items-center mb-3">
+                        <div className="flex items-center gap-2">
+                            <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent">
+                                Addis Store
+                            </h1>
+                        </div>
+
+                        {/* Wallet Badge */}
+                        <div className="flex items-center gap-1.5 bg-orange-50 px-2.5 py-1 rounded-full border border-orange-100">
+                            <Wallet size={14} className="text-primary" />
+                            <span className="text-sm font-bold text-primary">{walletBalance || 0}</span>
+                        </div>
+                    </div>
+
+                    {/* Search Bar */}
+                    <div className="relative mb-3">
+                        <input
+                            type="text"
+                            placeholder="Search products..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full bg-gray-100 text-black placeholder-gray-400 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all border-none outline-none"
+                        />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        {searchQuery && (
+                            <button
+                                onClick={() => setSearchQuery('')}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 p-1"
+                            >
+                                <X size={16} />
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                {/* Categories Tabs */}
+                <div
+                    ref={tabsRef}
+                    onScroll={handleTabsScroll}
+                    className="flex overflow-x-auto no-scrollbar pb-0 px-2 gap-2 scroll-smooth"
+                >
+                    {loopedCategories.map((cat, index) => (
+                        <button
+                            key={`${cat}-${index}`}
+                            onClick={() => handleTabChange(cat)}
+                            className={`whitespace-nowrap px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors ${selectedCategory === cat
+                                    ? 'border-primary text-primary'
+                                    : 'border-transparent text-gray-500 hover:text-black'
+                                }`}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
+            </div>
 
             {/* Main Scrollable Content */}
             <div className="space-y-3 pt-2">
