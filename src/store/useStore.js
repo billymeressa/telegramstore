@@ -42,6 +42,10 @@ const useStore = create(
             currentLevel: 1,
             nextLevelThreshold: 1000,
 
+            // UI State
+            installGuideVisible: false,
+            setInstallGuideVisible: (visible) => set({ installGuideVisible: visible }),
+
             // Actions
             fetchUserData: async () => {
                 try {

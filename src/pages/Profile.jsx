@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import useStore from '../store/useStore';
 import { useNavigate } from 'react-router-dom';
-import { User, Package, MapPin, Heart, Settings, ChevronRight, Gift, LogOut, MessageCircle, Wallet } from 'lucide-react';
+import { User, Package, MapPin, Heart, Settings, ChevronRight, Gift, LogOut, MessageCircle, Wallet, Download } from 'lucide-react';
 import ProductList from '../components/ProductList';
 import InfiniteScrollTrigger from '../components/InfiniteScrollTrigger';
 
 const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
-    const { user, walletBalance } = useStore();
+    const { user, walletBalance, setInstallGuideVisible } = useStore();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('orders');
 
@@ -17,6 +17,7 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
         { icon: MapPin, label: "Addresses", path: "/addresses" },
         { icon: Gift, label: "Coupons & Rewards", path: "/rewards" },
         { icon: MessageCircle, label: "Support Messages", path: "/support" },
+        { icon: Download, label: "Install App", action: () => setInstallGuideVisible(true) },
         { icon: Settings, label: "Settings", path: "/settings" },
     ];
 
@@ -77,7 +78,10 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
                 {MENU_ITEMS.map((item, idx) => (
                     <button
                         key={idx}
-                        onClick={() => item.path && navigate(item.path)}
+                        onClick={() => {
+                            if (item.path) navigate(item.path);
+                            if (item.action) item.action();
+                        }}
                         className="w-full flex items-center justify-between px-4 py-4 border-b border-gray-50 active:bg-gray-50"
                     >
                         <div className="flex items-center gap-3 text-gray-700">
