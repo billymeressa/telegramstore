@@ -611,12 +611,28 @@ app.get('/api/user/me', authenticateUser, async (req, res) => {
         // Actually, start command upserts, so findOne should suffice, but to be safe:
         let user = await User.findOne({ userId });
 
+        // Check if existing user needs update (sync profile info)
+        if (user) {
+            let changed = false;
+            // Map Telegram fields to DB fields
+            const newPhoto = req.telegramUser.photo_url || '';
+            const newFirst = req.telegramUser.first_name || '';
+            const newUser = req.telegramUser.username || '';
+
+            if (user.photoUrl !== newPhoto) { user.photoUrl = newPhoto; changed = true; }
+            if (user.firstName !== newFirst) { user.firstName = newFirst; changed = true; }
+            if (user.username !== newUser) { user.username = newUser; changed = true; }
+
+            if (changed) await user.save();
+        }
+
         if (!user) {
             // Create if missing (edge case)
             user = new User({
                 userId,
                 username: req.telegramUser.username,
-                firstName: req.telegramUser.first_name
+                firstName: req.telegramUser.first_name,
+                photoUrl: req.telegramUser.photo_url // Save photo on creation
             });
             await user.save();
         }
@@ -624,7 +640,11 @@ app.get('/api/user/me', authenticateUser, async (req, res) => {
         res.json({
             success: true,
             user: {
+                id: user.userId, // Return ID for frontend display
                 userId: user.userId,
+                first_name: user.firstName, // Map back to match Telegram/Frontend expectation
+                username: user.username,
+                photo_url: user.photoUrl,
                 walletBalance: user.walletBalance || 0,
                 checkInStreak: user.checkInStreak || 0,
                 lastCheckInTime: user.lastCheckInTime,

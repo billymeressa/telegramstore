@@ -118,6 +118,7 @@ const userSchema = new mongoose.Schema({
     userId: { type: String, required: true, unique: true },
     username: { type: String },
     firstName: { type: String },
+    photoUrl: { type: String }, // Telegram Profile Picture
     joinedAt: { type: Date, default: Date.now },
     lastActiveAt: { type: Date, default: Date.now },
     lastReengagementAt: { type: Date },
