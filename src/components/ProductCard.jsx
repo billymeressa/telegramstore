@@ -165,8 +165,8 @@ function ProductCard({ product, onAdd, isWishlisted, onToggleWishlist }) {
 
                 {/* Trust / Social Proof */}
                 <div className="flex items-center justify-between mt-0.5">
-                    <span className="text-[8px] text-gray-400 font-medium">
-                        100+ sold
+                    <span className="text-[8px] text-gray-400 font-medium h-[10px]">
+                        {product.isUnique ? '100+ similar sold' : '100+ sold'}
                     </span>
                     {/* Add To Cart Button */}
                     <button

@@ -8,9 +8,11 @@ import { Wallet, Coins } from 'lucide-react';
 import ProductList from '../components/ProductList';
 
 
+import { throttle } from '../utils/throttle';
+
 const tele = window.Telegram?.WebApp;
 
-const Profile = ({ products = [] }) => {
+const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const { isAdmin, isSuperAdmin, user } = useOutletContext();
@@ -36,6 +38,20 @@ const Profile = ({ products = [] }) => {
             setLoading(false);
         }
     }, [user?.id]);
+
+    // Infinite Scroll Listener
+    useEffect(() => {
+        const handleScroll = throttle(() => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+                if (hasMore && !isFetching && loadMore) {
+                    loadMore();
+                }
+            }
+        }, 200);
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [hasMore, isFetching, loadMore]);
 
     const getStatusIcon = (status) => {
         switch (status) {
@@ -205,12 +221,30 @@ const Profile = ({ products = [] }) => {
                     )}
                 </div>
 
-                {/* Recommended Section (New) */}
+                {/* Recommended Section (More for You) */}
                 <div className="pt-6 pb-4">
                     <h3 className="px-1 text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
                         More for You
                     </h3>
-                    <ProductList products={products.slice(0, 10)} />
+
+                    {/* Product Grid */}
+                    <div className="min-h-[20vh]">
+                        <ProductList products={products} />
+                    </div>
+
+                    {/* Loading Indicator */}
+                    {isFetching && (
+                        <div className="flex justify-center py-6">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                        </div>
+                    )}
+
+                    {/* End of List */}
+                    {!hasMore && products.length > 0 && (
+                        <div className="text-center py-8 text-gray-500 text-sm">
+                            You've reached the end!
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
