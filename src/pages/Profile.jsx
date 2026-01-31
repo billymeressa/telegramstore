@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import useStore from '../store/useStore';
 import { useNavigate } from 'react-router-dom';
-import { User, Package, MapPin, Heart, Settings, ChevronRight, Gift, LogOut, MessageCircle, Wallet, Download } from 'lucide-react';
+import { User, Package, MapPin, Heart, Settings, ChevronRight, Gift, LogOut, MessageCircle, Wallet, Download, Users } from 'lucide-react';
 import ProductList from '../components/ProductList';
 import InfiniteScrollTrigger from '../components/InfiniteScrollTrigger';
 
 const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
-    const { user, walletBalance, setInstallGuideVisible } = useStore();
+    const { user, walletBalance, setInstallGuideVisible, setShowInviteModal } = useStore();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('orders');
 
@@ -16,6 +16,7 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
         { icon: Heart, label: "Wishlist", path: "/wishlist" },
         { icon: MapPin, label: "Addresses", path: "/addresses" },
         { icon: Gift, label: "Coupons & Rewards", path: "/rewards" },
+        { icon: Users, label: "Invite Friends", action: () => setShowInviteModal(true) },
         { icon: MessageCircle, label: "Support Messages", path: "/support" },
         { icon: Download, label: "Install App", action: () => setInstallGuideVisible(true) },
         { icon: Settings, label: "Settings", path: "/settings" },

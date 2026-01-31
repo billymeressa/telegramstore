@@ -46,6 +46,10 @@ const useStore = create(
             installGuideVisible: false,
             setInstallGuideVisible: (visible) => set({ installGuideVisible: visible }),
 
+            // Invite Modal State
+            showInviteModal: false,
+            setShowInviteModal: (visible) => set({ showInviteModal: visible }),
+
             // Actions
             fetchUserData: async () => {
                 try {

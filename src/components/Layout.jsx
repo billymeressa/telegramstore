@@ -57,7 +57,7 @@ const Layout = ({ cartCount, isAdmin, isSuperAdmin, user }) => {
             <Outlet context={{ isAdmin, isSuperAdmin, user }} />
 
             {/* Bottom Navigation Temu Style */}
-            {!location.pathname.startsWith('/product/') && location.pathname !== '/rewards' && (
+            {!location.pathname.startsWith('/product/') && location.pathname !== '/rewards' && location.pathname !== '/cart' && (
                 <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 pb-[var(--tg-safe-area-bottom)] flex justify-between px-2 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
                     <NavItem path="/" icon={Store} label="Home" />
                     <NavItem path="/cart" icon={ShoppingCart} label="Cart" />

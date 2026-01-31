@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import API_URL from '../config';
 import SalesSimulator from './SalesSimulator';
 import AnalyticsDashboard from '../pages/AnalyticsDashboard';
-import { Package, ShoppingBag, Settings, Activity, BarChart2, Plus, Trash2, Edit2, Image as ImageIcon, Save, X } from 'lucide-react';
+import { Package, ShoppingBag, Settings, Activity, BarChart2, Plus, Trash2, Edit2, Image as ImageIcon, Save, X, Users } from 'lucide-react';
 
 const SUBCATEGORIES = {
     'Men': ['Shirts', 'T-Shirts', 'Pants', 'Jeans', 'Shoes', 'Suits', 'Accessories', 'Activewear', 'Other'],
@@ -418,24 +418,56 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                         onBlur={e => persistSetting('mystery_gift_pool', e.target.value)}
                                     />
                                 </div>
-                            </div>
-                        </div>
 
-                        {/* SAVE BUTTON */}
-                        <div className="flex justify-end pt-4 pb-8">
-                            <button
-                                onClick={() => {
-                                    // Save all relevant settings in batch
-                                    Object.entries(globalSettings).forEach(([key, value]) => {
-                                        persistSetting(key, value);
-                                    });
-                                    alert("All configurations saved successfully!");
-                                }}
-                                className="flex items-center gap-2 bg-[#fb7701] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#e06900] transition-all shadow-lg hover:shadow-xl active:scale-95"
-                            >
-                                <Save size={20} />
-                                Save Configurations
-                            </button>
+
+                                {/* Referral Program */}
+                                <div className="mt-6 pt-6 border-t border-gray-100 col-span-1 md:col-span-2">
+                                    <h5 className="text-sm font-bold text-gray-900 mb-2 flex items-center gap-2">
+                                        <Users className="text-blue-500" size={16} /> Referral Program
+                                    </h5>
+                                    <div className="flex flex-col md:flex-row gap-6">
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                className="rounded text-blue-600"
+                                                checked={globalSettings.referral_enabled !== false}
+                                                onChange={e => updateAndPersist('referral_enabled', e.target.checked)}
+                                            />
+                                            <span className="text-sm font-medium">Enable Invite System</span>
+                                        </label>
+
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-sm text-gray-500">Reward per Invite (ETB):</span>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                className="border rounded px-2 py-1 text-sm w-24"
+                                                value={globalSettings.referral_reward_amount || 50}
+                                                onChange={e => updateLocalSetting('referral_reward_amount', parseFloat(e.target.value))}
+                                                onBlur={e => persistSetting('referral_reward_amount', parseFloat(e.target.value))}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            {/* SAVE BUTTON */}
+                            <div className="flex justify-end pt-4 pb-8">
+                                <button
+                                    onClick={() => {
+                                        // Save all relevant settings in batch
+                                        Object.entries(globalSettings).forEach(([key, value]) => {
+                                            persistSetting(key, value);
+                                        });
+                                        alert("All configurations saved successfully!");
+                                    }}
+                                    className="flex items-center gap-2 bg-[#fb7701] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#e06900] transition-all shadow-lg hover:shadow-xl active:scale-95"
+                                >
+                                    <Save size={20} />
+                                    Save Configurations
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -604,7 +636,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 };
 
