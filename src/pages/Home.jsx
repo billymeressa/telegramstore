@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import ProductList from '../components/ProductList';
 import { useNavigate } from 'react-router-dom';
 import { smartSearch } from '../utils/smartSearch';
-import { Search, X, ShieldCheck } from 'lucide-react';
+import { Search, X, ShieldCheck, Wallet, Gift } from 'lucide-react';
 import useStore from '../store/useStore';
 import BannerCarousel from '../components/BannerCarousel';
 import DailyRewardModal from '../components/DailyRewardModal';
@@ -111,26 +111,49 @@ const Home = ({ products, hasMore, loadMore, isFetching }) => {
         <div className="bg-[#f5f5f5] min-h-screen">
             {/* Sticky Header */}
             <div className="sticky top-0 z-40 bg-white shadow-md">
-                <div className="px-3 py-2 flex items-center gap-3">
-                    {/* Search Bar - Temu Style */}
+                <div className="px-3 py-2 flex items-center gap-2">
+                    {/* Wallet Balance (Left) */}
+                    <button
+                        onClick={() => navigate('/profile')}
+                        className="flex items-center gap-1.5 bg-gray-100 rounded-full pl-2 pr-3 py-1.5 active:scale-95 transition-transform"
+                    >
+                        <div className="w-5 h-5 rounded-full bg-[#fb7701] flex items-center justify-center">
+                            <Wallet size={12} className="text-white" />
+                        </div>
+                        <span className="text-xs font-bold text-[#fb7701]">
+                            {Math.floor(walletBalance || 0)}
+                        </span>
+                    </button>
+
+                    {/* Search Bar - Compact */}
                     <div className="flex-1 relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
                         <input
                             type="text"
                             placeholder={PLACEHOLDERS[placeholderIndex]}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-[#f0f0f0] rounded-full py-2.5 pl-9 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#fb7701]/20 transition-all font-medium text-gray-700 placeholder:text-gray-400"
+                            className="w-full bg-[#f0f0f0] rounded-full py-2 pl-8 pr-7 text-xs focus:outline-none focus:ring-2 focus:ring-[#fb7701]/20 transition-all font-medium text-gray-700 placeholder:text-gray-400"
                         />
                         {searchQuery && (
                             <button
                                 onClick={() => setSearchQuery('')}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 bg-gray-200 rounded-full p-0.5 hover:bg-gray-300 transition-colors"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-gray-200 rounded-full p-0.5 hover:bg-gray-300 transition-colors"
                             >
-                                <X size={14} className="text-gray-500" />
+                                <X size={12} className="text-gray-500" />
                             </button>
                         )}
                     </div>
+
+                    {/* Reward / Gift Icon (Right) */}
+                    <button
+                        className="relative p-2 active:scale-90 transition-transform animate-float"
+                        // Logic to open daily reward modal needs to be wired if not automatic
+                        onClick={() => document.dispatchEvent(new CustomEvent('open-daily-reward'))}
+                    >
+                        <Gift size={24} className="text-[#be0000]" />
+                        <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-[#fb7701] rounded-full border-2 border-white animate-pulse" />
+                    </button>
                 </div>
 
                 {/* Categories Scroll */}

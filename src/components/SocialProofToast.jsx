@@ -81,28 +81,35 @@ const SocialProofToast = ({ products }) => {
         <AnimatePresence>
             {notification && (
                 <motion.div
-                    initial={{ opacity: 0, y: -50, x: '-50%' }}
+                    initial={{ opacity: 0, y: 50, x: '-50%' }}
                     animate={{ opacity: 1, y: 0, x: '-50%' }}
-                    exit={{ opacity: 0, y: -20, x: '-50%' }}
-                    className="fixed top-[60px] left-1/2 -translate-x-1/2 z-30 w-auto pointer-events-none"
+                    exit={{ opacity: 0, y: 20, x: '-50%' }}
+                    className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 w-[90%] max-w-sm"
                 >
-                    <div className="bg-black/80 backdrop-blur-md text-white shadow-lg rounded-full px-4 py-2 flex items-center gap-3 pr-4 relative overflow-hidden pointer-events-auto min-w-[300px]">
+                    <div className="bg-white/95 backdrop-blur-md border border-gray-200 shadow-xl rounded-2xl p-3 flex items-center gap-3 pr-8 relative overflow-hidden">
 
                         {/* Shimmer Effect */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent w-full -translate-x-full animate-[shimmer_2s_infinite]"></div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-full -translate-x-full animate-[shimmer_2s_infinite]"></div>
 
-                        <div className={`relative w-8 h-8 rounded-full overflow-hidden shrink-0 border border-white/20 flex items-center justify-center bg-white`}>
+                        <div className={`relative w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-gray-100 flex items-center justify-center ${notification.type === 'spin_win' ? 'bg-yellow-100' : 'bg-gray-100'}`}>
                             {notification.icon}
                         </div>
 
-                        <div className="flex-1 min-w-0">
-                            <p className="text-[10px] uppercase font-bold text-[#fb7701] tracking-wider mb-0 leading-none">
+                        <div>
+                            <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5">
                                 {notification.title}
                             </p>
-                            <p className="text-xs font-medium text-white leading-tight truncate">
+                            <p className="text-xs font-medium text-gray-800 leading-tight line-clamp-2">
                                 {notification.message}
                             </p>
                         </div>
+
+                        <button
+                            onClick={() => setNotification(null)}
+                            className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 bg-transparent"
+                        >
+                            <X size={14} />
+                        </button>
                     </div>
                 </motion.div>
             )}
