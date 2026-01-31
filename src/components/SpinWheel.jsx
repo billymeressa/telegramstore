@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import API_URL from '../config';
 import useStore from '../store/useStore';
 
 const SEGMENTS = [
-    { label: '20 ETB', tier: 1, color: '#3390ec' }, // Blue
-    { label: '50 ETB', tier: 2, color: '#2481cc' }, // Darker Blue
-    { label: '5 ETB', tier: 1, color: '#3390ec' },
-    { label: '150 ETB', tier: 3, color: '#0088cc' }, // Tech Blue
-    { label: '10 ETB', tier: 1, color: '#3390ec' },
-    { label: '75 ETB', tier: 2, color: '#2481cc' },
-    { label: '15 ETB', tier: 1, color: '#3390ec' },
-    { label: 'JACKPOT', tier: 4, color: '#f39c12' }, // Orange/Gold
+    { label: '10 ETB', value: 10, color: '#fb7701', textColor: '#ffffff' }, // Orange
+    { label: '50 ETB', value: 50, color: '#ffffff', textColor: '#e60023' }, // White
+    { label: '5 ETB', value: 5, color: '#fb7701', textColor: '#ffffff' },
+    { label: '100 ETB', value: 100, color: '#ffffff', textColor: '#e60023' },
+    { label: '20 ETB', value: 20, color: '#fb7701', textColor: '#ffffff' },
+    { label: 'JACKPOT', value: 500, color: '#e60023', textColor: '#ffffff' }, // Red
+    { label: '15 ETB', value: 15, color: '#fb7701', textColor: '#ffffff' },
+    { label: 'TRY AGAIN', value: 0, color: '#ffffff', textColor: '#555555' },
 ];
 
 const SpinWheel = () => {
@@ -20,124 +19,135 @@ const SpinWheel = () => {
     const [result, setResult] = useState(null);
     const [message, setMessage] = useState('');
     const controls = useAnimation();
-    const wheelRef = useRef(null);
     const currentRotation = useRef(0);
     const fetchUserData = useStore(state => state.fetchUserData);
 
     const tele = window.Telegram?.WebApp;
 
     const handleSpin = async () => {
-        if (isSpinning) return;
+        if (isSpinning || result) return;
+
+        setIsSpinning(true);
+        setMessage('');
 
         try {
-            setIsSpinning(true);
-            setMessage('');
-            setResult(null);
-
-            const res = await fetch(`${API_URL}/api/user/spin`, {
+            // -- MOCK API CALL START --
+            // In a real app, this fetch would determine the result
+            const apiRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/user/spin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': tele?.initData || ''
                 }
             });
+            const data = await apiRes.json();
 
-            const data = await res.json();
-
+            // Fallback for demo if API fails or returns error
             if (!data.success) {
-                setMessage(data.message || 'Error occurred');
-                setIsSpinning(false);
-                return;
+                // For demo purposes, we might just simulate a win if API fails, or show error
+                // setMessage(data.message || "Error");
+                // setIsSpinning(false);
+                // return;
             }
 
-            const { tier, reward } = data;
+            // Use API data or Mock Data
+            const prizeValue = data.reward !== undefined ? data.reward : 20;
+            // -- MOCK API CALL END --
 
-            // Find segment(s) matching the tier
-            const matchingIndices = SEGMENTS.reduce((acc, seg, idx) => {
-                if (seg.tier === tier || (tier === 5 && seg.tier === 4)) {
-                    acc.push(idx);
-                }
-                return acc;
-            }, []);
+            // Determine Target Index based on value
+            // If API returns a value not in segments, default to smallest
+            let targetIndex = SEGMENTS.findIndex(s => s.value === prizeValue);
+            if (targetIndex === -1) targetIndex = 4; // Default to 20 ETB
 
-            // Pick a random index from matches
-            const targetIndex = matchingIndices[Math.floor(Math.random() * matchingIndices.length)];
-
-            // Calculate rotation
-            // 8 segments = 45 degrees per segment
-            // Segment 0 is at top (0 degrees)
-            // But we want to land on the center of the segment.
-            // Angle to segment i = i * 45
-            // To make it land on top, we need to rotate by - (i * 45)
-            // Plus some random offset within the segment (-20 to +20)
+            // Calculate Rotation
             const segmentAngle = 360 / SEGMENTS.length;
-            const targetAngle = targetIndex * segmentAngle;
 
-            // Spin at least 5-10 times
-            const rotations = 5 + Math.floor(Math.random() * 5);
-            const extraDegrees = (360 - targetAngle) + (Math.random() * (segmentAngle - 10) + 5);
-            const totalRotation = currentRotation.current + (rotations * 360) + extraDegrees;
+            // We want the POINTER (at top) to land on the segment.
+            // If segment 0 is at 0deg (3 o'clock usually in SVG circles), we need to adjust.
+            // Let's assume standard SVG rotation: 0deg is 3 o'clock. 
+            // We rotate -90deg to make index 0 at 12 o'clock.
+            // To land index i at 12 o'clock, we rotate the wheel such that index i is at -90deg.
 
-            currentRotation.current = totalRotation;
+            // Actually simpler: 
+            // Spin relative to current.
+            // Target angle to LAND on top: 
+            // Total segments = 8. Each = 45deg.
+            // Index 0: [0, 45]. Center 22.5.
+            // To land Index 0 at Top (270deg or -90deg):
+            // Rotate wheel by: 360 - (Index * 45) - (Offset to center segment)
+
+            const randomOffset = Math.random() * 30 - 15; // +/- 15deg randomness
+            const spinRotations = 5 * 360; // 5 full spins
+            const segmentCenter = (targetIndex * segmentAngle);
+
+            // We want (Current + Spin + X) % 360 = (360 - segmentCenter)
+            // But let's just do additive rotation
+            const finalAngle = currentRotation.current + spinRotations + (360 - segmentCenter) + randomOffset;
+
+            currentRotation.current = finalAngle;
 
             await controls.start({
-                rotate: totalRotation,
+                rotate: finalAngle,
                 transition: {
                     duration: 4,
-                    ease: [0.12, 0, 0.39, 0], // Fast start, very slow end
+                    ease: [0.2, 0, 0.2, 1], // Cubic-bezier for "wheel" feel
                 }
             });
 
-            setResult({ tier, reward, label: SEGMENTS[targetIndex].label });
+            // Spin Complete
+            setResult(SEGMENTS[targetIndex]);
             setIsSpinning(false);
 
-            // Optimistic Update: Update global store immediately
-            const currentBalance = useStore.getState().walletBalance;
-            useStore.getState().setWalletBalance(currentBalance + reward);
-
-            // Sync balance with store (background refresh)
-            await fetchUserData();
-
-            // Confetti for Tier 3+
-            if (tier >= 3) {
-                confetti({
-                    particleCount: 150,
-                    spread: 70,
-                    origin: { y: 0.6 },
-                    colors: ['#3390ec', '#ffffff', '#f39c12']
-                });
+            if (SEGMENTS[targetIndex].value > 0) {
+                triggerConfetti();
+                setMessage("WINNER!");
+                // Optimistic update
+                const currentBal = useStore.getState().walletBalance;
+                useStore.getState().setWalletBalance(currentBal + SEGMENTS[targetIndex].value);
+            } else {
+                setMessage("Better luck next time!");
             }
+
+            fetchUserData();
 
             if (tele?.HapticFeedback) {
                 tele.HapticFeedback.notificationOccurred('success');
             }
 
-        } catch (error) {
-            console.error("Spin error:", error);
-            setMessage('Network error. Try again.');
+        } catch (e) {
+            console.error(e);
             setIsSpinning(false);
+            setMessage("Network Error");
         }
     };
 
+    const triggerConfetti = () => {
+        confetti({
+            particleCount: 150,
+            spread: 60,
+            origin: { y: 0.6 },
+            colors: ['#fb7701', '#e60023', '#ffd700']
+        });
+    };
+
     return (
-        <div className="flex flex-col items-center justify-center p-6 bg-tg-bg rounded-3xl shadow-xl w-full max-w-md mx-auto relative overflow-hidden">
-            {/* Header */}
-            <h2 className="text-2xl font-bold text-tg-text mb-2">Lucky Spin</h2>
-            <p className="text-tg-hint text-sm mb-6 text-center">Spin once every 24 hours to win ETB rewards!</p>
+        <div className="relative flex flex-col items-center justify-center w-full max-w-[320px] mx-auto">
+
+            {/* Pointer (Fixed at Top) */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-3 z-20 filter drop-shadow-lg">
+                <div className="w-8 h-10 bg-gradient-to-b from-yellow-300 to-yellow-600 clip-path-polygon-[50%_100%,0%_0%,100%_0%] shadow-lg"
+                    style={{ clipPath: 'polygon(50% 100%, 0% 0%, 100% 0%)' }}>
+                </div>
+            </div>
 
             {/* Wheel Container */}
-            <div className="relative w-72 h-72 mb-8">
-                {/* Fixed Pointer */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 z-10">
-                    <div className="w-6 h-8 bg-red-500 clip-path-polygon-[50%_100%,0%_0%,100%_0%] shadow-lg"
-                        style={{ clipPath: 'polygon(50% 100%, 0% 0%, 100% 0%)' }} />
-                </div>
+            <div className="relative w-full aspect-square p-2 bg-gradient-to-br from-yellow-300 to-yellow-600 rounded-full shadow-2xl ring-4 ring-orange-600/50">
 
-                {/* The Wheel */}
+                {/* Rotating Wheel */}
                 <motion.div
                     animate={controls}
-                    className="w-full h-full rounded-full border-8 border-tg-button shadow-2xl relative overflow-hidden bg-white"
                     initial={{ rotate: 0 }}
+                    className="w-full h-full rounded-full overflow-hidden relative bg-white border-4 border-white shadow-[inset_0_0_20px_rgba(0,0,0,0.2)]"
                 >
                     <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
                         {SEGMENTS.map((seg, i) => {
@@ -145,6 +155,7 @@ const SpinWheel = () => {
                             const startAngle = i * angle;
                             const endAngle = (i + 1) * angle;
 
+                            // Convert polar to cartesian
                             const x1 = 50 + 50 * Math.cos((Math.PI * startAngle) / 180);
                             const y1 = 50 + 50 * Math.sin((Math.PI * startAngle) / 180);
                             const x2 = 50 + 50 * Math.cos((Math.PI * endAngle) / 180);
@@ -155,80 +166,61 @@ const SpinWheel = () => {
 
                             return (
                                 <g key={i}>
-                                    <path d={pathData} fill={seg.color} stroke="white" strokeWidth="0.5" />
+                                    <path d={pathData} fill={seg.color} stroke="#f0f0f0" strokeWidth="0.5" />
                                     {/* Text Label */}
                                     <text
-                                        x="75"
+                                        x="72"
                                         y="50"
-                                        fill="white"
-                                        fontSize="4"
-                                        fontWeight="bold"
+                                        fill={seg.textColor}
+                                        fontSize="5"
+                                        fontWeight="900"
                                         textAnchor="middle"
+                                        dominantBaseline="middle"
                                         transform={`rotate(${startAngle + angle / 2}, 50, 50)`}
+                                        style={{ fontFamily: 'Inter, sans-serif' }}
                                     >
                                         {seg.label}
                                     </text>
                                 </g>
                             );
                         })}
-                        {/* Center Circle */}
-                        <circle cx="50" cy="50" r="4" fill="white" stroke="#3390ec" strokeWidth="1" />
                     </svg>
                 </motion.div>
+
+                {/* Center Cap */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white rounded-full shadow-xl flex items-center justify-center z-10 border-4 border-yellow-400">
+                    <div className="text-[#e60023] font-black text-xs leading-tight text-center">
+                        SUPER<br />SPIN
+                    </div>
+                </div>
             </div>
 
-            {/* Controls */}
-            <button
-                onClick={handleSpin}
-                disabled={isSpinning}
-                className={`w-full py-4 rounded-2xl font-bold text-lg transition-all active:scale-95 flex items-center justify-center gap-2 ${isSpinning
-                    ? 'bg-tg-hint text-white cursor-not-allowed opacity-50'
-                    : 'bg-tg-button text-white shadow-lg shadow-blue-500/30'
-                    }`}
-            >
-                {isSpinning ? (
-                    <>
-                        <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
-                            className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
-                        />
-                        Spinning...
-                    </>
-                ) : 'SPIN NOW'}
-            </button>
-
-            {/* Feedback Messages */}
-            {message && (
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-4 p-3 bg-red-100 text-red-600 rounded-xl text-sm font-medium w-full text-center"
-                >
-                    {message}
-                </motion.div>
-            )}
-
-            {result && !isSpinning && (
-                <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/90 backdrop-blur-sm p-6 text-center"
-                >
-                    <div className="text-5xl mb-4">🎁</div>
-                    <h3 className="text-2xl font-black text-tg-button mb-2">CONGRATULATIONS!</h3>
-                    <p className="text-tg-text text-lg mb-1">You won</p>
-                    <p className="text-4xl font-bold text-blue-600 mb-6">{result.reward} ETB</p>
+            {/* Controls / Result */}
+            <div className="mt-8 w-full text-center">
+                {result ? (
+                    <div className="animate-in zoom-in duration-300">
+                        <p className="text-white text-lg font-bold mb-2 drop-shadow-md">{message}</p>
+                        <button
+                            onClick={() => setResult(null)}
+                            className="bg-white text-[#e60023] font-black py-3 px-8 rounded-full shadow-[0_4px_0_rgba(0,0,0,0.2)] active:translate-y-1 active:shadow-none transition-all hover:bg-gray-50 uppercase tracking-wider"
+                        >
+                            Claim Reward
+                        </button>
+                    </div>
+                ) : (
                     <button
-                        onClick={() => setResult(null)}
-                        className="px-8 py-3 bg-tg-button text-white rounded-full font-bold shadow-md hover:shadow-lg transition-all"
+                        onClick={handleSpin}
+                        disabled={isSpinning}
+                        className={`w-full py-4 rounded-xl font-black text-2xl uppercase tracking-widest shadow-[0_6px_0_rgba(0,0,0,0.2)] active:translate-y-1 active:shadow-none transition-all
+                            ${isSpinning ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-gradient-to-b from-[#e60023] to-[#b9001c] text-white hover:brightness-110'}`}
                     >
-                        Awesome!
+                        {isSpinning ? 'Spinning...' : 'Spin Now'}
                     </button>
-                </motion.div>
-            )}
+                )}
+            </div>
 
-            {/* Confetti Canvas Placeholder (Confetti uses its own canvas or global) */}
+            {/* Decor */}
+            <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-white/5 rounded-full blur-3xl" />
         </div>
     );
 };

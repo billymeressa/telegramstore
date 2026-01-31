@@ -1,35 +1,47 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Trophy, X, Zap } from 'lucide-react';
+import { X, Zap, Square } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import useStore from '../store/useStore';
 
-const ICONS = ['🍎', '🍋', '🍒', '💎', '7️⃣', '🔔'];
+const ICONS = ['🔥', '💎', '7️⃣', '🎁', '⚡', '💰'];
 
 const SlotMachine = ({ onClose }) => {
     const [reels, setReels] = useState([0, 0, 0]);
     const [isSpinning, setIsSpinning] = useState(false);
+    const [canStop, setCanStop] = useState(false);
     const [win, setWin] = useState(false);
-    const [message, setMessage] = useState("Spin to Win!");
+    const [message, setMessage] = useState("SPIN TO WIN!");
     const { settings } = useStore();
+
+    // Refs to handle spinning interval and data
+    const intervalRef = useRef(null);
+    const resultRef = useRef(null);
+    const stopRequestedRef = useRef(false);
 
     const tele = window.Telegram?.WebApp;
 
-    const spin = async () => {
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => stopSpinningVisuals();
+    }, []);
+
+    const startSpin = async () => {
         if (isSpinning) return;
+
+        // Reset state
         setIsSpinning(true);
+        setCanStop(true); // Allow stopping immediately
         setWin(false);
-        setMessage("Spinning...");
+        setMessage("GOOD LUCK!");
+        resultRef.current = null;
+        stopRequestedRef.current = false;
+
+        // Start Visuals
+        intervalRef.current = setInterval(() => {
+            setReels(prev => prev.map(() => Math.floor(Math.random() * ICONS.length)));
+        }, 80);
 
         try {
-            // Visual spin start
-            const spinDuration = 2000;
-            const intervalTime = 100;
-            const startTime = Date.now();
-
-            const rollingTimer = setInterval(() => {
-                setReels(prev => prev.map(() => Math.floor(Math.random() * ICONS.length)));
-            }, intervalTime);
-
             // Fetch result in background
             const apiRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/user/slots`, {
                 method: 'POST',
@@ -40,116 +52,169 @@ const SlotMachine = ({ onClose }) => {
             });
             const data = await apiRes.json();
 
-            // Ensure we spin for at least spinDuration
-            const elapsed = Date.now() - startTime;
-            if (elapsed < spinDuration) {
-                await new Promise(r => setTimeout(r, spinDuration - elapsed));
-            }
+            resultRef.current = data;
 
-            clearInterval(rollingTimer);
-
-            if (!data.success) {
-                setIsSpinning(false);
-                setMessage(data.message || "Error occurred");
-                return;
-            }
-
-            // Set final reels
-            setReels(data.reels);
-
-            if (data.isWin) {
-                setWin(true);
-                setMessage("YOU WON!");
-                triggerConfetti();
-            } else {
-                setMessage("Try Again!");
+            // If user already clicked stop, finish immediately
+            if (stopRequestedRef.current) {
+                finalizeSpin();
             }
 
         } catch (e) {
             console.error("Slots Error:", e);
             setMessage("Network Error");
-        } finally {
+            stopSpinningVisuals();
             setIsSpinning(false);
+        }
+    };
+
+    const handleStop = () => {
+        if (!isSpinning) return;
+
+        setCanStop(false); // Disable button to prevent double clicks
+        stopRequestedRef.current = true;
+
+        if (resultRef.current) {
+            // Data is ready, show it
+            finalizeSpin();
+        } else {
+            // Data not ready, change message
+            setMessage("STOPPING...");
+        }
+    };
+
+    const finalizeSpin = () => {
+        const data = resultRef.current;
+        stopSpinningVisuals();
+
+        if (!data || !data.success) {
+            setMessage(data?.message || "Error");
+            setIsSpinning(false);
+            return;
+        }
+
+        // Set final reels
+        setReels(data.reels);
+        setIsSpinning(false);
+
+        if (data.isWin) {
+            setWin(true);
+            setMessage("JACKPOT!");
+            triggerConfetti();
+        } else {
+            setMessage("Try Again");
+        }
+    };
+
+    const stopSpinningVisuals = () => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
         }
     };
 
     const triggerConfetti = () => {
         confetti({
-            particleCount: 150,
-            spread: 70,
+            particleCount: 200,
+            spread: 100,
             origin: { y: 0.6 },
-            colors: ['#fb7701', '#ffd700', '#ffffff']
+            colors: ['#fb7701', '#ffd700', '#ffffff', '#e60023']
         });
     };
 
-    const prizeLabel = settings?.slots_prize_label || '50% OFF';
-    const prizeCode = settings?.slots_prize_code || 'JACKPOT50';
+    const prizeLabel = settings?.slots_prize_label || '90% OFF';
+    const prizeCode = settings?.slots_prize_code || 'TEMU90';
 
     return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-            <div className="bg-gradient-to-b from-purple-900 to-indigo-900 border-4 border-yellow-500 rounded-3xl p-6 w-full max-w-sm shadow-2xl relative overflow-hidden">
-
-                {/* Decorative Lights */}
-                <div className="absolute top-2 left-2 w-3 h-3 rounded-full bg-yellow-400 animate-pulse shadow-[0_0_10px_yellow]"></div>
-                <div className="absolute top-2 right-2 w-3 h-3 rounded-full bg-yellow-400 animate-pulse shadow-[0_0_10px_yellow] delay-75"></div>
-                <div className="absolute bottom-2 left-2 w-3 h-3 rounded-full bg-yellow-400 animate-pulse shadow-[0_0_10px_yellow] delay-150"></div>
-                <div className="absolute bottom-2 right-2 w-3 h-3 rounded-full bg-yellow-400 animate-pulse shadow-[0_0_10px_yellow] delay-200"></div>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in zoom-in duration-300">
+            {/* Main Machine Container */}
+            <div className="bg-[#fb7701] rounded-[2rem] p-4 w-full max-w-sm shadow-2xl relative border-[6px] border-[#fb7701] ring-4 ring-white/50">
 
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-2 right-2 text-white/50 hover:text-white bg-black/20 rounded-full p-2 mt-1 mr-1 z-10"
+                    className="absolute -top-3 -right-3 bg-white text-gray-500 rounded-full p-1.5 shadow-lg hover:scale-110 transition-transform z-20"
                 >
                     <X size={20} />
                 </button>
 
-                {/* Header */}
-                <div className="text-center mb-6 mt-4">
-                    <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] tracking-wider">
-                        LUCKY SPIN
-                    </h2>
-                    <p className="text-purple-200 text-sm font-medium mt-1">{message}</p>
-                </div>
+                {/* Inner Bezel (Red Top) */}
+                <div className="bg-[#e60023] rounded-t-[1.5rem] rounded-b-xl p-4 pb-8 relative overflow-hidden shadow-inner">
 
-                {/* Reels Container */}
-                <div className="flex justify-center gap-2 mb-8 bg-black/40 p-4 rounded-xl border border-white/10 shadow-inner ring-4 ring-purple-800">
-                    {reels.map((iconIndex, i) => (
-                        <div key={i} className="w-20 h-24 bg-gradient-to-b from-white to-gray-200 rounded-lg flex items-center justify-center text-5xl shadow-[inset_0_2px_5px_rgba(0,0,0,0.2)] border-b-4 border-gray-300 relative overflow-hidden">
-                            <span className={isSpinning ? 'animate-bounce blur-[2px]' : ''}>
-                                {ICONS[iconIndex]}
-                            </span>
-                            {/* Glass reflection */}
-                            <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/40 to-transparent pointer-events-none"></div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Win Display */}
-                {win && (
-                    <div className="bg-yellow-400 text-purple-900 p-4 rounded-xl text-center mb-6 font-bold animate-bounce shadow-[0_0_20px_rgba(250,204,21,0.6)] border-2 border-white">
-                        <div className="text-xs uppercase tracking-widest opacity-80 mb-1">Prize Unlocked</div>
-                        <div className="text-3xl font-black text-[#fb7701] drop-shadow-sm">{prizeLabel}</div>
-                        <div className="font-mono text-sm bg-purple-900 text-white inline-block px-3 py-1 rounded mt-2 select-all border border-purple-500">
-                            {prizeCode}
+                    {/* Header Text */}
+                    <div className="text-center relative z-10 mb-2">
+                        <h2 className="text-3xl font-black text-white italic tracking-tighter drop-shadow-md transform -rotate-2">
+                            SUPER SPIN
+                        </h2>
+                        <div className="bg-white/20 inline-block px-3 py-0.5 rounded-full mt-1">
+                            <p className="text-white text-xs font-bold tracking-widest uppercase">{message}</p>
                         </div>
                     </div>
-                )}
 
-                {/* Spin Button */}
-                <button
-                    onClick={spin}
-                    disabled={isSpinning || win}
-                    className={`w-full bg-gradient-to-b from-red-500 to-red-700 text-white font-black text-2xl py-5 rounded-2xl shadow-[0_6px_0_#991b1b] active:shadow-[0_2px_0_#991b1b] active:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden ring-4 ring-red-900 ${win ? 'grayscale' : ''}`}
-                >
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                        {win ? "CLAIMED" : isSpinning ? "SPINNING..." : <><Zap fill="white" /> SPIN NOW</>}
-                    </span>
-                    {/* Shine Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent w-full -translate-x-full group-hover:animate-[shimmer_1s_infinite]"></div>
-                </button>
+                    {/* Reels Container */}
+                    <div className="flex justify-center gap-1.5 bg-white p-2 rounded-xl shadow-[inset_0_4px_8px_rgba(0,0,0,0.3)] border-b-4 border-gray-200">
+                        {reels.map((iconIndex, i) => (
+                            <div key={i} className="w-20 h-24 bg-gradient-to-b from-gray-50 to-white rounded-lg flex items-center justify-center text-5xl shadow-sm border border-gray-100 relative overflow-hidden">
+                                <span className={`transform transition-all ${isSpinning ? 'blur-[1px] scale-110' : 'scale-100'}`}>
+                                    {ICONS[iconIndex]}
+                                </span>
+                                {/* Glossy Reflection */}
+                                <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-white/80 to-transparent pointer-events-none"></div>
+                            </div>
+                        ))}
+                    </div>
 
-                <div className="text-center mt-4">
-                    <p className="text-[10px] text-purple-300/50">Terms & conditions apply. Daily limit: 1 spin.</p>
+                    {/* Decorative Bulbs */}
+                    <div className="flex justify-between mt-3 px-4">
+                        <div className={`w-3 h-3 rounded-full ${isSpinning ? 'bg-yellow-300 animate-ping' : 'bg-yellow-600'}`}></div>
+                        <div className={`w-3 h-3 rounded-full ${isSpinning ? 'bg-yellow-300 animate-ping delay-75' : 'bg-yellow-600'}`}></div>
+                        <div className={`w-3 h-3 rounded-full ${isSpinning ? 'bg-yellow-300 animate-ping delay-150' : 'bg-yellow-600'}`}></div>
+                        <div className={`w-3 h-3 rounded-full ${isSpinning ? 'bg-yellow-300 animate-ping delay-200' : 'bg-yellow-600'}`}></div>
+                    </div>
+                </div>
+
+                {/* Bottom Control Panel */}
+                <div className="bg-[#fb7701] pt-6 pb-2 px-2 relative -mt-4 rounded-b-[1.5rem]">
+
+                    {/* Win Card */}
+                    {win && (
+                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-[#e60023] px-6 py-3 rounded-xl shadow-xl text-center min-w-[200px] border-4 border-yellow-400 rotate-1 animate-bounce z-20">
+                            <p className="text-xs font-bold uppercase text-gray-400">You Won</p>
+                            <p className="text-2xl font-black leading-none">{prizeLabel}</p>
+                        </div>
+                    )}
+
+                    {/* Spin/Stop Button */}
+                    <button
+                        onClick={isSpinning ? handleStop : startSpin}
+                        disabled={win || (isSpinning && !canStop)}
+                        className={`w-full group relative overflow-hidden rounded-2xl p-4 transition-all active:scale-[0.98] shadow-[0_6px_0_rgba(0,0,0,0.2)] active:shadow-none active:translate-y-1.5 
+                            ${win ? 'bg-gray-400 cursor-default' :
+                                isSpinning ? 'bg-[#e60023]' : 'bg-gradient-to-b from-yellow-400 to-yellow-500'}`}
+                    >
+                        <div className="relative z-10 flex flex-col items-center justify-center">
+                            {isSpinning ? (
+                                <>
+                                    <Square fill="white" className="text-white w-8 h-8 mb-1" />
+                                    <span className="text-white font-black text-xl tracking-widest uppercase">STOP</span>
+                                </>
+                            ) : win ? (
+                                <span className="text-white font-black text-xl tracking-widest uppercase">CLAIMED</span>
+                            ) : (
+                                <>
+                                    <span className="text-[#e60023] font-black text-2xl tracking-widest uppercase drop-shadow-sm">SPIN</span>
+                                </>
+                            )}
+                        </div>
+
+                        {/* Shimmer */}
+                        {!isSpinning && !win && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-full -translate-x-full group-hover:animate-[shimmer_0.8s_infinite]"></div>
+                        )}
+                    </button>
+
+                    <p className="text-center text-white/60 text-[10px] mt-3 font-medium">
+                        Guaranteed win today!
+                    </p>
                 </div>
             </div>
         </div>
