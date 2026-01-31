@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import API_URL from '../config';
 import SalesSimulator from './SalesSimulator';
 import AnalyticsDashboard from '../pages/AnalyticsDashboard';
-import { Package, ShoppingBag, Settings, Activity, BarChart2, Plus, Trash2, Edit2, Image as ImageIcon, Save, X, Users } from 'lucide-react';
+import { Package, ShoppingBag, Settings, Activity, BarChart2, Plus, Trash2, Edit2, Image as ImageIcon, Save, X, Users, Bell, Gift } from 'lucide-react';
 
 const SUBCATEGORIES = {
     'Men': ['Shirts', 'T-Shirts', 'Pants', 'Jeans', 'Shoes', 'Suits', 'Accessories', 'Activewear', 'Other'],
@@ -276,6 +276,69 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                 Automated Sales Engine
                             </h3>
 
+                            {/* Live Notifications Control (New) */}
+                            <div className="mb-8 border-b border-gray-100 pb-6">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h4 className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                                        <div className="bg-orange-100 p-1 rounded text-[#fb7701]">
+                                            <Bell size={14} />
+                                        </div>
+                                        Live Notifications System
+                                    </h4>
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            className="form-checkbox text-[#fb7701] rounded focus:ring-orange-500"
+                                            checked={globalSettings.notifications_enabled !== false}
+                                            onChange={(e) => updateAndPersist('notifications_enabled', e.target.checked)}
+                                        />
+                                        <span className="text-xs font-medium text-gray-600">Enabled</span>
+                                    </label>
+                                </div>
+
+                                {globalSettings.notifications_enabled !== false && (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pl-2">
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-500 mb-1 block">Frequency (Seconds)</label>
+                                            <div className="flex items-center gap-3">
+                                                <input
+                                                    type="range"
+                                                    min="10" max="600" step="10"
+                                                    className="w-full accent-[#fb7701]"
+                                                    value={globalSettings.notification_frequency || 60}
+                                                    onChange={(e) => updateLocalSetting('notification_frequency', parseInt(e.target.value))}
+                                                    onMouseUp={(e) => persistSetting('notification_frequency', parseInt(e.target.value))}
+                                                />
+                                                <span className="text-xs font-mono font-bold w-10 text-right">
+                                                    {globalSettings.notification_frequency || 60}s
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="flex items-center gap-2 cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-checkbox text-[#fb7701] rounded"
+                                                    checked={globalSettings.notification_spin_wins !== false}
+                                                    onChange={(e) => updateAndPersist('notification_spin_wins', e.target.checked)}
+                                                />
+                                                <span className="text-xs text-gray-600">Show Spin Winners</span>
+                                            </label>
+                                            <label className="flex items-center gap-2 cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-checkbox text-[#fb7701] rounded"
+                                                    checked={globalSettings.notification_purchases !== false}
+                                                    onChange={(e) => updateAndPersist('notification_purchases', e.target.checked)}
+                                                />
+                                                <span className="text-xs text-gray-600">Show Recent Purchases</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
                             {/* Sale Intensity */}
                             <div className="mb-6">
                                 <h4 className="text-sm font-semibold text-gray-700 mb-2">Global Sale Intensity</h4>
@@ -386,13 +449,13 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                             <input
                                                 className="border rounded px-2 py-1 text-sm"
                                                 placeholder="Prize Label"
-                                                value={globalSettings.slots_prize_label || '50% OFF'}
+                                                value={globalSettings.slots_prize_label || '50 ETB Credit'}
                                                 onChange={e => updateAndPersist('slots_prize_label', e.target.value)}
                                             />
                                             <input
                                                 className="border rounded px-2 py-1 text-sm"
                                                 placeholder="Code"
-                                                value={globalSettings.slots_prize_code || 'JACKPOT50'}
+                                                value={globalSettings.slots_prize_code || 'CREDIT50'}
                                                 onChange={e => updateAndPersist('slots_prize_code', e.target.value)}
                                             />
                                         </div>
@@ -413,7 +476,7 @@ const AdminDashboard = ({ products, onProductUpdate }) => {
                                     <textarea
                                         className="w-full border rounded p-2 text-xs font-mono h-20"
                                         placeholder="JSON Rewards Pool"
-                                        value={typeof globalSettings.mystery_gift_pool === 'string' ? globalSettings.mystery_gift_pool : JSON.stringify(globalSettings.mystery_gift_pool || [{ type: 'coupon', value: '10% OFF', code: 'LUCKY10' }])}
+                                        value={typeof globalSettings.mystery_gift_pool === 'string' ? globalSettings.mystery_gift_pool : JSON.stringify(globalSettings.mystery_gift_pool || [{ type: 'credit', value: '10', label: '10 ETB Credit' }])}
                                         onChange={e => updateLocalSetting('mystery_gift_pool', e.target.value)}
                                         onBlur={e => persistSetting('mystery_gift_pool', e.target.value)}
                                     />

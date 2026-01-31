@@ -11,18 +11,7 @@ const PlaceholderPage = () => {
 
     return (
         <div className="min-h-screen bg-[#f5f5f5] pb-10 font-sans pt-[var(--tg-content-safe-area-top)] flex flex-col">
-            {/* Sticky Header */}
-            <div className="sticky top-0 z-40 bg-white border-b border-gray-100 px-4 py-3 flex items-center shadow-sm">
-                <button
-                    onClick={() => navigate(-1)}
-                    className="p-1 -ml-1 text-gray-700 active:opacity-60"
-                >
-                    <ArrowLeft size={22} />
-                </button>
-                <div className="flex-1 text-center pr-6">
-                    <h1 className="text-lg font-bold text-black">{title}</h1>
-                </div>
-            </div>
+
 
             <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
                 <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mb-6 animate-pulse">

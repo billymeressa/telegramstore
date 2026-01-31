@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import useStore from '../store/useStore';
 import { useNavigate } from 'react-router-dom';
-import { User, Package, MapPin, Heart, Settings, ChevronRight, Gift, LogOut, MessageCircle, Wallet, Download, Users } from 'lucide-react';
+import { User, Package, MapPin, Heart, Settings, ChevronRight, Gift, MessageCircle, Download, Users } from 'lucide-react';
 import ProductList from '../components/ProductList';
 import InfiniteScrollTrigger from '../components/InfiniteScrollTrigger';
 
@@ -15,7 +15,7 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
         { icon: Package, label: "My Orders", path: "/orders" },
         { icon: Heart, label: "Wishlist", path: "/wishlist" },
         { icon: MapPin, label: "Addresses", path: "/addresses" },
-        { icon: Gift, label: "Coupons & Rewards", path: "/rewards" },
+        { icon: Gift, label: "Rewards", path: "/rewards" },
         { icon: Users, label: "Invite Friends", action: () => setShowInviteModal(true) },
         { icon: MessageCircle, label: "Support Messages", path: "/support" },
         { icon: Download, label: "Install App", action: () => setInstallGuideVisible(true) },
@@ -42,37 +42,14 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
             </div>
 
             {/* Wallet / Stats */}
-            <div className="bg-white mt-2 px-4 py-4 flex justify-around">
+            <div className="bg-white mt-2 px-4 py-6 flex justify-center items-center">
                 <div className="text-center">
-                    <div className="text-lg font-bold text-[#black]">0</div>
-                    <div className="text-[11px] text-gray-500">Coupons</div>
-                </div>
-                <div className="text-center border-l w-[1px] h-8 bg-gray-100 mx-2"></div>
-                <div className="text-center">
-                    <div className="text-lg font-bold text-[#black]">{walletBalance || 0}</div>
-                    <div className="text-[11px] text-gray-500">Credits (ETB)</div>
-                </div>
-                <div className="text-center border-l w-[1px] h-8 bg-gray-100 mx-2"></div>
-                <div className="text-center">
-                    <div className="text-lg font-bold text-[#black]">0</div>
-                    <div className="text-[11px] text-gray-500">Points</div>
+                    <div className="text-2xl font-bold text-[#fb7701]">{walletBalance || 0}</div>
+                    <div className="text-xs text-gray-500 font-medium">Credits (ETB)</div>
                 </div>
             </div>
 
-            {/* Order Status Bar */}
-            <div className="bg-white mt-2 px-4 py-4">
-                <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-bold text-sm">My Orders</h3>
-                    <button className="text-xs text-gray-500 flex items-center">View All <ChevronRight size={12} /></button>
-                </div>
-                <div className="flex justify-between px-2">
-                    <OrderStatusItem icon={Wallet} label="Unpaid" />
-                    <OrderStatusItem icon={Package} label="Processing" />
-                    <OrderStatusItem icon={Package} label="Shipped" />
-                    <OrderStatusItem icon={MessageCircle} label="Review" />
-                    <OrderStatusItem icon={LogOut} label="Returns" />
-                </div>
-            </div>
+
 
             {/* Menu List */}
             <div className="bg-white mt-2">
@@ -107,20 +84,11 @@ const Profile = ({ products = [], hasMore, loadMore, isFetching }) => {
                 />
             </div>
 
-            {/* Logout/Footer */}
-            <div className="mt-8 px-4 text-center">
-                <button className="text-xs text-gray-400 underline">Log Out</button>
-                <p className="text-[10px] text-gray-300 mt-2">v1.2.0 • Addis Seller App</p>
-            </div>
+
         </div>
     );
 };
 
-const OrderStatusItem = ({ icon: Icon, label }) => (
-    <div className="flex flex-col items-center gap-1.5 opacity-80 active:opacity-100">
-        <Icon size={22} className="text-gray-600" strokeWidth={1.5} />
-        <span className="text-[10px] text-gray-500">{label}</span>
-    </div>
-);
+
 
 export default Profile;

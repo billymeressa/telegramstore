@@ -53,7 +53,6 @@ const useStore = create(
             checkInStreak: 0,
 
             // Gamification
-            userPoints: 0, // Separate from walletBalance if we want a "Loyalty Point" system
             currentLevel: 1,
             nextLevelThreshold: 1000,
 
@@ -85,7 +84,6 @@ const useStore = create(
                                 walletBalance: data.user.walletBalance,
                                 checkInStreak: data.user.checkInStreak,
                                 // Fallback to 0/defaults if backend doesn't have these yet
-                                userPoints: data.user.points || 0,
                                 currentLevel: data.user.level || 1,
                                 nextLevelThreshold: data.user.nextLevelThreshold || 1000
                             });
@@ -105,8 +103,24 @@ const useStore = create(
                     const res = await fetch(`${API_URL}/api/settings`);
                     if (res.ok) {
                         const data = await res.json();
-                        if (data.success) {
-                            set({ settings: data.settings });
+                        if (data.success && data.settings) {
+                            set((state) => ({
+                                settings: data.settings,
+                                // Sync Global Settings to Local State Slices
+                                notificationSettings: {
+                                    ...state.notificationSettings,
+                                    enabled: data.settings.notifications_enabled ?? true,
+                                    frequency: data.settings.notification_frequency ?? 60,
+                                    showSpinWins: data.settings.notification_spin_wins ?? true,
+                                    showPurchases: data.settings.notification_purchases ?? true
+                                },
+                                gameSettings: {
+                                    ...state.gameSettings,
+                                    mysteryGift: data.settings.mystery_gift_enabled ?? true,
+                                    slotMachine: data.settings.enable_slots_popup ?? true,
+                                    dailyReward: data.settings.daily_reward_enabled ?? true
+                                }
+                            }));
                         }
                     }
                 } catch (e) {

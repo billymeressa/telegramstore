@@ -55,18 +55,7 @@ const OrdersPage = () => {
 
     return (
         <div className="min-h-screen bg-[#f5f5f5] pb-10 font-sans pt-[var(--tg-content-safe-area-top)]">
-            {/* Sticky Header */}
-            <div className="sticky top-0 z-40 bg-white border-b border-gray-100 px-4 py-3 flex items-center shadow-sm">
-                <button
-                    onClick={() => navigate(-1)}
-                    className="p-1 -ml-1 text-gray-700 active:opacity-60"
-                >
-                    <ArrowLeft size={22} />
-                </button>
-                <div className="flex-1 text-center pr-6">
-                    <h1 className="text-lg font-bold text-black">My Orders</h1>
-                </div>
-            </div>
+
 
             {loading ? (
                 <div className="flex justify-center py-10">

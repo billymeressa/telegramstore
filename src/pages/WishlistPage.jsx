@@ -10,18 +10,7 @@ const WishlistPage = ({ products }) => {
 
     return (
         <div className="min-h-screen bg-[#f5f5f5] pb-24 font-sans pt-[var(--tg-content-safe-area-top)]">
-            {/* Sticky Header */}
-            <div className="sticky top-0 z-40 bg-white border-b border-gray-100 px-4 py-3 flex items-center shadow-sm">
-                <button
-                    onClick={() => navigate(-1)}
-                    className="p-1 -ml-1 text-gray-700 active:opacity-60"
-                >
-                    <ArrowLeft size={22} />
-                </button>
-                <div className="flex-1 text-center pr-6">
-                    <h1 className="text-lg font-bold text-black">My Wishlist</h1>
-                </div>
-            </div>
+
 
             {wishlistedProducts.length === 0 ? (
                 <div className="flex flex-col items-center justify-center pt-24 px-6 text-center animate-in fade-in zoom-in duration-300">
