@@ -100,7 +100,7 @@ const SocialProofToast = ({ products }) => {
                     initial={{ opacity: 0, y: 50, x: '-50%' }}
                     animate={{ opacity: 1, y: 0, x: '-50%' }}
                     exit={{ opacity: 0, y: 20, x: '-50%' }}
-                    className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 w-[90%] max-w-sm"
+                    className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 w-[94%] max-w-[340px]"
                 >
                     <div className="bg-white/95 backdrop-blur-md border border-gray-200 shadow-xl rounded-2xl p-3 flex items-center gap-3 pr-8 relative overflow-hidden">
 

@@ -65,7 +65,7 @@ const OrderSuccessModal = ({ isOpen, onClose, savings = 0 }) => {
                             transition: { type: "spring", damping: 12, stiffness: 100 }
                         }}
                         exit={{ scale: 0.8, opacity: 0, y: 100 }}
-                        className="relative w-full max-w-sm bg-white rounded-3xl p-6 text-center shadow-2xl overflow-hidden"
+                        className="relative w-[90%] max-w-[340px] bg-white rounded-3xl p-5 text-center shadow-2xl overflow-hidden"
                     >
                         {/* Decorative Background Rays */}
                         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[200%] h-[200%] bg-[conic-gradient(from_0deg,transparent_0_15deg,rgba(255,165,0,0.1)_15deg_30deg)] animate-[spin_10s_linear_infinite] opacity-50 pointer-events-none origin-top" />

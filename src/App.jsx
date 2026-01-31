@@ -32,8 +32,8 @@ import OrderSuccessModal from './components/OrderSuccessModal';
 
 import { Trophy } from 'lucide-react';
 import SocialProofToast from './components/SocialProofToast';
-import MysteryGift from './components/MysteryGift';
-import SlotMachine from './components/SlotMachine';
+
+
 import InviteFriendModal from './components/InviteFriendModal';
 import useStore from './store/useStore';
 
@@ -427,7 +427,7 @@ function App() {
         orderMessage={orderMessage}
       />
       <SocialProofToast products={products} />
-      <MysteryGift />
+
       <OrderSuccessModal
         isOpen={showSuccessModal}
         onClose={() => setShowSuccessModal(false)}
@@ -440,7 +440,7 @@ function App() {
         onClose={() => useStore.getState().setShowInviteModal(false)}
       />
 
-      {showSlots && <SlotMachine onClose={() => setShowSlots(false)} />}
+
     </BrowserRouter>
   );
 }

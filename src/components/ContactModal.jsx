@@ -13,7 +13,7 @@ const ContactModal = ({ isOpen, onClose, sellerUsername, orderMessage }) => {
 
     return (
         <div className="fixed inset-0 bg-black/60 z-[100] flex items-end sm:items-center justify-center p-4 animate-in fade-in duration-200 backdrop-blur-sm">
-            <div className="bg-white w-full max-w-sm rounded-t-2xl sm:rounded-2xl p-6 shadow-2xl relative animate-in slide-in-from-bottom-10 duration-300">
+            <div className="bg-white w-[95%] max-w-[350px] rounded-t-2xl sm:rounded-2xl p-5 shadow-2xl relative animate-in slide-in-from-bottom-10 duration-300">
                 <button
                     onClick={onClose}
                     className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-100 p-1.5 rounded-full"
