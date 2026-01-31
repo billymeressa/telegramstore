@@ -6,6 +6,7 @@ import useStore from '../store/useStore';
 import ProductList from '../components/ProductList';
 import { smartSort } from '../utils/smartSort';
 import InfiniteScrollTrigger from '../components/InfiniteScrollTrigger';
+import { logViewItem, logAddToCart } from '../utils/analytics'; // New Analytics Import
 
 const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, hasMore, loadMore, isFetching }) => {
     const { id } = useParams();
@@ -64,6 +65,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, hasMore, loa
                 }
                 setProduct(data);
                 if (data.variations?.length > 0) setSelectedVariation(data.variations[0]);
+                logViewItem(data); // Track View Item
             })
             .catch(err => {
                 console.error("Fetch Error:", err);
@@ -89,6 +91,7 @@ const ProductDetails = ({ onBuyNow, products = [], isAdmin = false, hasMore, loa
         if (window.Telegram?.WebApp?.HapticFeedback) {
             window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
         }
+        logAddToCart(itemToAdd); // Track Add To Cart
         alert("Added to Cart!"); // Replace with toast later
     };
 

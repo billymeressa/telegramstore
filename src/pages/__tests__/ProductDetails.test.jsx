@@ -33,7 +33,16 @@ describe('ProductDetails', () => {
     };
 
     beforeEach(() => {
-        useStore.mockReturnValue([]); // Default mock for wishlist
+        useStore.mockImplementation((selector) => {
+            const state = {
+                wishlist: [],
+                cart: [],
+                addToCart: vi.fn(),
+                toggleWishlist: vi.fn()
+            };
+            return selector ? selector(state) : state;
+        });
+
         fetch.mockResolvedValue({
             ok: true,
             json: async () => mockProduct
@@ -50,7 +59,7 @@ describe('ProductDetails', () => {
         );
 
         // Wait for product load
-        expect(await screen.findByText('Header: Cool Product')).toBeInTheDocument();
+        expect(await screen.findByText('Cool Product')).toBeInTheDocument();
     });
 
     test('variation selection updates price', async () => {
@@ -62,16 +71,25 @@ describe('ProductDetails', () => {
             </MemoryRouter>
         );
 
-        await screen.findByText('Header: Cool Product');
+        await screen.findByText('Cool Product');
 
         // Initial Price (First variation default)
-        // Note: Code defaults to first variation logic: setSelectedVariation(data.variations[0])
-        expect(screen.getByText('900')).toBeInTheDocument();
+        expect(screen.getByText('ETB 900')).toBeInTheDocument();
 
         // Click other variation
-        fireEvent.click(screen.getByText('Large - 1000 Birr'));
+        fireEvent.click(screen.getByText('Large')); // Wait, variations might simulate different text?
+        // Let's check variations mapping in ProductDetails.jsx
+        // Variations are rendered as buttons with name. 
+        // In ProductDetails.jsx: {v.name} inside button.
+        // It does NOT show price in the button text. 
+        // Logic: text-[11px] ... {v.name}
+
+        // Wait, the mock product has variations: {name: 'Large', ...}
+        // So button has text 'Large'.
+
+        fireEvent.click(screen.getByText('Large'));
 
         // Price should update
-        expect(screen.getByText('1000')).toBeInTheDocument();
+        expect(screen.getByText('ETB 1000')).toBeInTheDocument();
     });
 });

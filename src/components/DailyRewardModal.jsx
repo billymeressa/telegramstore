@@ -11,8 +11,13 @@ const DailyRewardModal = () => {
     // The actual spin logic (can user spin?) is handled by the backend/SpinWheel component
     // But we only want to POP UP the modal if it's been > 24 hours (or a new day) since last VIEW.
 
+    const settings = useStore(state => state.settings);
+
     useEffect(() => {
         const checkDailyPopup = () => {
+            // Check if enabled in settings (default to true if undefined)
+            if (settings.enable_slots_popup === false) return;
+
             const lastPopup = localStorage.getItem('lastDailyRewardPopup');
             const now = Date.now();
             const ONE_DAY = 24 * 60 * 60 * 1000;
@@ -28,7 +33,7 @@ const DailyRewardModal = () => {
         };
 
         checkDailyPopup();
-    }, []);
+    }, [settings.enable_slots_popup]);
 
     const handleClose = () => {
         setIsOpen(false);

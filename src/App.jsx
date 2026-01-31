@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Toast from './components/Toast';
 import ContactModal from './components/ContactModal'; // New Import
 import { trackEvent, startSession, endSession } from './utils/track';
+import { initGA, logPageView, logPurchase } from './utils/analytics'; // New Analytics Import
 import ScrollToTop from './components/ScrollToTop';
 
 // Lazy Load Pages for Code Splitting
@@ -74,6 +75,16 @@ function App() {
   // Celebration State
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [lastOrderSavings, setLastOrderSavings] = useState(0);
+
+  // Initialize GA and Track Page Views
+  useEffect(() => {
+    initGA();
+  }, []);
+
+  const location = window.location;
+  useEffect(() => {
+    logPageView();
+  }, [location]);
 
   useEffect(() => {
     const tele = window.Telegram?.WebApp;
@@ -324,6 +335,9 @@ function App() {
         // if (tele && tele.sendData) {
         //   tele.sendData(JSON.stringify(data.order)); 
         // }
+
+        // Track Purchase in GA4
+        logPurchase(data.order.id, totalPrice, itemsToCheckout);
 
         // Trigger Celebration
         setLastOrderSavings(0); // You can calculate actual savings here if tracked

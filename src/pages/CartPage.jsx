@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Trash2, Plus, Minus, ArrowLeft, ShieldCheck, CreditCard } from 'lucide-react';
 import ProductList from '../components/ProductList'; // For "You might also like"
 import InfiniteScrollTrigger from '../components/InfiniteScrollTrigger';
+import { logBeginCheckout } from '../utils/analytics'; // New Analytics Import
 
 const CartPage = ({ onCheckout, sellerUsername, products = [], hasMore, loadMore, isFetching }) => {
     const { cart, removeFromCart, updateQuantity, cartTotal, clearCart } = useStore();
@@ -12,6 +13,7 @@ const CartPage = ({ onCheckout, sellerUsername, products = [], hasMore, loadMore
 
     const handleCheckout = async () => {
         setIsCheckingOut(true);
+        logBeginCheckout(cart, cartTotal); // Track Begin Checkout
         if (onCheckout) {
             await onCheckout(cart);
         } else {
@@ -90,7 +92,7 @@ const CartPage = ({ onCheckout, sellerUsername, products = [], hasMore, loadMore
                                 {/* Quantity Controls */}
                                 <div className="flex items-center border border-gray-200 rounded-full h-7">
                                     <button
-                                        onClick={() => item.quantity > 1 ? updateQuantity(item.id, item.quantity - 1) : removeFromCart(item.id)}
+                                        onClick={() => item.quantity > 1 ? updateQuantity(item.id, item.quantity - 1) : removeFromCart(item.cartId)}
                                         className="w-7 h-full flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-l-full"
                                     >
                                         {item.quantity === 1 ? <Trash2 size={12} /> : <Minus size={12} />}

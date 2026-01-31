@@ -21,7 +21,7 @@ describe('Home Page', () => {
                 <Home products={mockProducts} />
             </BrowserRouter>
         );
-        expect(screen.getByPlaceholderText(/search products/i)).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/iphone 15 pro max/i)).toBeInTheDocument();
         const allTabs = screen.getAllByText('All');
         expect(allTabs.length).toBeGreaterThan(0);
     });
@@ -33,7 +33,7 @@ describe('Home Page', () => {
             </BrowserRouter>
         );
 
-        const searchInput = screen.getByPlaceholderText(/search products/i);
+        const searchInput = screen.getByPlaceholderText(/iphone 15 pro max/i);
         fireEvent.change(searchInput, { target: { value: 'Phone' } });
 
         // Expect ProductList to receive filtered products

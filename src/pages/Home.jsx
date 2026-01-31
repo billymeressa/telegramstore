@@ -78,6 +78,7 @@ const Home = ({ products, hasMore, loadMore, isFetching }) => {
             setSelectedDepartment(foundDept);
             setSelectedCategory(category);
         }
+        window.scrollTo({ top: 0, behavior: "instant" });
     };
 
     // Infinite Scroll via Component now

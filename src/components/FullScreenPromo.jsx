@@ -12,6 +12,9 @@ const FullScreenPromo = () => {
 
     // Logic to trigger the promo frequently (Temu style)
     useEffect(() => {
+        const settings = useStore.getState().settings;
+        if (settings.mystery_gift_enabled === false) return;
+
         const checkPromo = () => {
             const lastShown = localStorage.getItem('lastPromoShown');
             const now = Date.now();
