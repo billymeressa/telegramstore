@@ -328,6 +328,21 @@ const launchExtraBots = async () => {
         }
     }
 
+    // 2. News Bot
+    if (process.env.NEWS_BOT_TOKEN) {
+        try {
+            const newsBot = new Telegraf(process.env.NEWS_BOT_TOKEN);
+            const newsModule = await import('./bots/newsBot.js');
+            if (newsModule.default) {
+                newsModule.default(newsBot);
+                newsBot.launch().catch(err => console.error("News Bot Launch Error:", err.message));
+                console.log("✅ News Bot (Env: NEWS_BOT_TOKEN) is running!");
+            }
+        } catch (e) {
+            console.error("Failed to load News Bot:", e);
+        }
+    }
+
     // You can add more bots here following the same pattern:
     // if (process.env.THIRD_BOT_TOKEN) ...
 };
