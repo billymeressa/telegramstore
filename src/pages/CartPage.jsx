@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import useStore from '../store/useStore';
 import { useNavigate } from 'react-router-dom';
 import { Trash2, Plus, Minus, ArrowLeft, ShieldCheck, CreditCard } from 'lucide-react';
@@ -7,9 +7,17 @@ import InfiniteScrollTrigger from '../components/InfiniteScrollTrigger';
 import { logBeginCheckout } from '../utils/analytics'; // New Analytics Import
 
 const CartPage = ({ onCheckout, sellerUsername, products = [], hasMore, loadMore, isFetching }) => {
-    const { cart, removeFromCart, updateQuantity, cartTotal, clearCart } = useStore();
+    const { cart, removeFromCart, updateQuantity, clearCart } = useStore();
     const navigate = useNavigate();
     const [isCheckingOut, setIsCheckingOut] = useState(false);
+
+    // Calculate total locally since useStore doesn't expose it as a state
+    const cartTotal = useMemo(() => {
+        return cart.reduce((total, item) => {
+            const price = item.selectedVariation?.price || item.price;
+            return total + (Number(price) * item.quantity);
+        }, 0);
+    }, [cart]);
 
     const handleCheckout = async () => {
         setIsCheckingOut(true);
@@ -86,7 +94,7 @@ const CartPage = ({ onCheckout, sellerUsername, products = [], hasMore, loadMore
 
                             <div className="flex items-center justify-between mt-2">
                                 <div className="text-[#fb7701] font-bold text-base">
-                                    ETB {Math.floor(item.price)}
+                                    ETB {Math.floor(item.selectedVariation?.price || item.price)}
                                 </div>
 
                                 {/* Quantity Controls */}

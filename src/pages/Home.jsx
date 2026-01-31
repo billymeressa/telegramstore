@@ -8,6 +8,17 @@ import BannerCarousel from '../components/BannerCarousel';
 import DailyRewardModal from '../components/DailyRewardModal';
 import GamificationProgressBar from '../components/GamificationProgressBar';
 import InfiniteScrollTrigger from '../components/InfiniteScrollTrigger';
+import SocialProofToast from '../components/SocialProofToast';
+
+const PLACEHOLDERS = [
+    "iphone 15 pro max",
+    "summer dress",
+    "gaming laptop",
+    "smart watch",
+    "bluetooth headphones",
+    "sneakers",
+    "home decor"
+];
 
 // Sub-category mapping
 const SUBCATEGORIES = {
@@ -42,6 +53,15 @@ const Home = ({ products, hasMore, loadMore, isFetching }) => {
     const [selectedDepartment, setSelectedDepartment] = useState("All");
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
+    const [placeholderIndex, setPlaceholderIndex] = useState(0);
+
+    // Rotate placeholders
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setPlaceholderIndex(prev => (prev + 1) % PLACEHOLDERS.length);
+        }, 3000);
+        return () => clearInterval(interval);
+    }, []);
 
     const filteredProducts = useMemo(() => {
         let filtered = products.filter(p => {
@@ -97,7 +117,7 @@ const Home = ({ products, hasMore, loadMore, isFetching }) => {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                         <input
                             type="text"
-                            placeholder="iphone 15 pro max"
+                            placeholder={PLACEHOLDERS[placeholderIndex]}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full bg-[#f0f0f0] rounded-full py-2.5 pl-9 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#fb7701]/20 transition-all font-medium text-gray-700 placeholder:text-gray-400"
@@ -151,6 +171,7 @@ const Home = ({ products, hasMore, loadMore, isFetching }) => {
                 </div>
 
                 <DailyRewardModal />
+                <SocialProofToast products={products} />
 
                 {/* Section Title */}
                 <div className="px-3 pt-4 pb-2">

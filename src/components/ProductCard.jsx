@@ -15,6 +15,11 @@ function ProductCard({ product, onAdd }) {
         return product.isFlashSale || hash;
     }, [product.id]);
 
+    const soldPercentage = useMemo(() => {
+        // Random "sold" percentage between 60% and 95% for urgency
+        return 60 + (product.id % 35);
+    }, [product.id]);
+
     const discount = useMemo(() => {
         if (product.originalPrice > product.price) {
             return Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
@@ -36,7 +41,7 @@ function ProductCard({ product, onAdd }) {
     return (
         <div
             onClick={() => navigate(`/product/${product.id}`)}
-            className="flex flex-col bg-white rounded-lg overflow-hidden border border-gray-100 hover:shadow-md transition-shadow relative"
+            className="group flex flex-col bg-white rounded-lg overflow-hidden border border-gray-100 hover:shadow-lg hover:border-[#fb7701]/30 transition-all duration-300 relative active:scale-[0.98]"
         >
             {/* Image */}
             <div className="relative aspect-square bg-gray-100">
@@ -46,23 +51,26 @@ function ProductCard({ product, onAdd }) {
                     <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">No Img</div>
                 )}
 
+                {/* Dynamic Shimmer Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent skew-x-12 translate-x-[-150%] group-hover:animate-shimmer" />
+
                 {/* Flash Deal Badge */}
                 {isFlashSale && (
-                    <div className="absolute left-0 bottom-0 bg-[#fb7701] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-tr-lg">
+                    <div className="absolute left-0 bottom-0 bg-[#fb7701] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-tr-lg animate-pulse-fast">
                         ⚡ Lightning Deal
                     </div>
                 )}
 
                 {/* Almost Sold Out Badge (Random) */}
                 {product.stock < 10 && (
-                    <div className="absolute top-0 right-0 bg-[#be0000]/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-bl-lg">
+                    <div className="absolute top-0 right-0 bg-[#be0000]/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-bl-lg shadow-sm">
                         Almost Sold Out
                     </div>
                 )}
             </div>
 
             {/* Content */}
-            <div className="p-2 flex-col flex-1 flex justify-between">
+            <div className="p-2 flex-col flex-1 flex justify-between relative">
                 <div>
                     <h3 className="text-xs text-[#191919] line-clamp-2 leading-tight mb-1 font-normal h-[2.5em]">
                         {product.title}
@@ -97,6 +105,19 @@ function ProductCard({ product, onAdd }) {
                     {/* Sold Count */}
                     <div className="text-[10px] text-gray-500 mt-0.5">
                         {product.isUnique ? '10 sold' : '5k+ sold'}
+                    </div>
+
+                    {/* Stock Progress Bar */}
+                    <div className="mt-1.5 w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                        <div
+                            className="h-full bg-gradient-to-r from-[#fb7701] to-[#ff9900] rounded-full relative"
+                            style={{ width: `${soldPercentage}%` }}
+                        >
+                            <div className="absolute inset-0 bg-white/20 animate-[shimmer_1s_infinite_linear]" />
+                        </div>
+                    </div>
+                    <div className="text-[9px] text-[#fb7701] mt-0.5 font-medium">
+                        Almost sold out!
                     </div>
                 </div>
 
