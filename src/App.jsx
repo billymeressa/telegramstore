@@ -19,6 +19,7 @@ const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 const AnalyticsDashboard = lazy(() => import('./pages/AnalyticsDashboard'));
 const Rewards = lazy(() => import('./pages/Rewards'));
 const OrdersPage = lazy(() => import('./pages/OrdersPage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const PlaceholderPage = lazy(() => import('./pages/PlaceholderPage'));
 
 // Smart Sort Algorithm (Personalized)
@@ -55,6 +56,7 @@ function App() {
   const clearCart = useStore(state => state.clearCart);
   const fetchUserData = useStore(state => state.fetchUserData);
   const fetchSettings = useStore(state => state.fetchSettings);
+  const gameSettings = useStore(state => state.gameSettings);
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
@@ -81,6 +83,14 @@ function App() {
   useEffect(() => {
     initGA();
   }, []);
+
+  // Force Slots Popup on Launch (if enabled)
+  useEffect(() => {
+    if (gameSettings?.slotMachine !== false) {
+      setTimeout(() => setShowSlots(true), 3000); // 3s delay to stagger with other popups
+    }
+  }, [gameSettings?.slotMachine]);
+
 
   const location = window.location;
   useEffect(() => {
@@ -404,7 +414,7 @@ function App() {
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/addresses" element={<PlaceholderPage />} />
             <Route path="/support" element={<PlaceholderPage />} />
-            <Route path="/settings" element={<PlaceholderPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
             <Route path="/coupons" element={<PlaceholderPage />} />
           </Route>
         </Routes>

@@ -32,6 +32,21 @@ const useStore = create(
             wishlist: [],
             settings: {},
 
+            // Notification Settings
+            notificationSettings: {
+                enabled: true,
+                frequency: 60, // seconds (default 1 min for visibility, can increase)
+                showSpinWins: true,
+                showPurchases: true
+            },
+
+            // Game Settings
+            gameSettings: {
+                mysteryGift: true,
+                dailyReward: true,
+                slotMachine: true
+            },
+
             // User Data & Gamification
             user: null,
             walletBalance: 0,
@@ -97,6 +112,20 @@ const useStore = create(
                 } catch (e) {
                     console.error("Failed to fetch settings:", e);
                 }
+            },
+
+
+
+            updateNotificationSettings: (newSettings) => {
+                set((state) => ({
+                    notificationSettings: { ...state.notificationSettings, ...newSettings }
+                }));
+            },
+
+            updateGameSettings: (newSettings) => {
+                set((state) => ({
+                    gameSettings: { ...state.gameSettings, ...newSettings }
+                }));
             },
 
             addToCart: (product) => {
@@ -179,7 +208,7 @@ const useStore = create(
         {
             name: 'telegram-store-storage', // unique name
             storage: createJSONStorage(() => localStorage), // (optional) by default, 'localStorage' check is used
-            partialize: (state) => ({ cart: state.cart, wishlist: state.wishlist, user: state.user, settings: state.settings }), // Persist settings too
+            partialize: (state) => ({ cart: state.cart, wishlist: state.wishlist, user: state.user, settings: state.settings, notificationSettings: state.notificationSettings, gameSettings: state.gameSettings }), // Persist settings too
         }
     )
 );

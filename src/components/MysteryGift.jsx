@@ -5,25 +5,19 @@ import useStore from '../store/useStore';
 import confetti from 'canvas-confetti';
 
 const MysteryGift = () => {
-    const { settings } = useStore();
+    const { gameSettings } = useStore();
     const [isVisible, setIsVisible] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [reward, setReward] = useState(null);
     const [isShaking, setIsShaking] = useState(true);
 
     useEffect(() => {
-        if (settings.mystery_gift_enabled === false) return;
+        // Force show if enabled, ignore history
+        if (gameSettings?.mysteryGift === false) return;
 
-        // Random check to show gift (e.g., 20% chance on load or logic based) 
-        // For 'Temu' style, it should be aggressive - always show if not claimed today
-        const lastClaimed = localStorage.getItem('mystery_gift_claimed_date');
-        const today = new Date().toDateString();
-
-        if (lastClaimed !== today) {
-            const tm = setTimeout(() => setIsVisible(true), 1500); // Show quickly
-            return () => clearTimeout(tm);
-        }
-    }, [settings.mystery_gift_enabled]);
+        const tm = setTimeout(() => setIsVisible(true), 2000); // Show quickly
+        return () => clearTimeout(tm);
+    }, [gameSettings?.mysteryGift]);
 
     useEffect(() => {
         if (isVisible && !isOpen) {
@@ -77,7 +71,7 @@ const MysteryGift = () => {
         setReward(null);
     };
 
-    if (settings.mystery_gift_enabled === false) return null;
+    if (gameSettings?.mysteryGift === false) return null;
 
     return (
         <>

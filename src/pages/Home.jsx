@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import ProductList from '../components/ProductList';
 import { useNavigate } from 'react-router-dom';
 import { smartSearch } from '../utils/smartSearch';
@@ -54,6 +54,7 @@ const Home = ({ products, hasMore, loadMore, isFetching }) => {
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
     const [placeholderIndex, setPlaceholderIndex] = useState(0);
+    const productListRef = useRef(null);
 
     // Rotate placeholders
     useEffect(() => {
@@ -97,8 +98,12 @@ const Home = ({ products, hasMore, loadMore, isFetching }) => {
             }
             setSelectedDepartment(foundDept);
             setSelectedCategory(category);
+
         }
-        window.scrollTo({ top: 0, behavior: "instant" });
+
+        if (productListRef.current) {
+            productListRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
     };
 
     // Infinite Scroll via Component now
@@ -197,7 +202,7 @@ const Home = ({ products, hasMore, loadMore, isFetching }) => {
                 <SocialProofToast products={products} />
 
                 {/* Section Title */}
-                <div className="px-3 pt-4 pb-2">
+                <div ref={productListRef} className="px-3 pt-4 pb-2 scroll-mt-[130px]">
                     <h2 className="text-base font-bold text-[#191919] flex items-center gap-2">
                         Just For You
                     </h2>

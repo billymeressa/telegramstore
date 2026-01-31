@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag, X, Trophy } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import useStore from '../store/useStore';
 
 const LOCATIONS = [
     "Bole", "Piassa", "Gerji", "Megenagna", "Sarbet", "4 Kilo", "Lebu", "Mexico", "CMC", "Ayat"
@@ -12,28 +13,29 @@ const ACTIONS = [
 
 const SocialProofToast = ({ products }) => {
     const [notification, setNotification] = useState(null);
+    const { notificationSettings } = useStore();
+    // Default to defaults if not yet loaded
+    const { enabled, frequency, showSpinWins, showPurchases } = notificationSettings || {
+        enabled: true, frequency: 300, showSpinWins: true, showPurchases: true
+    };
 
     useEffect(() => {
-        // Schedule next toast
-        const scheduleNext = () => {
-            // Random interval between 4 to 6 minutes (240000ms - 360000ms)
-            // For testing/demo purposes, we might want this faster, but adhering to "every 5 minutes" request
-            // let's aim for ~5 mins. 
-            const delay = 300000 + (Math.random() * 60000 - 30000); // 5 mins +/- 30s
-            return setTimeout(() => {
-                showNotification();
-            }, delay);
-        };
+        if (!enabled) return;
 
-        // Initial delay triggers quickly first time? Or wait full 5 mins?
-        // Let's do a shorter initial delay so the user sees it at least once shortly after session start
-        let timerId = setTimeout(() => showNotification(), 30000); // First one after 30s
+        let timerId;
 
         const showNotification = () => {
-            const isSpinWin = Math.random() > 0.5; // 50% chance of Spin Win vs Product Sale
+            // Determine eligible types
+            const types = [];
+            if (showSpinWins) types.push('spin_win');
+            if (showPurchases && products && products.length > 0) types.push('purchase');
+
+            if (types.length === 0) return;
+
+            const selectedType = types[Math.floor(Math.random() * types.length)];
             const randomUser = "@" + generateRandomUser();
 
-            if (isSpinWin) {
+            if (selectedType === 'spin_win') {
                 const winAmount = [100, 250, 500, 1000][Math.floor(Math.random() * 4)];
                 setNotification({
                     type: 'spin_win',
@@ -43,7 +45,6 @@ const SocialProofToast = ({ products }) => {
                     user: randomUser
                 });
             } else {
-                if (!products || products.length === 0) return;
                 const randomProduct = products[Math.floor(Math.random() * products.length)];
                 const randomLocation = LOCATIONS[Math.floor(Math.random() * LOCATIONS.length)];
                 const randomAction = ACTIONS[Math.floor(Math.random() * ACTIONS.length)];
@@ -64,12 +65,27 @@ const SocialProofToast = ({ products }) => {
             // Auto hide after 5 seconds
             setTimeout(() => {
                 setNotification(null);
-                timerId = scheduleNext();
+                scheduleNext();
             }, 5000);
         };
 
+        const scheduleNext = () => {
+            // Add slight randomness (±10%) to feel natural
+            const baseDelay = frequency * 1000;
+            const variance = (Math.random() * 0.2 - 0.1) * baseDelay;
+            const delay = baseDelay + variance;
+
+            timerId = setTimeout(showNotification, delay);
+        };
+
+        // Start the loop
+        // Initial delay: If strictly 5 mins, maybe wait 5 mins. 
+        // But usually "social proof" should appear shortly after landing.
+        // Let's do a quick one after 10s, then follow frequency.
+        timerId = setTimeout(showNotification, 10000);
+
         return () => clearTimeout(timerId);
-    }, [products]);
+    }, [products, enabled, frequency, showSpinWins, showPurchases]);
 
     const generateRandomUser = () => {
         const names = ["Abel", "Bili", "Sara", "John", "Mika", "Beth", "Dan", "Ezra", "Hana", "Kaleb"];

@@ -15,10 +15,7 @@ function ProductCard({ product, onAdd }) {
         return product.isFlashSale || hash;
     }, [product.id]);
 
-    const soldPercentage = useMemo(() => {
-        // Random "sold" percentage between 60% and 95% for urgency
-        return 60 + (product.id % 35);
-    }, [product.id]);
+
 
     const discount = useMemo(() => {
         if (product.originalPrice > product.price) {
@@ -54,19 +51,7 @@ function ProductCard({ product, onAdd }) {
                 {/* Dynamic Shimmer Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent skew-x-12 translate-x-[-150%] group-hover:animate-shimmer" />
 
-                {/* Flash Deal Badge */}
-                {isFlashSale && (
-                    <div className="absolute left-0 bottom-0 bg-[#fb7701] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-tr-lg animate-pulse-fast">
-                        ⚡ Lightning Deal
-                    </div>
-                )}
 
-                {/* Almost Sold Out Badge (Random) */}
-                {product.stock < 10 && (
-                    <div className="absolute top-0 right-0 bg-[#be0000]/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-bl-lg shadow-sm">
-                        Almost Sold Out
-                    </div>
-                )}
             </div>
 
             {/* Content */}
@@ -84,6 +69,16 @@ function ProductCard({ product, onAdd }) {
                         {discount > 0 && (
                             <span className="text-[9px] text-[#be0000] border border-[#be0000]/20 px-1 rounded-sm">
                                 -{discount}%
+                            </span>
+                        )}
+                        {isFlashSale && (
+                            <span className="text-[9px] text-white bg-[#fb7701] px-1 rounded-sm animate-pulse-fast">
+                                ⚡ Lightning Deal
+                            </span>
+                        )}
+                        {product.stock < 10 && (
+                            <span className="text-[9px] text-[#be0000] border border-[#be0000]/20 px-1 rounded-sm">
+                                Almost Sold Out
                             </span>
                         )}
                     </div>
@@ -107,18 +102,7 @@ function ProductCard({ product, onAdd }) {
                         {product.isUnique ? '10 sold' : '5k+ sold'}
                     </div>
 
-                    {/* Stock Progress Bar */}
-                    <div className="mt-1.5 w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                        <div
-                            className="h-full bg-gradient-to-r from-[#fb7701] to-[#ff9900] rounded-full relative"
-                            style={{ width: `${soldPercentage}%` }}
-                        >
-                            <div className="absolute inset-0 bg-white/20 animate-[shimmer_1s_infinite_linear]" />
-                        </div>
-                    </div>
-                    <div className="text-[9px] text-[#fb7701] mt-0.5 font-medium">
-                        Almost sold out!
-                    </div>
+
                 </div>
 
                 {/* Cart Button Overlay */}
