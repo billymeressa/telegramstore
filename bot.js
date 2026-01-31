@@ -176,6 +176,17 @@ bot.on('web_app_data', (ctx) => {
         ctx.replyWithMarkdown(message);
 
         // Notify Admin
+
+        // Auto-reply to User
+        const followUpMessage = `📦 *Order Received!*\n\n` +
+            `Thank you for shopping with us! 🌟\n\n` +
+            `To proceed, please let us know:\n` +
+            `1. 📍 Your preferred delivery location.\n` +
+            `2. 💸 Your preferred payment method.\n\n` +
+            `_Reply to this message to chat with support._`;
+
+        ctx.replyWithMarkdown(followUpMessage);
+
         // Notify All Admins
         const adminIds = [
             process.env.ADMIN_ID,
@@ -188,7 +199,7 @@ bot.on('web_app_data', (ctx) => {
         const uniqueAdminIds = [...new Set(adminIds)];
 
         uniqueAdminIds.forEach(adminId => {
-            bot.telegram.sendMessage(adminId, `New Order!\nUser: ${ctx.from.first_name} (@${ctx.from.username})\n\n` + message, { parse_mode: 'Markdown' }).catch(err => console.error(`Failed to notify admin ${adminId}:`, err));
+            bot.telegram.sendMessage(adminId, `New Order!\nUser: ${ctx.from.first_name} (@${ctx.from.username})\nUser ID: ${ctx.from.id}\n\n` + message, { parse_mode: 'Markdown' }).catch(err => console.error(`Failed to notify admin ${adminId}:`, err));
         });
     } catch (e) {
         console.error(e);
@@ -239,18 +250,48 @@ bot.command('broadcast', async (ctx) => {
 
 bot.on('text', async (ctx) => {
     try {
-        await ctx.reply(
-            `Hi there, ${ctx.from.first_name}!\n\n` +
-            `I'm your shopping assistant.\n\n` +
-            `Looking for something stylish? Tap the button below to browse our full collection and place an order!\n\n` +
-            `_Need help or have any feedback? We'd love to hear from you! Contact the admin directly: [${adminUsername}](tg://user?id=${process.env.ADMIN_ID})_`,
-            {
-                parse_mode: 'Markdown',
-                reply_markup: {
-                    inline_keyboard: [[{ text: "Open Store", web_app: { url: process.env.WEB_APP_URL } }]]
+        const userId = ctx.from.id.toString();
+        const adminId = (process.env.ADMIN_ID || '').toString();
+        const messageText = ctx.message.text;
+
+        // 1. If Admin is replying
+        if (userId === adminId) {
+            // Check if it's a reply to a forwarded message
+            if (ctx.message.reply_to_message && ctx.message.reply_to_message.text) {
+                const originalText = ctx.message.reply_to_message.text;
+
+                // Extract User ID from the custom header we added: "📩 Message from User ID: 12345..."
+                const idMatch = originalText.match(/User ID: (\d+)/);
+
+                if (idMatch && idMatch[1]) {
+                    const targetUserId = idMatch[1];
+
+                    // Relay the admin's message to the user
+                    await bot.telegram.sendMessage(targetUserId, `👨‍💼 *Support:*\n\n${messageText}`, { parse_mode: 'Markdown' });
+                    await ctx.reply(`✅ Sent to user ${targetUserId}.`);
+                } else {
+                    await ctx.reply('⚠️ Could not extract User ID from the message you replied to. Please reply to a message forwarded by the bot.');
                 }
+            } else {
+                // Admin sent a message without replying - maybe just a command or broadcast?
+                // Just ignore or show help
+                // await ctx.reply('To reply to a user, reply to their message.');
             }
-        );
+            return;
+        }
+
+        // 2. If User is sending a message (Support Request)
+        await bot.telegram.sendMessage(userId, `📩 Message sent to support. We'll get back to you soon!`);
+
+        // Forward to Admin with Metadata for easy replying
+        const adminMessage = `📩 *New Message from User*\n` +
+            `👤 Name: ${ctx.from.first_name} (@${ctx.from.username || 'NoUsername'})\n` +
+            `🆔 User ID: ${userId}\n` +
+            `--------------------------------\n` +
+            `${messageText}`;
+
+        await bot.telegram.sendMessage(adminId, adminMessage, { parse_mode: 'Markdown' });
+
     } catch (e) {
         console.error('Error handling text message:', e);
     }
@@ -1019,12 +1060,27 @@ app.post('/api/notify-order', async (req, res) => {
             return res.status(400).json({ error: 'Invalid order data' });
         }
 
+        if (userInfo && userInfo.id) {
+            message += `🆔 *User ID:* ${userInfo.id}\n`;
+        }
+
         message += `\n--------------------------------\n`;
         message += `⚠️ _Please check stock and reply to customer._`;
 
         // Send to Admin
         if (process.env.ADMIN_ID) {
             await bot.telegram.sendMessage(process.env.ADMIN_ID, message, { parse_mode: 'Markdown' });
+
+            // Auto-reply to User (if userInfo.id exists)
+            if (userInfo && userInfo.id) {
+                const followUpForUser = `📦 *Order Request Received!*\n\n` +
+                    `We have received your request. An admin will review it and contact you shortly to arrange payment and delivery.\n\n` +
+                    `_You can reply to this message to chat with us._`;
+
+                bot.telegram.sendMessage(userInfo.id, followUpForUser, { parse_mode: 'Markdown' })
+                    .catch(e => console.error("Failed to auto-reply in notify-order:", e));
+            }
+
             res.json({ success: true });
         } else {
             console.error("ADMIN_ID not set");
@@ -1314,6 +1370,19 @@ app.post('/api/orders', authenticateUser, async (req, res) => {
             }
         }
 
+        // Notify User (Automated Follow-up)
+        if (newOrder.userId) {
+            const followUpMessage = `📦 *Order Received!* (ID: #${newOrder.id})\n\n` +
+                `Thank you for shopping with us! 🌟\n\n` +
+                `To proceed, please let us know:\n` +
+                `1. 📍 Your preferred delivery location.\n` +
+                `2. 💸 Your preferred payment method (Bank Transfer / Cash on Delivery).\n\n` +
+                `_Reply to this message, and an admin will assist you shortly._`;
+
+            bot.telegram.sendMessage(newOrder.userId, followUpMessage, { parse_mode: 'Markdown' })
+                .catch(err => console.error(`Failed to send auto-reply to user ${newOrder.userId}:`, err));
+        }
+
         // Notify Admin via Telegram
         // Notify All Admins via Telegram
         const adminIds = [
@@ -1327,7 +1396,7 @@ app.post('/api/orders', authenticateUser, async (req, res) => {
         const uniqueAdminIds = [...new Set(adminIds)];
 
         uniqueAdminIds.forEach(adminId => {
-            let message = `New Order! (ID: ${newOrder.id})\nStatus: Pending\nUser: ${userInfo?.first_name} (@${userInfo?.username})\n\n`;
+            let message = `New Order! (ID: ${newOrder.id})\nStatus: Pending\nUser: ${userInfo?.first_name} (@${userInfo?.username})\nUser ID: ${userId}\n\n`;
             items.forEach(item => {
                 message += `- ${item.title} (x${item.quantity})\n`;
             });
