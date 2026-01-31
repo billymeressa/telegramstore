@@ -8,7 +8,6 @@ const ICONS = ['🔥', '💎', '7️⃣', '🎁', '⚡', '💰'];
 const SlotMachine = ({ onClose }) => {
     const [reels, setReels] = useState([0, 0, 0]);
     const [isSpinning, setIsSpinning] = useState(false);
-    const [canStop, setCanStop] = useState(false);
     const [win, setWin] = useState(false);
     const [message, setMessage] = useState("SPIN TO WIN!");
     const { settings } = useStore();
@@ -16,7 +15,6 @@ const SlotMachine = ({ onClose }) => {
     // Refs to handle spinning interval and data
     const intervalRef = useRef(null);
     const resultRef = useRef(null);
-    const stopRequestedRef = useRef(false);
 
     const tele = window.Telegram?.WebApp;
 
@@ -30,11 +28,9 @@ const SlotMachine = ({ onClose }) => {
 
         // Reset state
         setIsSpinning(true);
-        setCanStop(true); // Allow stopping immediately
         setWin(false);
         setMessage("GOOD LUCK!");
         resultRef.current = null;
-        stopRequestedRef.current = false;
 
         // Start Visuals
         intervalRef.current = setInterval(() => {
@@ -42,6 +38,9 @@ const SlotMachine = ({ onClose }) => {
         }, 80);
 
         try {
+            const startTime = Date.now();
+            const MIN_SPIN_DURATION = 2000; // Force at least 2 seconds of suspense
+
             // Fetch result in background
             const apiRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/user/slots`, {
                 method: 'POST',
@@ -54,31 +53,19 @@ const SlotMachine = ({ onClose }) => {
 
             resultRef.current = data;
 
-            // If user already clicked stop, finish immediately
-            if (stopRequestedRef.current) {
-                finalizeSpin();
+            // Wait for remaining time if needed
+            const elapsed = Date.now() - startTime;
+            if (elapsed < MIN_SPIN_DURATION) {
+                await new Promise(r => setTimeout(r, MIN_SPIN_DURATION - elapsed));
             }
+
+            finalizeSpin();
 
         } catch (e) {
             console.error("Slots Error:", e);
             setMessage("Network Error");
             stopSpinningVisuals();
             setIsSpinning(false);
-        }
-    };
-
-    const handleStop = () => {
-        if (!isSpinning) return;
-
-        setCanStop(false); // Disable button to prevent double clicks
-        stopRequestedRef.current = true;
-
-        if (resultRef.current) {
-            // Data is ready, show it
-            finalizeSpin();
-        } else {
-            // Data not ready, change message
-            setMessage("STOPPING...");
         }
     };
 
@@ -122,7 +109,6 @@ const SlotMachine = ({ onClose }) => {
     };
 
     const prizeLabel = settings?.slots_prize_label || '90% OFF';
-    const prizeCode = settings?.slots_prize_code || 'TEMU90';
 
     return (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in zoom-in duration-300">
@@ -183,19 +169,19 @@ const SlotMachine = ({ onClose }) => {
                         </div>
                     )}
 
-                    {/* Spin/Stop Button */}
+                    {/* Spin Button */}
                     <button
-                        onClick={isSpinning ? handleStop : startSpin}
-                        disabled={win || (isSpinning && !canStop)}
+                        onClick={startSpin}
+                        disabled={win || isSpinning}
                         className={`w-full group relative overflow-hidden rounded-2xl p-4 transition-all active:scale-[0.98] shadow-[0_6px_0_rgba(0,0,0,0.2)] active:shadow-none active:translate-y-1.5 
                             ${win ? 'bg-gray-400 cursor-default' :
-                                isSpinning ? 'bg-[#e60023]' : 'bg-gradient-to-b from-yellow-400 to-yellow-500'}`}
+                                isSpinning ? 'bg-gradient-to-b from-yellow-500 to-yellow-600 opacity-90' : 'bg-gradient-to-b from-yellow-400 to-yellow-500'}`}
                     >
                         <div className="relative z-10 flex flex-col items-center justify-center">
                             {isSpinning ? (
                                 <>
-                                    <Square fill="white" className="text-white w-8 h-8 mb-1" />
-                                    <span className="text-white font-black text-xl tracking-widest uppercase">STOP</span>
+                                    <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin mb-1"></div>
+                                    <span className="text-white font-black text-xl tracking-widest uppercase">SPINNING...</span>
                                 </>
                             ) : win ? (
                                 <span className="text-white font-black text-xl tracking-widest uppercase">CLAIMED</span>
