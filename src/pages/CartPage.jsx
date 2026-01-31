@@ -119,17 +119,7 @@ const CartPage = ({ onCheckout, sellerUsername, products = [], hasMore, loadMore
                 ))}
             </div>
 
-            {/* Payment Trust */}
-            <div className="mt-4 px-4">
-                <div className="flex items-center gap-2 justify-center opacity-50 grayscale">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png" className="h-4" />
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" className="h-3" />
-                    <span className="text-[10px] font-bold border border-gray-400 rounded px-1">Telebirr</span>
-                </div>
-                <div className="text-center text-[10px] text-gray-400 mt-2 flex items-center justify-center gap-1">
-                    <ShieldCheck size={10} /> Secure Layout
-                </div>
-            </div>
+
 
             {/* Recommended (Infinite Feed) */}
             <div className="mt-4 bg-white px-3 py-4">

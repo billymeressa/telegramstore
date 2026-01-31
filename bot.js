@@ -1379,8 +1379,8 @@ app.post('/api/orders', authenticateUser, async (req, res) => {
                 `2. 💸 Your preferred payment method (Bank Transfer / Cash on Delivery).\n\n` +
                 `_Reply to this message, and an admin will assist you shortly._`;
 
-            bot.telegram.sendMessage(newOrder.userId, followUpMessage, { parse_mode: 'Markdown' })
-                .catch(err => console.error(`Failed to send auto-reply to user ${newOrder.userId}:`, err));
+            bot.telegram.sendMessage(userId, followUpMessage, { parse_mode: 'Markdown' })
+                .catch(err => console.error(`Failed to send auto-reply to user ${userId}:`, err));
         }
 
         // Notify Admin via Telegram
